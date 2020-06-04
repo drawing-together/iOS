@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>432881317992-armhg2i8dsdogp31bve9jliihmso5b40.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.432881317992-armhg2i8dsdogp31bve9jliihmso5b40</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>432881317992-6n2i6vmfv85n88nqh4l0pig1o02reo0f.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCqbOOMzx5BTeO7IGhFBqreoZi4CPmPdw8</string>
+	<key>GCM_SENDER_ID</key>
+	<string>432881317992</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>hansung.DrawingTogether</string>
+	<key>PROJECT_ID</key>
+	<string>drawingtogether-31b69</string>
+	<key>STORAGE_BUCKET</key>
+	<string>drawingtogether-31b69.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:432881317992:ios:b484a16c27494da9b6a3dd</string>
+	<key>DATABASE_URL</key>
+	<string>https://drawingtogether-31b69.firebaseio.com</string>
+</dict>
+</plist>
