@@ -51,7 +51,7 @@ class MainViewController: UIViewController {
             accessDatabase.connect()
             var isExistTopic = false
             
-            accessDatabase.runTransaction(topic: topicTextField.text!, password: passwordTextField.text!, name: nameTextField.text!, masterMode: true, handler: {
+            accessDatabase.runTransaction(topic: topicTextField.text!, password: passwordTextField.text!, name: nameTextField.text!, masterMode: true) {
                 (masterName: String, existTopic: Bool) in
                 SVProgressHUD.dismiss()
                 print("transaction completed")
@@ -65,7 +65,7 @@ class MainViewController: UIViewController {
                     self.performSegue(withIdentifier: "segueMasterLogin", sender: sender)
                     print("master login 클릭하여 drawing 화면으로 넘어감")
                 }
-            })
+            }
         }
     }
     
@@ -76,7 +76,7 @@ class MainViewController: UIViewController {
             accessDatabase.connect()
             var isExistTopic = false
             
-            accessDatabase.runTransaction(topic: topicTextField.text!, password: passwordTextField.text!, name: nameTextField.text!, masterMode: false, handler: {
+            accessDatabase.runTransaction(topic: topicTextField.text!, password: passwordTextField.text!, name: nameTextField.text!, masterMode: false) {
                 (masterName: String, existTopic: Bool) in
                 SVProgressHUD.dismiss()
                 print("transaction completed")
@@ -90,7 +90,7 @@ class MainViewController: UIViewController {
                 else {
                     return
                 }
-            })
+            }
         }
     }
     
@@ -110,7 +110,7 @@ class MainViewController: UIViewController {
         }
     }
     
-    override func viewWillAppear(_ animated: Bool) {
+    override func viewWillDisappear(_ animated: Bool) {
         topicTextField.text = nil
         passwordTextField.text = nil
         nameTextField.text = nil
