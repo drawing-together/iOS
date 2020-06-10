@@ -26,8 +26,42 @@ class DrawingViewController: UIViewController {
         super.viewDidLoad()
         print("DrawingViewController : viewDidLoad")
         
+        let leftBarButtonItem = UIBarButtonItem(title: "< Back", style: .plain, target: self, action: #selector(backPressed))
+        self.navigationItem.leftBarButtonItem = leftBarButtonItem
+        
         client.initialize(ip, port, topic, name, master, masterName, self)
         print("DrawingViewController : [topic = \(topic!), my name = \(name!), master = \(master!)]")
+    }
+    
+    @objc func backPressed(sender: UIBarButtonItem) {
+        print("back pressed")
+        var title = "토픽 종료"
+        var message = "토픽을 종료하시겠습니까?"
+        if !master {
+            title = "토픽방 나가기"
+            message = "토픽방을 나가시겠습니까?"
+        }
+        showAlert(title: title, message: message, selectable: true)
+    }
+    
+    func showAlert(title: String, message: String, selectable: Bool) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let yesAction = UIAlertAction(title: "YES", style: .destructive) {
+            (action) in
+            // exit task
+            self.client.exitTask()
+            self.client.unsubscribeAllTopics()
+            // move to home
+            if let topViewController = self.navigationController?.viewControllers.first {
+                self.navigationController?.popToViewController(topViewController, animated: true)
+            }
+        }
+        alertController.addAction(yesAction)
+        if selectable {
+            alertController.addAction(UIAlertAction(title: "NO", style: .cancel))
+
+        }
+        present(alertController, animated: true)
     }
     
     func setUserNum(userNum: Int) {

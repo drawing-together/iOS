@@ -35,7 +35,7 @@ class MQTTClient: NSObject {
     private var myName: String!
     private var master: Bool!
     private var masterName: String!
-    private var userList = [String]()
+    private var userList = [User]()
     private var drawingCV: DrawingViewController!
     
     // 생성자
@@ -44,8 +44,6 @@ class MQTTClient: NSObject {
     }
     
     public func initialize(_ ip: String, _ port: String, _ topic: String, _ name: String, _ master: Bool, _ masterName: String, _ drawingCV: DrawingViewController) {
-        connect(ip, port)
-        
         self.topic = topic
         self.topic_join = topic + "_join"
         self.topic_noti = topic + "_noti"
@@ -62,18 +60,29 @@ class MQTTClient: NSObject {
         self.drawingCV = drawingCV
         
         if !self.master {
-            self.userList.append(self.masterName)
+            let user = User(name: masterName, count: 0, action: -1, isInitialized: false)
+            self.userList.append(user)
         }
-        self.userList.append(self.myName)
+        let user = User(name: myName, count: 0, action: -1, isInitialized: false)
+        self.userList.append(user)
         self.drawingCV.setUserNum(userNum: userList.count)
         self.drawingCV.setNamesPrint(names: usernameList())
         
-        self.subscribeAllTopics()
-        
-        publish(topic: topic_join, message: myName)
+        connect(ip, port) { (result) in
+            if result == "success" {
+                self.subscribeAllTopics()
+                let joinMessage = JoinMessage(name: self.myName)
+                let messageFormat = MqttMessageFormat(joinMessage: joinMessage)
+                let jsonParser = JSONParser()
+                self.publish(topic: self.topic_join, message: jsonParser.jsonWrite(object: messageFormat)!)
+            }
+            else {
+                self.drawingCV.showAlert(title: "MQTT Connection Failed", message: result, selectable: false)
+            }
+        }
     }
 
-    public func connect(_ ip: String, _ port: String) {
+    public func connect(_ ip: String, _ port: String, _ handler: @escaping(String) -> Void) {
         session?.delegate = self
         transport.host = ip
         transport.port = UInt32(port)!
@@ -84,8 +93,10 @@ class MQTTClient: NSObject {
             error in
             if error != nil {
                 print("MQTT : Connection Failed ... [\(String(describing: error))]")
+                handler(String(describing: error))
             } else {
                 print("MQTT : Connection Success !!!")
+                handler("success")
             }
         }
     }
@@ -114,7 +125,7 @@ class MQTTClient: NSObject {
 
     public func publish(topic: String, message: String) {
         session?.publishData(message.data(using: .utf8), onTopic: topic, retain: false, qos: qos)
-        print("pub: \(message)")
+        print("pub: \(topic) \(message)")
     }
     
     public func subscribeAllTopics() {
@@ -139,9 +150,15 @@ class MQTTClient: NSObject {
     
     public func exitTask() {
         if master {
-            publish(topic: topic_delete, message: myName)
+            let deleteMessage = DeleteMessage(name: self.myName)
+            let messageFormat = MqttMessageFormat(deleteMessage: deleteMessage)
+            let jsonParser = JSONParser()
+            publish(topic: self.topic_delete, message: jsonParser.jsonWrite(object: messageFormat)!)
         } else {
-            publish(topic: topic_exit, message: myName)
+            let exitMessage = ExitMessage(name: self.myName)
+            let messageFormat = MqttMessageFormat(exitMessage: exitMessage)
+            let jsonParser = JSONParser()
+            publish(topic: self.topic_exit, message: jsonParser.jsonWrite(object: messageFormat)!)
         }
         userList.removeAll()
     }
@@ -149,17 +166,26 @@ class MQTTClient: NSObject {
     public func usernameList() -> String {
         var names = ""
         for i in 0..<userList.count {
-            if userList[i] == myName, master {
-                names += "\(userList[i]) * (me)\n"
-            } else if userList[i] == masterName {
-                names += "\(userList[i]) *\n"
-            } else if userList[i] == myName, !master {
-                names += "\(userList[i]) (me)\n"
+            if userList[i].name == myName, master {
+                names += "\(userList[i].name!) * (me)\n"
+            } else if userList[i].name == masterName {
+                names += "\(userList[i].name!) *\n"
+            } else if userList[i].name == myName, !master {
+                names += "\(userList[i].name!) (me)\n"
             } else {
-                names += "\(userList[i]) \n"
+                names += "\(userList[i].name!) \n"
             }
         }
         return names
+    }
+    
+    public func isContainsUserList(name: String) -> Bool {
+        for user in userList {
+            if user.name == name {
+                return true
+            }
+        }
+        return false
     }
 }
 
@@ -167,21 +193,69 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
     // callback
     func newMessage(_ session: MQTTSession!, data: Data!, onTopic topic: String!, qos: MQTTQosLevel, retained: Bool, mid: UInt32) {
         let message = String(data: data, encoding: .utf8)!
+        let jsonParser = JSONParser()
+        let mqttmessageFormat = jsonParser.jsonReader(msg: message)
         
         if (topic == topic_join) {
             print("TOPIC_JOIN : \(message)")
-            if !userList.contains(message) {
-                userList.append(message)
-                publish(topic: topic_noti, message: myName)
-                drawingCV.setUserNum(userNum: userList.count)
-                drawingCV.setNamesPrint(names: usernameList())
+            let joinMessage = mqttmessageFormat?.joinMessage
+            if joinMessage?.master != nil {
+                // intercept
+                
+                if let to = joinMessage?.to, to == myName {
+                    // drawing setting
+                }
+            }
+            else if let joinName = joinMessage?.name, myName != joinName {
+                if !isContainsUserList(name: joinName) {
+                    let user = User(name: joinName, count: 0, action: -1, isInitialized: false)
+                    userList.append(user)
+                    drawingCV.setUserNum(userNum: userList.count)
+                    drawingCV.setNamesPrint(names: usernameList())
+                    
+                    let notiMessage = NotiMessage(name: myName)
+                    let messageFormat = MqttMessageFormat(notiMessage: notiMessage)
+                    let jsonParser = JSONParser()
+                    publish(topic: topic_noti, message: jsonParser.jsonWrite(object: messageFormat)!)
+                }
+                if master {
+                    // all action up
+                    // republish
+                }
             }
         }
         
+//            var joinName: String!
+//            if let name = joinMessage?.name {
+//                joinName = name
+//                print(joinName)
+//            }
+//            if myName != joinName {
+//                if !isContainsUserList(name: joinName) {
+//                    let user = User(name: joinName, count: 0, action: -1, isInitialized: false)
+//                    userList.append(user)
+//
+//                    let notiMessage = NotiMessage(name: myName)
+//                    let messageFormat = MqttMessageFormat(notiMessage: notiMessage)
+//                    let jsonParser = JSONParser()
+//                    publish(topic: topic_noti, message: jsonParser.jsonWrite(object: messageFormat)!)
+//                }
+//                if master {
+//                    // all action up
+//                    // republish
+//                }
+        
         if (topic == topic_noti) {
             print("TOPIC_NOTI : \(message)")
-            if !userList.contains(message) {
-                userList.append(message)
+            let notiMessage = mqttmessageFormat?.notiMessage
+            var notiName: String!
+            if let name = notiMessage?.name {
+                notiName = name
+                print(notiName)
+            }
+            if !isContainsUserList(name: notiName) {
+                let user = User(name: notiName, count: 0, action: -1, isInitialized: false)
+                userList.append(user)
                 drawingCV.setUserNum(userNum: userList.count)
                 drawingCV.setNamesPrint(names: usernameList())
             }
@@ -189,17 +263,35 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         
         if (topic == topic_exit) {
             print("TOPIC_EXIT : \(message)")
+            let exitMessage = mqttmessageFormat?.exitMessage
+            var exitName: String!
+            if let name = exitMessage?.name {
+                exitName = name
+                print(exitName)
+            }
             for i in 0..<userList.count {
-                if userList[i] == message {
+                if userList[i].name == exitName {
                     userList.remove(at: i)
                     drawingCV.setUserNum(userNum: userList.count)
                     drawingCV.setNamesPrint(names: usernameList())
+                    break
                 }
             }
         }
         
         if (topic == topic_delete) {
             print("TOPIC_DELETE : \(message)")
+            let deleteMessage = mqttmessageFormat?.deleteMessage
+            var deleteName: String!
+            if let name = deleteMessage?.name {
+                deleteName = name
+                print(deleteName)
+            }
+            if deleteName != myName {
+                OperationQueue.main.addOperation {
+                    self.drawingCV.showAlert(title: "토픽 종료", message: "master가 토픽을 종료하였습니다.", selectable: false)
+                }
+            }
         }
         
         if (topic == topic_data) {
