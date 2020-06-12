@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Qxz-Gy-yEu">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="Qxz-Gy-yEu">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -19,42 +16,42 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="fgs-TA-TK9">
-                                <rect key="frame" x="70" y="170.5" width="235" height="390"/>
+                                <rect key="frame" x="70" y="150.5" width="235" height="410"/>
                                 <subviews>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="54.180.154.63" borderStyle="roundedRect" placeholder="ip" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="HX5-dJ-Jx6">
-                                        <rect key="frame" x="0.0" y="0.0" width="235" height="30"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="235" height="34"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="1883" borderStyle="roundedRect" placeholder="port" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="jz5-JW-eR5">
-                                        <rect key="frame" x="0.0" y="60" width="235" height="30"/>
+                                        <rect key="frame" x="0.0" y="64" width="235" height="34"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="topic" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="gBb-7k-G3t">
-                                        <rect key="frame" x="0.0" y="120" width="235" height="30"/>
+                                        <rect key="frame" x="0.0" y="128" width="235" height="34"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="EZK-nC-jkL">
-                                        <rect key="frame" x="0.0" y="180" width="235" height="30"/>
+                                        <rect key="frame" x="0.0" y="192" width="235" height="34"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="name" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="RNi-2o-fXQ">
-                                        <rect key="frame" x="0.0" y="240" width="235" height="30"/>
+                                        <rect key="frame" x="0.0" y="256" width="235" height="34"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QIb-UH-fHM">
-                                        <rect key="frame" x="0.0" y="300" width="235" height="30"/>
+                                        <rect key="frame" x="0.0" y="320" width="235" height="30"/>
                                         <state key="normal" title="MASTER LOGIN"/>
                                         <connections>
                                             <action selector="onMasterLoginBtnClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="VFO-nl-VYo"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bFx-pT-qC9">
-                                        <rect key="frame" x="100.5" y="360" width="34" height="30"/>
+                                        <rect key="frame" x="100.5" y="380" width="34" height="30"/>
                                         <state key="normal" title="JOIN"/>
                                         <connections>
                                             <action selector="onJoinBtnClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="P74-vk-jQ0"/>
@@ -109,14 +106,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="K4a-XT-CWe" userLabel="Background View">
-                                <rect key="frame" x="0.0" y="64" width="375" height="543"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="249" verticalHuggingPriority="249" translatesAutoresizingMaskIntoConstraints="NO" id="K4a-XT-CWe" userLabel="Background View">
+                                <rect key="frame" x="0.0" y="44" width="375" height="563"/>
                             </imageView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pmz-mF-gyK" userLabel="Drawing View">
-                                <rect key="frame" x="0.0" y="64" width="375" height="543"/>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pmz-mF-gyK" userLabel="Drawing View" customClass="DrawingView" customModule="DrawingTogether" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="44" width="375" height="563"/>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="현재 인원 : 0명" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iMj-9i-Zje" customClass="PaddingLabel" customModule="DrawingTogether" customModuleProvider="target">
-                                <rect key="frame" x="15" y="77" width="89.5" height="31.5"/>
+                                <rect key="frame" x="15" y="57" width="89.5" height="31.5"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                 <color key="textColor" name="textColor" catalog="System" colorSpace="catalog"/>
@@ -124,7 +121,7 @@
                                 <color key="shadowColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9Cl-k8-Dqq" customClass="PaddingLabel" customModule="DrawingTogether" customModuleProvider="target">
-                                <rect key="frame" x="15" y="114" width="85.5" height="100"/>
+                                <rect key="frame" x="15" y="94" width="85.5" height="100"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="100" id="Jjb-ra-bkx"/>
@@ -135,7 +132,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="Xr7-EI-lDm">
-                                <rect key="frame" x="268" y="79" width="89" height="27"/>
+                                <rect key="frame" x="268" y="59" width="89" height="27"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lpS-Da-MaI">
                                         <rect key="frame" x="0.0" y="0.0" width="36" height="27"/>
@@ -155,7 +152,7 @@
                                     </button>
                                 </subviews>
                             </stackView>
-                            <stackView opaque="NO" contentMode="scaleToFill" spacing="9" translatesAutoresizingMaskIntoConstraints="NO" id="Guu-of-epf">
+                            <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" spacing="9" translatesAutoresizingMaskIntoConstraints="NO" id="Guu-of-epf" userLabel="Drawing Tool">
                                 <rect key="frame" x="18" y="622" width="339" height="30"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vOs-SP-CBK">
@@ -230,23 +227,23 @@
                             <constraint firstItem="K4a-XT-CWe" firstAttribute="bottom" secondItem="Guu-of-epf" secondAttribute="top" constant="-15" id="liS-QT-hzc"/>
                             <constraint firstItem="pmz-mF-gyK" firstAttribute="top" secondItem="G6O-7L-KJR" secondAttribute="top" id="maz-RE-J99"/>
                             <constraint firstItem="Guu-of-epf" firstAttribute="centerX" secondItem="fvu-b9-GHb" secondAttribute="centerX" id="sez-LS-gLg"/>
-                            <constraint firstItem="G6O-7L-KJR" firstAttribute="bottom" secondItem="Guu-of-epf" secondAttribute="bottom" constant="15" id="suS-jo-02t"/>
+                            <constraint firstItem="Guu-of-epf" firstAttribute="bottom" secondItem="G6O-7L-KJR" secondAttribute="bottom" constant="-15" id="suS-jo-02t"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="G6O-7L-KJR"/>
                     </view>
                     <navigationItem key="navigationItem" title="Drawing" id="KMp-ss-Zxx">
                         <rightBarButtonItems>
-                            <barButtonItem title="I" id="4eh-W0-7Sr">
+                            <barButtonItem title="I" image="photo" catalog="system" id="4eh-W0-7Sr">
                                 <connections>
                                     <action selector="clickImage:" destination="pJa-tK-STr" id="dRN-KL-t7X"/>
                                 </connections>
                             </barButtonItem>
-                            <barButtonItem title="S" id="O9Y-um-6E0">
+                            <barButtonItem title="S" image="speaker.slash" catalog="system" id="O9Y-um-6E0">
                                 <connections>
                                     <action selector="clickSpeaker:" destination="pJa-tK-STr" id="a1R-0c-ht0"/>
                                 </connections>
                             </barButtonItem>
-                            <barButtonItem title="M" id="Tev-PL-MdG">
+                            <barButtonItem title="M" image="mic.slash" catalog="system" id="Tev-PL-MdG">
                                 <connections>
                                     <action selector="clickMic:" destination="pJa-tK-STr" id="LOz-yT-nI7"/>
                                 </connections>
@@ -254,6 +251,8 @@
                         </rightBarButtonItems>
                     </navigationItem>
                     <connections>
+                        <outlet property="backgroundImageView" destination="K4a-XT-CWe" id="csu-Gi-da3"/>
+                        <outlet property="drawingView" destination="pmz-mF-gyK" id="5gP-6r-ecv"/>
                         <outlet property="namesPrintLabel" destination="9Cl-k8-Dqq" id="A8Q-dp-aDa"/>
                         <outlet property="userNumLabel" destination="iMj-9i-Zje" id="hd5-Kc-OIb"/>
                     </connections>
@@ -268,7 +267,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Qxz-Gy-yEu" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="kgF-co-ILe">
-                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
@@ -284,4 +283,9 @@
     <inferredMetricsTieBreakers>
         <segue reference="sHh-et-rxB"/>
     </inferredMetricsTieBreakers>
+    <resources>
+        <image name="mic.slash" catalog="system" width="112" height="128"/>
+        <image name="photo" catalog="system" width="128" height="93"/>
+        <image name="speaker.slash" catalog="system" width="128" height="124"/>
+    </resources>
 </document>

@@ -11,18 +11,18 @@ import CoreGraphics
 
 class MqttMessageFormat: Codable {
     
-//    var mode: Mode?
-//    var type: ComponentType?
-//    var component: DrawingComponentAdapter? // MARK: "DrawingComponentAdapter" Type
-//    //var componentAdapter: DrawingComponentAdapter?
-//    var action: Int?
-//    var usersComponentId: String?
-//    var point: Point?
-//
+    var mode: Mode?
+    var type: ComponentType?
+    var component: DrawingComponentAdapter? // MARK: "DrawingComponentAdapter" Type
+    var componentAdapter: DrawingComponentAdapter?
+    var action: Int?
+    var usersComponentId: String?
+    var point: Point?
+
     var username: String?
-//    var componentIds: [Int]?
-//
-//    var bitmapByteArray: [UInt8]?
+    var componentIds: [Int]?
+
+    var bitmapByteArray: [UInt8]?
     
 //    var textAttr: TextAttribute?
 //    var textMode: TextMode?
@@ -38,15 +38,15 @@ class MqttMessageFormat: Codable {
 //    var audioMessage: AudioMessage?
 //    var warpingMessage: WarpingMessage?
 //
-//    var drawingComponents: [DrawingComponent]?
-//    var texts: [Text]?
-//    var history: [DrawingItem]?
-//    var undoArray: [DrawingItem]?
-//    var removedComponentId: [Int]?
-//    var maxComponentId: Int?
-//    var maxTextId: Int?
+    var drawingComponents: [DrawingComponentAdapter]?
+    var texts: [TextAttribute]?
+    var history: [DrawingItem]?
+    var undoArray: [DrawingItem]?
+    var removedComponentId: [Int]?
+    var maxComponentId: Int?
+    var maxTextId: Int?
 
-/*
+
     // MARK: DRAWING MESSAGE
     init(username: String, usersComponentId: String, mode: Mode, type: ComponentType, component:DrawingComponentAdapter, action: Int) {
         self.username = username
@@ -70,14 +70,14 @@ class MqttMessageFormat: Codable {
         self.username = username
         self.mode = mode
     }
-    
+ 
     // MARK: IMAGE MESSAGE
     init(username: String, mode: Mode, bitmapByteArray: [UInt8]) {
         self.username = username
         self.mode = mode
         self.bitmapByteArray = bitmapByteArray
     }
-*/
+
  
 /*
     // MARK: TEXT MESSAGE
@@ -88,9 +88,9 @@ class MqttMessageFormat: Codable {
         self.textMode = textMode
         self.myTextArrayIndex = myTextArrayIndex
     }
-    
+*/
     // MARK: MID MESSAGE
-    init(joinMessage: JoinMessage, drawingComponents: [DrawingComponent], texts: [Text], history: [DrawingItem], undoArray: [DrawingItem], removedComponentId: [Int], maxComponentId: Int, maxTextId: Int) {
+    init(joinMessage: JoinMessage, drawingComponents: [DrawingComponentAdapter], texts: [TextAttribute], history: [DrawingItem], undoArray: [DrawingItem], removedComponentId: [Int], maxComponentId: Int, maxTextId: Int) {
         self.joinMessage = joinMessage
         self.drawingComponents = drawingComponents
         self.texts = texts
@@ -101,7 +101,7 @@ class MqttMessageFormat: Codable {
         self.maxTextId = maxTextId
     }
     
-    init(joinMessage: JoinMessage, drawingComponents: [DrawingComponent], texts: [Text], history: [DrawingItem], undoArray: [DrawingItem], removedComponentId: [Int], maxComponentId: Int, maxTextId: Int, bitmapByteArray: [UInt8]) {
+    init(joinMessage: JoinMessage, drawingComponents: [DrawingComponentAdapter], texts: [TextAttribute], history: [DrawingItem], undoArray: [DrawingItem], removedComponentId: [Int], maxComponentId: Int, maxTextId: Int, bitmapByteArray: [UInt8]) {
         self.joinMessage = joinMessage
         self.drawingComponents = drawingComponents
         self.texts = texts
@@ -112,7 +112,9 @@ class MqttMessageFormat: Codable {
         self.maxTextId = maxTextId
         self.bitmapByteArray = bitmapByteArray
     }
+
     
+/*
     // MARK: AUDIO MESSAGE
     init(audioMessage: AudioMessage) {
         self.audioMessage = audioMessage
