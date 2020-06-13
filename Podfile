@@ -9,7 +9,7 @@ target 'DrawingTogether' do
   pod 'SwiftMQTT'
   pod 'SwiftyJSON'
   pod 'SVProgressHUD'
-
+  pod 'lottie-ios'
   pod 'Firebase/Analytics'
   pod 'Firebase/Database'
   # Pods for DrawingTogether
