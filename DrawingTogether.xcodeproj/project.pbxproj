@@ -13,12 +13,26 @@
 		8450CC4424879561003286A4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8450CC4324879561003286A4 /* GoogleService-Info.plist */; };
 		8450CC482487EC22003286A4 /* AccessDatabaseForLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8450CC472487EC22003286A4 /* AccessDatabaseForLogin.swift */; };
 		8450CC52248E1A49003286A4 /* JoinMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8450CC51248E1A49003286A4 /* JoinMessage.swift */; };
-		8450CC56248E1A55003286A4 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8450CC53248E1A55003286A4 /* User.swift */; };
 		8450CC57248E1A55003286A4 /* MqttMessageFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8450CC54248E1A55003286A4 /* MqttMessageFormat.swift */; };
 		8450CC58248E1A55003286A4 /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8450CC55248E1A55003286A4 /* JSONParser.swift */; };
 		8450CC5A248E1BA8003286A4 /* ExitMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8450CC59248E1BA8003286A4 /* ExitMessage.swift */; };
 		8450CC5C248E1C55003286A4 /* DeleteMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8450CC5B248E1C55003286A4 /* DeleteMessage.swift */; };
 		8450CC5E248E2109003286A4 /* NotiMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8450CC5D248E2109003286A4 /* NotiMessage.swift */; };
+		952F4EB224910C4E00B665F4 /* DrawingItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952F4EB124910C4E00B665F4 /* DrawingItem.swift */; };
+		953A67B62490E8A7008AC2BA /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67B52490E8A7008AC2BA /* User.swift */; };
+		953A67C52490EDB9008AC2BA /* Text.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67B72490EDB8008AC2BA /* Text.swift */; };
+		953A67C62490EDB9008AC2BA /* Point.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67B82490EDB8008AC2BA /* Point.swift */; };
+		953A67C72490EDB9008AC2BA /* TextMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67B92490EDB8008AC2BA /* TextMode.swift */; };
+		953A67C82490EDB9008AC2BA /* Stroke.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67BA2490EDB8008AC2BA /* Stroke.swift */; };
+		953A67C92490EDB9008AC2BA /* TextEditingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67BB2490EDB8008AC2BA /* TextEditingView.swift */; };
+		953A67CA2490EDB9008AC2BA /* DrawingEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67BC2490EDB8008AC2BA /* DrawingEditor.swift */; };
+		953A67CC2490EDB9008AC2BA /* DrawingComponentAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67BE2490EDB8008AC2BA /* DrawingComponentAdapter.swift */; };
+		953A67CD2490EDB9008AC2BA /* Rect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67BF2490EDB8008AC2BA /* Rect.swift */; };
+		953A67CE2490EDB9008AC2BA /* DrawingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67C02490EDB9008AC2BA /* DrawingView.swift */; };
+		953A67CF2490EDB9008AC2BA /* TextAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67C12490EDB9008AC2BA /* TextAttribute.swift */; };
+		953A67D02490EDB9008AC2BA /* ComponentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67C22490EDB9008AC2BA /* ComponentType.swift */; };
+		953A67D12490EDB9008AC2BA /* Mode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67C32490EDB9008AC2BA /* Mode.swift */; };
+		953A67D22490EDB9008AC2BA /* DrawingComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67C42490EDB9008AC2BA /* DrawingComponent.swift */; };
 		CEDE687024765A780057E9D2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDE686F24765A780057E9D2 /* AppDelegate.swift */; };
 		CEDE687224765A780057E9D2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDE687124765A780057E9D2 /* SceneDelegate.swift */; };
 		CEDE687424765A780057E9D2 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDE687324765A780057E9D2 /* MainViewController.swift */; };
@@ -36,12 +50,26 @@
 		8450CC4324879561003286A4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8450CC472487EC22003286A4 /* AccessDatabaseForLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessDatabaseForLogin.swift; sourceTree = "<group>"; };
 		8450CC51248E1A49003286A4 /* JoinMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JoinMessage.swift; sourceTree = "<group>"; };
-		8450CC53248E1A55003286A4 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = User.swift; path = "../../../아카이브/User.swift"; sourceTree = "<group>"; };
 		8450CC54248E1A55003286A4 /* MqttMessageFormat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MqttMessageFormat.swift; sourceTree = "<group>"; };
 		8450CC55248E1A55003286A4 /* JSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParser.swift; sourceTree = "<group>"; };
 		8450CC59248E1BA8003286A4 /* ExitMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExitMessage.swift; sourceTree = "<group>"; };
 		8450CC5B248E1C55003286A4 /* DeleteMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteMessage.swift; sourceTree = "<group>"; };
 		8450CC5D248E2109003286A4 /* NotiMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotiMessage.swift; sourceTree = "<group>"; };
+		952F4EB124910C4E00B665F4 /* DrawingItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingItem.swift; sourceTree = "<group>"; };
+		953A67B52490E8A7008AC2BA /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		953A67B72490EDB8008AC2BA /* Text.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Text.swift; sourceTree = "<group>"; };
+		953A67B82490EDB8008AC2BA /* Point.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Point.swift; sourceTree = "<group>"; };
+		953A67B92490EDB8008AC2BA /* TextMode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextMode.swift; sourceTree = "<group>"; };
+		953A67BA2490EDB8008AC2BA /* Stroke.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Stroke.swift; sourceTree = "<group>"; };
+		953A67BB2490EDB8008AC2BA /* TextEditingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextEditingView.swift; sourceTree = "<group>"; };
+		953A67BC2490EDB8008AC2BA /* DrawingEditor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingEditor.swift; sourceTree = "<group>"; };
+		953A67BE2490EDB8008AC2BA /* DrawingComponentAdapter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingComponentAdapter.swift; sourceTree = "<group>"; };
+		953A67BF2490EDB8008AC2BA /* Rect.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rect.swift; sourceTree = "<group>"; };
+		953A67C02490EDB9008AC2BA /* DrawingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingView.swift; sourceTree = "<group>"; };
+		953A67C12490EDB9008AC2BA /* TextAttribute.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextAttribute.swift; sourceTree = "<group>"; };
+		953A67C22490EDB9008AC2BA /* ComponentType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComponentType.swift; sourceTree = "<group>"; };
+		953A67C32490EDB9008AC2BA /* Mode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mode.swift; sourceTree = "<group>"; };
+		953A67C42490EDB9008AC2BA /* DrawingComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingComponent.swift; sourceTree = "<group>"; };
 		CEDE686C24765A780057E9D2 /* DrawingTogether.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DrawingTogether.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEDE686F24765A780057E9D2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CEDE687124765A780057E9D2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -102,6 +130,19 @@
 		CEDE686E24765A780057E9D2 /* DrawingTogether */ = {
 			isa = PBXGroup;
 			children = (
+				953A67C22490EDB9008AC2BA /* ComponentType.swift */,
+				953A67C42490EDB9008AC2BA /* DrawingComponent.swift */,
+				953A67BE2490EDB8008AC2BA /* DrawingComponentAdapter.swift */,
+				953A67BC2490EDB8008AC2BA /* DrawingEditor.swift */,
+				953A67C02490EDB9008AC2BA /* DrawingView.swift */,
+				953A67C32490EDB9008AC2BA /* Mode.swift */,
+				953A67B82490EDB8008AC2BA /* Point.swift */,
+				953A67BF2490EDB8008AC2BA /* Rect.swift */,
+				953A67BA2490EDB8008AC2BA /* Stroke.swift */,
+				953A67B72490EDB8008AC2BA /* Text.swift */,
+				953A67C12490EDB9008AC2BA /* TextAttribute.swift */,
+				953A67BB2490EDB8008AC2BA /* TextEditingView.swift */,
+				953A67B92490EDB8008AC2BA /* TextMode.swift */,
 				CEDE686F24765A780057E9D2 /* AppDelegate.swift */,
 				CEDE687124765A780057E9D2 /* SceneDelegate.swift */,
 				CEDE687324765A780057E9D2 /* MainViewController.swift */,
@@ -110,7 +151,6 @@
 				8450CC51248E1A49003286A4 /* JoinMessage.swift */,
 				8450CC55248E1A55003286A4 /* JSONParser.swift */,
 				8450CC54248E1A55003286A4 /* MqttMessageFormat.swift */,
-				8450CC53248E1A55003286A4 /* User.swift */,
 				CEDE687524765A780057E9D2 /* Main.storyboard */,
 				CEDE687824765A7C0057E9D2 /* Assets.xcassets */,
 				CEDE687A24765A7C0057E9D2 /* LaunchScreen.storyboard */,
@@ -120,6 +160,8 @@
 				8450CC59248E1BA8003286A4 /* ExitMessage.swift */,
 				8450CC5B248E1C55003286A4 /* DeleteMessage.swift */,
 				8450CC5D248E2109003286A4 /* NotiMessage.swift */,
+				953A67B52490E8A7008AC2BA /* User.swift */,
+				952F4EB124910C4E00B665F4 /* DrawingItem.swift */,
 			);
 			path = DrawingTogether;
 			sourceTree = "<group>";
@@ -240,18 +282,32 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				953A67C92490EDB9008AC2BA /* TextEditingView.swift in Sources */,
+				953A67CC2490EDB9008AC2BA /* DrawingComponentAdapter.swift in Sources */,
+				953A67CA2490EDB9008AC2BA /* DrawingEditor.swift in Sources */,
+				953A67B62490E8A7008AC2BA /* User.swift in Sources */,
 				CEDE687424765A780057E9D2 /* MainViewController.swift in Sources */,
 				8450CC57248E1A55003286A4 /* MqttMessageFormat.swift in Sources */,
+				953A67C72490EDB9008AC2BA /* TextMode.swift in Sources */,
+				953A67CF2490EDB9008AC2BA /* TextAttribute.swift in Sources */,
 				8450CC52248E1A49003286A4 /* JoinMessage.swift in Sources */,
 				113E8EE0247F912400F33359 /* MQTTClient.swift in Sources */,
+				952F4EB224910C4E00B665F4 /* DrawingItem.swift in Sources */,
 				111D1578247B88BA00095A31 /* DrawingViewController.swift in Sources */,
-				8450CC56248E1A55003286A4 /* User.swift in Sources */,
 				8450CC5C248E1C55003286A4 /* DeleteMessage.swift in Sources */,
 				8450CC58248E1A55003286A4 /* JSONParser.swift in Sources */,
+				953A67D12490EDB9008AC2BA /* Mode.swift in Sources */,
+				953A67CE2490EDB9008AC2BA /* DrawingView.swift in Sources */,
+				953A67CD2490EDB9008AC2BA /* Rect.swift in Sources */,
+				953A67C82490EDB9008AC2BA /* Stroke.swift in Sources */,
 				CEDE687024765A780057E9D2 /* AppDelegate.swift in Sources */,
 				8450CC5E248E2109003286A4 /* NotiMessage.swift in Sources */,
+				953A67C52490EDB9008AC2BA /* Text.swift in Sources */,
+				953A67C62490EDB9008AC2BA /* Point.swift in Sources */,
 				8450CC5A248E1BA8003286A4 /* ExitMessage.swift in Sources */,
+				953A67D02490EDB9008AC2BA /* ComponentType.swift in Sources */,
 				8450CC482487EC22003286A4 /* AccessDatabaseForLogin.swift in Sources */,
+				953A67D22490EDB9008AC2BA /* DrawingComponent.swift in Sources */,
 				CEDE687224765A780057E9D2 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -402,7 +458,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CPC236HLL9;
 				INFOPLIST_FILE = DrawingTogether/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -422,7 +478,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = CPC236HLL9;
 				INFOPLIST_FILE = DrawingTogether/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
