@@ -8,62 +8,76 @@
 
 import UIKit
 
-class DrawingViewController: UIViewController {
+class DrawingViewController: UIViewController, UIPopoverPresentationControllerDelegate {
     
     let client = MQTTClient.client
     
-    @IBOutlet weak var userNumLabel: PaddingLabel!
-    @IBOutlet weak var namesPrintLabel: PaddingLabel!
+    @IBOutlet weak var userNumBtn: UIButton!
     
     @IBOutlet weak var backgroundImageView: UIImageView!
     @IBOutlet weak var drawingView: DrawingView!
     
-
     @IBOutlet weak var textEditingView: TextEditingView!
     @IBOutlet weak var editingText: UITextField!
     
-    var ip: String!
-    var port: String!
+    var ip: String = "54.180.154.63"
+    var port: String = "1883"
     var topic: String!
     var name: String!
     var masterName: String!
     var master: Bool!
     
-    // AUDIO
-      var micFlag = false
-      var speakerFlag = false
-      var speakerMode = 0 // 0: mute, 1: on, 2: loud
-      //
-      
-      // IMAGE
-      var imagePicker = UIImagePickerController()
-      //
+    var userListStr: String!
     
+    // AUDIO
+    var micFlag = false
+    var speakerFlag = false
+    var speakerMode = 0 // 0: mute, 1: on, 2: loud
+    //
+      
+    // IMAGE
+    var imagePicker = UIImagePickerController()
+    //
+    
+    // MARK: LIFE CYCLE
     override func viewDidLoad() {
         super.viewDidLoad()
         print("DrawingViewController : viewDidLoad")
-        
-        let leftBarButtonItem = UIBarButtonItem(title: "< Back", style: .plain, target: self, action: #selector(backPressed))
-        self.navigationItem.leftBarButtonItem = leftBarButtonItem
         
         client.initialize(ip, port, topic, name, master, masterName, self)
         print("DrawingViewController : [topic = \(topic!), my name = \(name!), master = \(master!)]")
         
         imagePicker.delegate = self
         
+        navigationController?.isNavigationBarHidden = false
     }
     
-    @objc func backPressed(sender: UIBarButtonItem) {
-        print("back pressed")
-        var title = "토픽 종료"
-        var message = "토픽을 종료하시겠습니까?"
-        if !master {
-            title = "토픽방 나가기"
-            message = "토픽방을 나가시겠습니까?"
-        }
-        showAlert(title: title, message: message, selectable: true)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        print("DrawingViewController : viewWillAppear")
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+        print("DrawingViewController : viewDidAppear")
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        print("DrawingViewController : viewWillDisappear")
+        
+        setUserNum(userNum: 0)
+        userListStr = ""
+        client.exitTask()
+        client.unsubscribeAllTopics()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(true)
+        print("DrawingViewController : viewDidDisappear")
+    }
+    
+    // MARK: FUNCTION
     func showAlert(title: String, message: String, selectable: Bool) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let yesAction = UIAlertAction(title: "YES", style: .destructive) {
@@ -84,39 +98,14 @@ class DrawingViewController: UIViewController {
         present(alertController, animated: true)
     }
     
+    // popover 띄우기 위한 함수
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return UIModalPresentationStyle.none
+    }
+    
     func setUserNum(userNum: Int) {
-        userNumLabel.text = "현재인원 : \(userNum)명"
+        userNumBtn.setTitle("현재인원 : \(userNum)명", for: .normal)
     }
-    
-    func setNamesPrint(names: String) {
-        namesPrintLabel.text = names
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
-        print("DrawingViewController : viewWillAppear")
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(true)
-        print("DrawingViewController : viewDidAppear")
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillAppear(true)
-        print("DrawingViewController : viewWillDisappear")
-        
-        setUserNum(userNum: 0)
-        setNamesPrint(names: "")
-        client.exitTask()
-        client.unsubscribeAllTopics()
-    }
-    
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(true)
-        print("DrawingViewController : viewDidDisappear")
-    }
-    
     
     func convertUIImage2ByteArray(image: UIImage) -> [UInt8] { // UIImage -> Byte Array
         // UIImage -> NSData
@@ -143,9 +132,18 @@ class DrawingViewController: UIViewController {
         return image
     }
     
-    
-    
     // MARK: IBACTION FUNCION
+    @IBAction func backPressed(sender: UIBarButtonItem) {
+        print("back pressed")
+        var title = "토픽 종료"
+        var message = "토픽을 종료하시겠습니까?"
+        if !master {
+            title = "토픽방 나가기"
+            message = "토픽방을 나가시겠습니까?"
+        }
+        showAlert(title: title, message: message, selectable: true)
+    }
+    
     @IBAction func clickMic(_ sender: UIBarButtonItem) {
         if !micFlag { // Mic On
             micFlag = true
@@ -224,6 +222,24 @@ class DrawingViewController: UIViewController {
     
     @IBAction func clickWarping(_ sender: UIButton) {
         print("warping")
+    }
+    
+    @IBAction func clickUserBtn(_ sender: UIButton) {
+        let userVC = storyboard?.instantiateViewController(withIdentifier: "UserViewController") as! UserViewController
+        
+        userVC.modalPresentationStyle = .popover
+        userVC.preferredContentSize = CGSize(width: 100, height: 150)
+        if let popoverController = userVC.popoverPresentationController {
+            popoverController.sourceView = sender
+            popoverController.sourceRect =  CGRect(x: 0, y: 0, width: 100, height: 35)
+            popoverController.permittedArrowDirections = .any
+            popoverController.delegate = self
+            userVC.popoverPresentationController?.delegate = self
+        }
+        
+        present(userVC, animated: true, completion: nil)
+        
+        userVC.userLabel.text! = userListStr
     }
 }
 

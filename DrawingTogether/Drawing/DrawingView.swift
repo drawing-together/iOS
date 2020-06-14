@@ -8,7 +8,7 @@
 
 import UIKit
 
-class DrawingView: UIView {
+class DrawingView: UIImageView {
     
     var stroke: Stroke?
 

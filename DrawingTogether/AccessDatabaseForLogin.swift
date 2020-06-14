@@ -24,8 +24,6 @@ class AccessDatabase {
     }
     
     func runTransaction(topic: String, password: String, name: String, masterMode: Bool, handler: @escaping(String, Bool) -> Void) {
-        SVProgressHUD.show()
-        
         self.topic = topic
         self.password = password
         self.name = name

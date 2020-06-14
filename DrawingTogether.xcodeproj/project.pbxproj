@@ -10,6 +10,23 @@
 		0A7E9DA10627382D01D7095A /* Pods_DrawingTogether.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BFA4C93A455D3A8A4BACA03 /* Pods_DrawingTogether.framework */; };
 		111D1578247B88BA00095A31 /* DrawingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D1577247B88BA00095A31 /* DrawingViewController.swift */; };
 		113E8EE0247F912400F33359 /* MQTTClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113E8EDF247F912400F33359 /* MQTTClient.swift */; };
+		116988EF2494AB3D003C3E34 /* text.png in Resources */ = {isa = PBXBuildFile; fileRef = 116988E32494AB3C003C3E34 /* text.png */; };
+		116988F02494AB3D003C3E34 /* pen3.png in Resources */ = {isa = PBXBuildFile; fileRef = 116988E42494AB3C003C3E34 /* pen3.png */; };
+		116988F12494AB3D003C3E34 /* eraser.png in Resources */ = {isa = PBXBuildFile; fileRef = 116988E52494AB3C003C3E34 /* eraser.png */; };
+		116988F22494AB3D003C3E34 /* master login.png in Resources */ = {isa = PBXBuildFile; fileRef = 116988E62494AB3C003C3E34 /* master login.png */; };
+		116988F32494AB3D003C3E34 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 116988E72494AB3C003C3E34 /* logo.png */; };
+		116988F42494AB3D003C3E34 /* pen1.png in Resources */ = {isa = PBXBuildFile; fileRef = 116988E82494AB3C003C3E34 /* pen1.png */; };
+		116988F52494AB3D003C3E34 /* pen2.png in Resources */ = {isa = PBXBuildFile; fileRef = 116988E92494AB3C003C3E34 /* pen2.png */; };
+		116988F62494AB3D003C3E34 /* redo.png in Resources */ = {isa = PBXBuildFile; fileRef = 116988EA2494AB3C003C3E34 /* redo.png */; };
+		116988F72494AB3D003C3E34 /* shape.png in Resources */ = {isa = PBXBuildFile; fileRef = 116988EB2494AB3D003C3E34 /* shape.png */; };
+		116988F82494AB3D003C3E34 /* join.png in Resources */ = {isa = PBXBuildFile; fileRef = 116988EC2494AB3D003C3E34 /* join.png */; };
+		116988F92494AB3D003C3E34 /* undo.png in Resources */ = {isa = PBXBuildFile; fileRef = 116988ED2494AB3D003C3E34 /* undo.png */; };
+		116988FA2494AB3D003C3E34 /* warping.png in Resources */ = {isa = PBXBuildFile; fileRef = 116988EE2494AB3D003C3E34 /* warping.png */; };
+		116989062494BEC6003C3E34 /* back.png in Resources */ = {isa = PBXBuildFile; fileRef = 116989052494BEC6003C3E34 /* back.png */; };
+		116989082494C19B003C3E34 /* UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116989072494C19B003C3E34 /* UserViewController.swift */; };
+		1169890C2495DB89003C3E34 /* selector.png in Resources */ = {isa = PBXBuildFile; fileRef = 1169890B2495DB89003C3E34 /* selector.png */; };
+		1169890E249604F3003C3E34 /* color_bar.png in Resources */ = {isa = PBXBuildFile; fileRef = 1169890D249604F3003C3E34 /* color_bar.png */; };
+		1169891024965962003C3E34 /* banana_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 1169890F24965962003C3E34 /* banana_logo.png */; };
 		8450CC4424879561003286A4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8450CC4324879561003286A4 /* GoogleService-Info.plist */; };
 		8450CC482487EC22003286A4 /* AccessDatabaseForLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8450CC472487EC22003286A4 /* AccessDatabaseForLogin.swift */; };
 		8450CC52248E1A49003286A4 /* JoinMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8450CC51248E1A49003286A4 /* JoinMessage.swift */; };
@@ -44,6 +61,23 @@
 /* Begin PBXFileReference section */
 		111D1577247B88BA00095A31 /* DrawingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingViewController.swift; sourceTree = "<group>"; };
 		113E8EDF247F912400F33359 /* MQTTClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MQTTClient.swift; sourceTree = "<group>"; };
+		116988E32494AB3C003C3E34 /* text.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = text.png; sourceTree = "<group>"; };
+		116988E42494AB3C003C3E34 /* pen3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pen3.png; sourceTree = "<group>"; };
+		116988E52494AB3C003C3E34 /* eraser.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = eraser.png; sourceTree = "<group>"; };
+		116988E62494AB3C003C3E34 /* master login.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "master login.png"; sourceTree = "<group>"; };
+		116988E72494AB3C003C3E34 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
+		116988E82494AB3C003C3E34 /* pen1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pen1.png; sourceTree = "<group>"; };
+		116988E92494AB3C003C3E34 /* pen2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pen2.png; sourceTree = "<group>"; };
+		116988EA2494AB3C003C3E34 /* redo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = redo.png; sourceTree = "<group>"; };
+		116988EB2494AB3D003C3E34 /* shape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shape.png; sourceTree = "<group>"; };
+		116988EC2494AB3D003C3E34 /* join.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = join.png; sourceTree = "<group>"; };
+		116988ED2494AB3D003C3E34 /* undo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = undo.png; sourceTree = "<group>"; };
+		116988EE2494AB3D003C3E34 /* warping.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = warping.png; sourceTree = "<group>"; };
+		116989052494BEC6003C3E34 /* back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = back.png; path = "../../../Desktop/Capstone/UI 이미지/back.png"; sourceTree = "<group>"; };
+		116989072494C19B003C3E34 /* UserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewController.swift; sourceTree = "<group>"; };
+		1169890B2495DB89003C3E34 /* selector.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = selector.png; sourceTree = "<group>"; };
+		1169890D249604F3003C3E34 /* color_bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = color_bar.png; sourceTree = "<group>"; };
+		1169890F24965962003C3E34 /* banana_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = banana_logo.png; sourceTree = "<group>"; };
 		2BFA4C93A455D3A8A4BACA03 /* Pods_DrawingTogether.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DrawingTogether.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		43EABC13362160988CC86CDD /* Pods-DrawingTogether.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DrawingTogether.debug.xcconfig"; path = "Target Support Files/Pods-DrawingTogether/Pods-DrawingTogether.debug.xcconfig"; sourceTree = "<group>"; };
 		779D315CC4191BA29F528277 /* Pods-DrawingTogether.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DrawingTogether.release.xcconfig"; path = "Target Support Files/Pods-DrawingTogether/Pods-DrawingTogether.release.xcconfig"; sourceTree = "<group>"; };
@@ -92,6 +126,64 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		116988E22494AB21003C3E34 /* image */ = {
+			isa = PBXGroup;
+			children = (
+				1169890B2495DB89003C3E34 /* selector.png */,
+				1169890D249604F3003C3E34 /* color_bar.png */,
+				116989052494BEC6003C3E34 /* back.png */,
+				1169890F24965962003C3E34 /* banana_logo.png */,
+				116988EC2494AB3D003C3E34 /* join.png */,
+				116988E62494AB3C003C3E34 /* master login.png */,
+				116988E72494AB3C003C3E34 /* logo.png */,
+				116988E82494AB3C003C3E34 /* pen1.png */,
+				116988E92494AB3C003C3E34 /* pen2.png */,
+				116988E42494AB3C003C3E34 /* pen3.png */,
+				116988ED2494AB3D003C3E34 /* undo.png */,
+				116988EA2494AB3C003C3E34 /* redo.png */,
+				116988EB2494AB3D003C3E34 /* shape.png */,
+				116988E32494AB3C003C3E34 /* text.png */,
+				116988E52494AB3C003C3E34 /* eraser.png */,
+				116988EE2494AB3D003C3E34 /* warping.png */,
+			);
+			path = image;
+			sourceTree = "<group>";
+		};
+		116988FB2494B2B7003C3E34 /* MQTT */ = {
+			isa = PBXGroup;
+			children = (
+				113E8EDF247F912400F33359 /* MQTTClient.swift */,
+				8450CC54248E1A55003286A4 /* MqttMessageFormat.swift */,
+				8450CC51248E1A49003286A4 /* JoinMessage.swift */,
+				8450CC5D248E2109003286A4 /* NotiMessage.swift */,
+				8450CC59248E1BA8003286A4 /* ExitMessage.swift */,
+				8450CC5B248E1C55003286A4 /* DeleteMessage.swift */,
+				8450CC55248E1A55003286A4 /* JSONParser.swift */,
+			);
+			path = MQTT;
+			sourceTree = "<group>";
+		};
+		116988FC2494B2BF003C3E34 /* Drawing */ = {
+			isa = PBXGroup;
+			children = (
+				953A67C22490EDB9008AC2BA /* ComponentType.swift */,
+				953A67C42490EDB9008AC2BA /* DrawingComponent.swift */,
+				953A67BE2490EDB8008AC2BA /* DrawingComponentAdapter.swift */,
+				953A67BC2490EDB8008AC2BA /* DrawingEditor.swift */,
+				953A67C02490EDB9008AC2BA /* DrawingView.swift */,
+				953A67C32490EDB9008AC2BA /* Mode.swift */,
+				953A67B82490EDB8008AC2BA /* Point.swift */,
+				953A67BF2490EDB8008AC2BA /* Rect.swift */,
+				953A67BA2490EDB8008AC2BA /* Stroke.swift */,
+				953A67B72490EDB8008AC2BA /* Text.swift */,
+				953A67C12490EDB9008AC2BA /* TextAttribute.swift */,
+				953A67B92490EDB8008AC2BA /* TextMode.swift */,
+				953A67BB2490EDB8008AC2BA /* TextEditingView.swift */,
+				952F4EB124910C4E00B665F4 /* DrawingItem.swift */,
+			);
+			path = Drawing;
+			sourceTree = "<group>";
+		};
 		457A817C1883B4582D704CBB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -130,38 +222,21 @@
 		CEDE686E24765A780057E9D2 /* DrawingTogether */ = {
 			isa = PBXGroup;
 			children = (
-				953A67C22490EDB9008AC2BA /* ComponentType.swift */,
-				953A67C42490EDB9008AC2BA /* DrawingComponent.swift */,
-				953A67BE2490EDB8008AC2BA /* DrawingComponentAdapter.swift */,
-				953A67BC2490EDB8008AC2BA /* DrawingEditor.swift */,
-				953A67C02490EDB9008AC2BA /* DrawingView.swift */,
-				953A67C32490EDB9008AC2BA /* Mode.swift */,
-				953A67B82490EDB8008AC2BA /* Point.swift */,
-				953A67BF2490EDB8008AC2BA /* Rect.swift */,
-				953A67BA2490EDB8008AC2BA /* Stroke.swift */,
-				953A67B72490EDB8008AC2BA /* Text.swift */,
-				953A67C12490EDB9008AC2BA /* TextAttribute.swift */,
-				953A67BB2490EDB8008AC2BA /* TextEditingView.swift */,
-				953A67B92490EDB8008AC2BA /* TextMode.swift */,
+				116988E22494AB21003C3E34 /* image */,
+				116988FC2494B2BF003C3E34 /* Drawing */,
+				116988FB2494B2B7003C3E34 /* MQTT */,
 				CEDE686F24765A780057E9D2 /* AppDelegate.swift */,
 				CEDE687124765A780057E9D2 /* SceneDelegate.swift */,
 				CEDE687324765A780057E9D2 /* MainViewController.swift */,
 				111D1577247B88BA00095A31 /* DrawingViewController.swift */,
-				113E8EDF247F912400F33359 /* MQTTClient.swift */,
-				8450CC51248E1A49003286A4 /* JoinMessage.swift */,
-				8450CC55248E1A55003286A4 /* JSONParser.swift */,
-				8450CC54248E1A55003286A4 /* MqttMessageFormat.swift */,
+				116989072494C19B003C3E34 /* UserViewController.swift */,
+				8450CC472487EC22003286A4 /* AccessDatabaseForLogin.swift */,
+				953A67B52490E8A7008AC2BA /* User.swift */,
 				CEDE687524765A780057E9D2 /* Main.storyboard */,
 				CEDE687824765A7C0057E9D2 /* Assets.xcassets */,
 				CEDE687A24765A7C0057E9D2 /* LaunchScreen.storyboard */,
 				CEDE687D24765A7C0057E9D2 /* Info.plist */,
 				8450CC4324879561003286A4 /* GoogleService-Info.plist */,
-				8450CC472487EC22003286A4 /* AccessDatabaseForLogin.swift */,
-				8450CC59248E1BA8003286A4 /* ExitMessage.swift */,
-				8450CC5B248E1C55003286A4 /* DeleteMessage.swift */,
-				8450CC5D248E2109003286A4 /* NotiMessage.swift */,
-				953A67B52490E8A7008AC2BA /* User.swift */,
-				952F4EB124910C4E00B665F4 /* DrawingItem.swift */,
 			);
 			path = DrawingTogether;
 			sourceTree = "<group>";
@@ -226,10 +301,26 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				116988F22494AB3D003C3E34 /* master login.png in Resources */,
+				116988F42494AB3D003C3E34 /* pen1.png in Resources */,
+				116989062494BEC6003C3E34 /* back.png in Resources */,
+				1169891024965962003C3E34 /* banana_logo.png in Resources */,
 				CEDE687C24765A7C0057E9D2 /* LaunchScreen.storyboard in Resources */,
+				116988F52494AB3D003C3E34 /* pen2.png in Resources */,
+				116988F72494AB3D003C3E34 /* shape.png in Resources */,
+				1169890E249604F3003C3E34 /* color_bar.png in Resources */,
+				116988F32494AB3D003C3E34 /* logo.png in Resources */,
+				116988FA2494AB3D003C3E34 /* warping.png in Resources */,
+				116988F62494AB3D003C3E34 /* redo.png in Resources */,
+				116988F12494AB3D003C3E34 /* eraser.png in Resources */,
+				1169890C2495DB89003C3E34 /* selector.png in Resources */,
+				116988EF2494AB3D003C3E34 /* text.png in Resources */,
 				8450CC4424879561003286A4 /* GoogleService-Info.plist in Resources */,
 				CEDE687924765A7C0057E9D2 /* Assets.xcassets in Resources */,
+				116988F92494AB3D003C3E34 /* undo.png in Resources */,
 				CEDE687724765A780057E9D2 /* Main.storyboard in Resources */,
+				116988F02494AB3D003C3E34 /* pen3.png in Resources */,
+				116988F82494AB3D003C3E34 /* join.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,6 +394,7 @@
 				CEDE687024765A780057E9D2 /* AppDelegate.swift in Sources */,
 				8450CC5E248E2109003286A4 /* NotiMessage.swift in Sources */,
 				953A67C52490EDB9008AC2BA /* Text.swift in Sources */,
+				116989082494C19B003C3E34 /* UserViewController.swift in Sources */,
 				953A67C62490EDB9008AC2BA /* Point.swift in Sources */,
 				8450CC5A248E1BA8003286A4 /* ExitMessage.swift in Sources */,
 				953A67D02490EDB9008AC2BA /* ComponentType.swift in Sources */,

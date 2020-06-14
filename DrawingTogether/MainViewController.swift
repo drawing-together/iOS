@@ -11,8 +11,8 @@ import SVProgressHUD
 
 class MainViewController: UIViewController {
 
-    @IBOutlet weak var ipTextField: UITextField!
-    @IBOutlet weak var portTextField: UITextField!
+//    @IBOutlet weak var ipTextField: UITextField!
+//    @IBOutlet weak var portTextField: UITextField!
     @IBOutlet weak var topicTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var nameTextField: UITextField!
@@ -26,9 +26,15 @@ class MainViewController: UIViewController {
         view.addGestureRecognizer(tapGseture)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        
+        navigationController?.isNavigationBarHidden = true // navigation bar 숨기기
+    }
+    
     @objc func dismissKeybord(tapGesture: UITapGestureRecognizer) {
-        ipTextField.resignFirstResponder()
-        portTextField.resignFirstResponder()
+//        ipTextField.resignFirstResponder()
+//        portTextField.resignFirstResponder()
         topicTextField.resignFirstResponder()
         passwordTextField.resignFirstResponder()
         nameTextField.resignFirstResponder()
@@ -47,6 +53,10 @@ class MainViewController: UIViewController {
     // 마스터 로그인 버튼
     @IBAction func onMasterLoginBtnClick(_ sender: UIButton) {
         if isFilled() {
+            let offset = UIOffset(horizontal: view.frame.width/2, vertical: view.frame.height/2)
+            SVProgressHUD.setOffsetFromCenter(offset)
+            SVProgressHUD.show()
+            
             let accessDatabase = AccessDatabase()
             accessDatabase.connect()
             var isExistTopic = false
@@ -97,8 +107,8 @@ class MainViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // DrawingViewController의 ip, port, topic, name 값 세팅
         let drawingViewController = segue.destination as! DrawingViewController
-        drawingViewController.ip = ipTextField.text!
-        drawingViewController.port = portTextField.text!
+//        drawingViewController.ip = ipTextField.text!
+//        drawingViewController.port = portTextField.text!
         drawingViewController.topic = topicTextField.text!
         drawingViewController.name = nameTextField.text!
         drawingViewController.masterName = self.masterName
