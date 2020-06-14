@@ -86,6 +86,8 @@ class MQTTClient: NSObject {
                 self.drawingVC.showAlert(title: "MQTT Connection Failed", message: result, selectable: false)
             }
         }
+        
+        de.myUsername = name
     }
 
     public func connect(_ ip: String, _ port: String, _ handler: @escaping(String) -> Void) {
