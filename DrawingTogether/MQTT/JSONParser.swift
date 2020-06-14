@@ -7,10 +7,12 @@
 //
 
 import Foundation
+import CoreGraphics
+import UIKit
 
 class JSONParser {
     static let parser = JSONParser()
-    init() {}
+    private init() {}
     static let decoder = JSONDecoder()
     static let encoder = JSONEncoder()
     
@@ -65,5 +67,27 @@ class JSONParser {
         
         return dcs
     }
+    
+    func getDrawingComponentAdapters(components: [DrawingComponent]) -> [DrawingComponentAdapter] {
+        var adapters: [DrawingComponentAdapter] = []
+        
+        for idx in 0..<components.count {
+            let adapter = DrawingComponentAdapter()
+            adapter.CLASSNAME = String(describing: components[idx])
+            adapter.OBJECT = components[idx]
+            
+            adapters.append(adapter)
+        }
+        
+        return adapters
+    }
+    
+    func getDrawingComponentAdapter(component: DrawingComponent) -> DrawingComponentAdapter {
+        let adapter = DrawingComponentAdapter()
+        adapter.CLASSNAME = String(describing: component)
+        adapter.OBJECT = component
+        return adapter
+    }
+    
     
 }

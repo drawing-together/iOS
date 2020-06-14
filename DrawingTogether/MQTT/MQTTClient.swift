@@ -67,10 +67,10 @@ class MQTTClient: NSObject {
         self.drawingVC = drawingVC
         
         if !self.master {
-            let user = User(name: masterName, count: 0, action: -1, isInitialized: false)
+            let user = User(name: masterName, count: 0, action: MotionEvent.ACTION_UP.rawValue, isInitialized: false)
             self.userList.append(user)
         }
-        let user = User(name: myName, count: 0, action: -1, isInitialized: false)
+        let user = User(name: myName, count: 0, action: MotionEvent.ACTION_UP.rawValue, isInitialized: false)
         self.userList.append(user)
         self.drawingVC.setUserNum(userNum: userList.count)
         drawingVC.userListStr = usernameList()
@@ -80,8 +80,7 @@ class MQTTClient: NSObject {
                 self.subscribeAllTopics()
                 let joinMessage = JoinMessage(name: self.myName)
                 let messageFormat = MqttMessageFormat(joinMessage: joinMessage)
-                let jsonParser = JSONParser()
-                self.publish(topic: self.topic_join, message: jsonParser.jsonWrite(object: messageFormat)!)
+                self.publish(topic: self.topic_join, message: self.parser.jsonWrite(object: messageFormat)!)
             }
             else {
                 self.drawingVC.showAlert(title: "MQTT Connection Failed", message: result, selectable: false)
@@ -159,13 +158,11 @@ class MQTTClient: NSObject {
         if master {
             let deleteMessage = DeleteMessage(name: self.myName)
             let messageFormat = MqttMessageFormat(deleteMessage: deleteMessage)
-            let jsonParser = JSONParser()
-            publish(topic: self.topic_delete, message: jsonParser.jsonWrite(object: messageFormat)!)
+            publish(topic: self.topic_delete, message: self.parser.jsonWrite(object: messageFormat)!)
         } else {
             let exitMessage = ExitMessage(name: self.myName)
             let messageFormat = MqttMessageFormat(exitMessage: exitMessage)
-            let jsonParser = JSONParser()
-            publish(topic: self.topic_exit, message: jsonParser.jsonWrite(object: messageFormat)!)
+            publish(topic: self.topic_exit, message: self.parser.jsonWrite(object: messageFormat)!)
         }
         userList.removeAll()
         
@@ -201,6 +198,35 @@ class MQTTClient: NSObject {
         }
         return false
     }
+    
+    public func updateUsersAction(username: String, action: Int) {
+        for user in userList {
+            if user.name == username {
+                user.action = action
+                if action == MotionEvent.ACTION_UP.rawValue {
+                    print("\(username) UP")
+                }
+            }
+        }
+    }
+    
+    public func isUsersActionUp(username: String) -> Bool {
+        for user in userList {
+            if user.name == nil || user.action == nil  { return false }
+            
+            if user.name == username && user.action != MotionEvent.ACTION_UP.rawValue { return false }
+        }
+        
+        var str = ""
+        for user in userList {
+            if user.name != username {
+                str += "[\(user.name!), \(MotionEvent.actionToString(action: user.action!))] "
+            }
+        }
+        print("users action = \(str)")
+        
+        return true;
+    }
 }
 
 extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
@@ -208,7 +234,8 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
     func newMessage(_ session: MQTTSession!, data: Data!, onTopic topic: String!, qos: MQTTQosLevel, retained: Bool, mid: UInt32) {
         let message = String(data: data, encoding: .utf8)!
         print("Message \(message)")
-        //let jsonParser = JSONParser()
+        
+        if parser.jsonReader(msg: message) == nil { return }
         let mqttMessageFormat = parser.jsonReader(msg: message)!
         
         
@@ -219,8 +246,31 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                 // intercept
                 
                 if let to = joinMessage?.to, to == myName {
+                    
+                    // 드로잉에 필요한 필요한 배열들 세팅
                     de.drawingComponents = parser.getDrawingComponents(adapters: mqttMessageFormat.drawingComponents!)
                     print("mid \(de.drawingComponents.count)")
+                    de.history = mqttMessageFormat.history!
+                    de.undoArray = mqttMessageFormat.undoArray!
+                    de.removedComponentId = mqttMessageFormat.removedComponentId!
+                    
+                    // 텍스트 세팅
+                    /*de.setTexts(mqttMessageFormat.getTexts());
+                     if (mqttMessageFormat.getBitmapByteArray() != null) {
+                     de.byteArrayToBitmap(mqttMessageFormat.getBitmapByteArray());
+                     }*/
+                    
+                    // 아이디 세팅
+                    de.maxComponentId = mqttMessageFormat.maxComponentId!
+                    // de.setTextId(mqttMessageFormat.getMaxTextId()); // fixme nayeon - 텍스트 아이디는 "사용자이름-textIdCount" 이므로 textIdCount 가 같아도 고유
+                    
+                    // 배경 이미지 세팅
+                    /*if (mqttMessageFormat.getBitmapByteArray() != null) {
+                     de.setBackgroundImage(de.byteArrayToBitmap(mqttMessageFormat.getBitmapByteArray()));
+                     }*/
+                    
+                    publish(topic: topic_mid, message: parser.jsonWrite(object: MqttMessageFormat(username: myName, mode: Mode.MID))!)
+                    
                 }
             }
             else if let joinName = joinMessage?.name, myName != joinName {
@@ -232,12 +282,45 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                     
                     let notiMessage = NotiMessage(name: myName)
                     let messageFormat = MqttMessageFormat(notiMessage: notiMessage)
-                    let jsonParser = JSONParser()
-                    publish(topic: topic_noti, message: jsonParser.jsonWrite(object: messageFormat)!)
+                    publish(topic: topic_noti, message: parser.jsonWrite(object: messageFormat)!)
+                    
+                    de.isMidEntered = true
+                    
+                    if de.currentMode == Mode.DRAW {
+                        de.isIntercept = true
+                    }
+                    
+                    drawingVC.showToast(message: "[ \(joinName) ] 님이 접속하셨습니다")
+                    
                 }
                 if master {
-                    // all action up
-                    // republish
+                    
+                    if isUsersActionUp(username: joinName) /*&& isTextInUse()*/ { // fixme nayeon
+                        let joinMsg = JoinMessage(master: userList[0].name!, to: joinName, userList: userList)
+                        
+                        var messageFormat: MqttMessageFormat?
+                        if de.backgroundImage == nil {
+                            messageFormat = MqttMessageFormat(joinMessage: joinMsg, drawingComponents: parser.getDrawingComponentAdapters(components: de.drawingComponents), texts: de.texts, history: de.history, undoArray: de.undoArray, removedComponentId: de.removedComponentId, maxComponentId: de.maxComponentId, maxTextId: de.maxTextId);
+                            print("login 2")
+                        } /*else {
+                         messageFormat = MqttMessageFormat(joinMessage: joinMsg, drawingComponents: de.drawingComponents, texts: de.texts, history: de.history, undoArray: de.undoArray, removedComponentId: de.removedComponentId, maxComponentId: de.maxComponentId, maxTextId: de.maxTextId, bitmapByteArray: de.bitmapToByteArray(de.backgroundImage));
+                         print("login 3")
+                         }*/
+                        
+                        let json = parser.jsonWrite(object: messageFormat!);
+                        //print("login json return complete: \(json!)")
+                        publish(topic: topic_join, message: json!);
+                        print("login data publish complete -> \(joinName)")
+                        
+                        drawingVC.showToast(message: "[ \(joinName) ] 님에게 데이터 전송을 완료했습니다")
+                        print("\(joinName) join 후 : \(userList)");
+                        
+                    } else {
+                        // republish
+                        let messageFormat = MqttMessageFormat(joinMessage: JoinMessage(name: joinName))
+                        publish(topic: topic_join, message: parser.jsonWrite(object: messageFormat)!);
+                        print("master republish name");
+                    }
                 }
             }
         }
@@ -294,20 +377,34 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         if (topic == topic_data) {
             print("TOPIC_DATA : \(message)")
             
-            let dc = mqttMessageFormat.component?.getComponent() // componentAdapter.getComponent()
-
-            if dc is Stroke {
-                print("stroke parsing ok")
-            }
-
-            if dc is Rect {
-                print("rect parsing ok")
+            //let dc = mqttMessageFormat.component?.getComponent() // componentAdapter.getComponent()
+            /*if dc is Stroke {
+             print("stroke parsing ok")
+             }
+             
+             if dc is Rect {
+             print("rect parsing ok")
+             }*/
+            
+            switch mqttMessageFormat.mode {
+            case .DRAW:
+                self.draw(message: mqttMessageFormat)
+                break
+            case .ERASE:
+                self.erase(message: mqttMessageFormat)
+                break
+            case .none:
+                break
+            case .some(_):
+                break
             }
             
         }
         
         if (topic == topic_mid) {
             print("TOPIC_MID : \(message)")
+            self.mid(message: mqttMessageFormat)
+            
         }
         
         if (topic == topic_audio) {
@@ -327,4 +424,129 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             print("TOPIC_ALIVE : \(message)")
         }
     }
+    
+    func draw(message: MqttMessageFormat) {
+        var dComponent: DrawingComponent?
+        let username = message.username
+        let action = message.action
+        //let point = message.point //나중에 down, up에서 사용
+        let myCanvasWidth = self.de.myCanvasWidth
+        let myCanvasHeight = self.de.myCanvasHeight
+        
+        DispatchQueue.global(qos: .background).async {
+            print("This is run on the background queue")
+            if message.component?.getComponent() == nil {
+                if self.de.getCurrentComponent(usersComponentId: message.usersComponentId!) == nil { return }
+                
+                dComponent = self.de.getCurrentComponent(usersComponentId: message.usersComponentId!)
+            } else {
+                dComponent = message.component?.getComponent()
+            }
+            
+            DispatchQueue.main.async {
+                print("This is run on the main queue, after the previous code in outer block")
+                
+                switch action {
+                case MotionEvent.ACTION_DOWN.rawValue:
+                    
+                    dComponent!.clearPoints();
+                    dComponent!.id = self.de.componentIdCounter()
+                    
+                    self.de.addCurrentComponents(component: dComponent!)
+                    self.de.printCurrentComponents(status: "down")
+                    
+                    self.updateUsersAction(username: username!, action: action!)
+                    break
+                    
+                case MotionEvent.ACTION_MOVE.rawValue:
+                    if self.de.myUsername == username {
+                        for point in message.movePoints! {
+                            self.de.drawingView!.addPoint(component: dComponent!, point: point)
+                        }
+                    } else {
+                        dComponent!.calculateRatio(myCanvasWidth: myCanvasWidth!, myCanvasHeight: myCanvasHeight!)
+                        
+                        //print("points[] = \(message.movePoints!)")
+                        for point in message.movePoints! {
+                            self.de.drawingView!.addPointAndDraw(component: dComponent!, point: point)
+                        }
+                    }
+                    self.updateUsersAction(username: username!, action: action!)
+                    break
+                    
+                case MotionEvent.ACTION_UP.rawValue:
+                    if self.de.myUsername == username {
+                        self.de.drawingView!.doInDrawActionUp(component: dComponent!, canvasWidth: myCanvasWidth!, canvasHeight: myCanvasHeight!)
+                        if(self.de.isIntercept!) {
+                            self.de.drawingView!.isIntercept = true
+                            print("drawingview intercept true")
+                        }
+                    } else {
+                        print("up \((dComponent!.username)!), \((dComponent!.id)!)")
+                        // de.drawingView.redrawShape(dComponent);
+                        self.de.drawingView!.doInDrawActionUp(component: dComponent!, canvasWidth: myCanvasWidth!, canvasHeight: myCanvasHeight!);
+                    }
+                    self.updateUsersAction(username: username!, action: action!);
+                    break
+                    
+                case .none: break
+                case .some(_): break
+                    
+                }
+                
+                self.de.drawingView!.setNeedsDisplay()
+                
+                //client.updateUsersAction(username, action);
+                
+                //if de.myUsername == username { return }
+                
+            }
+            
+        }
+    }
+    
+    func erase(message: MqttMessageFormat) {
+        DispatchQueue.global(qos: .background).async {
+            if self.de.myUsername == message.username { return }
+            
+            DispatchQueue.main.async {
+                print("MESSAGE ARRIVED message: username=\(String(describing: message.username)), mode=\(String(describing: message.mode)), id=\(message.componentIds!)")
+                let erasedComponentIds = message.componentIds!
+                EraserTask(erasedComponentIds: erasedComponentIds).execute()
+               
+                self.de.clearUndoArray()
+                
+                self.de.drawingView!.setNeedsDisplay()
+            }
+        }
+    }
+    
+    func mid(message: MqttMessageFormat) {
+        DispatchQueue.global(qos: .background).async {
+            //if self.de.backgroundImage == nil { return }
+            
+            DispatchQueue.main.async {
+                //WarpingControlView imageView = new WarpingControlView(client.getDrawingFragment().getContext());
+                //imageView.setLayoutParams(new LinearLayout.LayoutParams(client.getDrawingFragment().getSize().x, ViewGroup.LayoutParams.MATCH_PARENT));
+                //imageView.setImage(de.getBackgroundImage());
+
+                //client.getBinding().backgroundView.addView(imageView);
+                
+                if self.de.history.count > 0 {
+                    //drawingCV.undoBtn.setEnabled(true)
+                }
+                if self.de.undoArray.count > 0 {
+                    //drawingCV.redoBtn.setEnabled(true)
+                }
+
+                self.de.drawAllDrawingComponentsForMid()
+                //de.setLastDrawingBitmap(de.getDrawingBitmap().copy(de.getDrawingBitmap().getConfig(), true))
+                //de.addAllTextViewToFrameLayoutForMid()
+                self.de.drawingView!.setNeedsDisplay()
+                
+            }
+            
+        }
+    }
+    
 }

@@ -8,12 +8,13 @@
 
 import Foundation
 
-class Rect: DrawingComponent, DrawingComponentProtocol {
-    func draw() {
+class Rect: DrawingComponent {
+    
+    override func draw(drawingView: DrawingView) {
         
     }
     
-    func drawComponent() {
+    override func drawComponent(drawingView: DrawingView) {
         
     }
     

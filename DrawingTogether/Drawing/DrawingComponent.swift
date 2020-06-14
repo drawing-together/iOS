@@ -8,43 +8,44 @@
 
 import Foundation
 import CoreGraphics
+import UIKit
 
 
-
-class DrawingComponent: Codable{
+class DrawingComponent: Codable, DrawingComponentProtocol {
     
     var de: String? // JSON 형식에 이 변수가 왜 들어가있는지? ( 'RECT' Parsing )
     
-    var points: [Point] = []
+    var points = [Point]()
     var id: Int?
     var username: String?
-    var userComponentId: String?
+    var usersComponentId: String?
     var type: ComponentType?
     var strokeColor: Int? //
     var fillColor: Int?
     var strokeAlpha: Int?
     var fillAlpha: Int?
-    var strokeWidth: Int?
+    var strokeWidth: CGFloat?
     var preSize: Int = 0
-    var drawnCanvasWidth: Float?
-    var drawnCanvasHeight: Float?
-    var xRatio: Float = 1.0
-    var yRatio: Float = 1.0
+    var drawnCanvasWidth: CGFloat?
+    var drawnCanvasHeight: CGFloat?
+    var xRatio: CGFloat = 1.0
+    var yRatio: CGFloat = 1.0
     var beginPoint: Point?
     var endPoint: Point?
     var datumPoint: Point?
     var width: Int?
     var height: Int?
     var isErased: Bool = false
+    var isSelected: Bool = false
     
     
-//    init() {
-//        self.points = []
-//        self.preSize = 0
-//        self.xRatio = 1.0
-//        self.yRatio = 1.0
-//        self.isErased = false
-//    }
+    //    init() {
+    //        self.points = []
+    //        self.preSize = 0
+    //        self.xRatio = 1.0
+    //        self.yRatio = 1.0
+    //        self.isErased = false
+    //    }
     
     func addPoint(_ point: Point) {
         self.points.append(point)
@@ -57,18 +58,31 @@ class DrawingComponent: Codable{
     
     func getPointSize() -> Int { return self.points.count }
     
-    func calcRatio(myCanvasWidth: Float, myCanvasHeight: Float) {
-            self.xRatio = myCanvasWidth / drawnCanvasWidth!
-            self.yRatio = myCanvasHeight / drawnCanvasHeight!
+    func calculateRatio(myCanvasWidth: CGFloat, myCanvasHeight: CGFloat) {
+        self.xRatio = myCanvasWidth / drawnCanvasWidth!
+        self.yRatio = myCanvasHeight / drawnCanvasHeight!
     }
-
+    
+    
+    func draw(drawingView: DrawingView) {
+        
+    }
+    
+    func drawComponent(drawingView: DrawingView) {
+        
+    }
+    
+    func getUIColorFromAndroidColorInt(intColor: Int) -> UIColor {
+        let red = (CGFloat) ( (intColor>>16)&0xFF )
+        let green = (CGFloat) ( (intColor>>8)&0xFF )
+        let blue = (CGFloat) ( (intColor)&0xFF )
+        
+        return UIColor(red: red/255, green: green/255, blue: blue/255, alpha: 1)
+    }
+    
 }
 
-protocol DrawingComponentProtocol {
-    func draw() -> Void
-    func drawComponent() -> Void
-    //func toString() -> String
-}
+
 
 
 
@@ -107,4 +121,13 @@ protocol DrawingComponentProtocol {
 //    func drawComponent() -> Void
 //
 //    // func toString() -> String
+//}
+
+
+
+
+//protocol DrawingComponentProtocol {
+//    func draw() -> Void
+//    func drawComponent() -> Void
+//    //func toString() -> String
 //}

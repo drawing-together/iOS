@@ -1,0 +1,76 @@
+//
+//  Eraser.swift
+//  DrawingTogether
+//
+//  Created by MJ B on 2020/06/14.
+//  Copyright © 2020 hansung. All rights reserved.
+//
+
+import Foundation
+
+class Eraser {
+    let de = DrawingEditor.INSTANCE
+    //let client = MQTTClient.client
+    //private SendMqttMessage sendMqttMessage = SendMqttMessage.getInstance();
+    let parser = JSONParser.parser
+    let squareScope = 20
+    var erasedComponentIds: [Int]?
+    
+    func findComponentsToErase(eraserPoint: Point) {
+        erasedComponentIds = [Int]()
+        erasedComponentIds!.append(-1)
+
+        let x = eraserPoint.x
+        let y = eraserPoint.y
+
+        let dbArray = de.drawingBoardArray
+
+        if(y-squareScope<0 || x-squareScope<0 || y+squareScope>Int(de.myCanvasHeight!) || x+squareScope>Int(de.myCanvasWidth!)) {
+            print("eraser exit")
+            return
+        }
+
+        for i in (y-squareScope)..<(y+squareScope) {
+            for j in (x-squareScope)..<(x+squareScope) {
+                let shapeIds = de.findEnclosingDrawingComponents(point: eraserPoint)
+                if shapeIds.count != 1 && !de.isContainsRemovedComponentIds(ids: shapeIds) {
+                    erasedComponentIds?.append(contentsOf: shapeIds)
+                    de.addRemovedComponentIds(ids: shapeIds)
+                    print("erased shape ids = \(erasedComponentIds!)")
+                    //erase(erasedComponentIds)
+                }
+
+                if(dbArray![i][j].count != 1 && !de.isContainsRemovedComponentIds(ids: dbArray![i][j])) { //-1만 가지고 있으면 size() == 1
+                    //erasedComponentIds = (dbArray[i][j]);
+                    erasedComponentIds?.append(contentsOf: de.getNotRemovedComponentIds(ids: dbArray![i][j]))
+                    de.addRemovedComponentIds(ids: de.getNotRemovedComponentIds(ids: dbArray![i][j]))
+                    print("erased stroke ids = \(erasedComponentIds!)")
+
+                    /*if(de.findEnclosingDrawingComponents(eraserPoint).size() != 1) {
+                        erasedComponentIds.addAll(de.findEnclosingDrawingComponents(eraserPoint));
+                    }*/
+                }
+
+            }
+        }
+
+        if erasedComponentIds!.count != 1 {
+            erasedComponentIds!.sort()
+            erase(erasedComponentIds: erasedComponentIds!)
+        }
+    }
+
+    func erase(erasedComponentIds: [Int]) {
+        print("erasedIds = \(erasedComponentIds)")
+
+        //publish
+        let messageFormat = MqttMessageFormat(username: de.myUsername!, mode: Mode.ERASE, componentIds: NSArray(array: erasedComponentIds, copyItems: true) as! [Int])
+        //sendMqttMessage.putMqttMessage(messageFormat);
+        //client.publish(client.getTopic_data(), parser.jsonWrite(messageFormat));
+
+        //de.eraseDrawingComponents(erasedComponentIds);
+        EraserTask(erasedComponentIds: erasedComponentIds).execute()
+        self.erasedComponentIds!.removeAll()
+        de.clearUndoArray();
+    }
+}

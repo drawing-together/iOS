@@ -18,9 +18,12 @@ class MqttMessageFormat: Codable {
     var action: Int?
     var usersComponentId: String?
     var point: Point?
+    var movePoints: [Point]?
 
     var username: String?
     var componentIds: [Int]?
+    var isSelected: Bool?
+    var moveX, moveY: Int?
 
     var bitmapByteArray: [UInt8]?
     
@@ -48,6 +51,7 @@ class MqttMessageFormat: Codable {
 
 
     // MARK: DRAWING MESSAGE
+    // DRAW - action down
     init(username: String, usersComponentId: String, mode: Mode, type: ComponentType, component:DrawingComponentAdapter, action: Int) {
         self.username = username
         self.usersComponentId = usersComponentId
@@ -57,6 +61,7 @@ class MqttMessageFormat: Codable {
         self.action = action
     }
     
+    // DRAW - action up
     init(username: String, usersComponentId: String, mode: Mode, type: ComponentType, point: Point, action: Int) {
         self.username = username
         self.usersComponentId = usersComponentId
@@ -66,10 +71,47 @@ class MqttMessageFormat: Codable {
         self.action = action
     }
     
+    // DRAW - move chunk
+    init(username: String, usersComponentId: String, mode: Mode, type: ComponentType, movePoints: [Point], action: Int) {
+        self.username = username
+        self.usersComponentId = usersComponentId
+        self.mode = mode
+        self.type = type
+        self.movePoints = movePoints
+        self.action = action
+    }
+    
+    // ERASE
+    init(username: String, mode: Mode, componentIds: [Int]) {
+        self.username = username
+        self.mode = mode
+        self.componentIds = componentIds
+    }
+    
+    // MODE CHANGE
     init(username: String, mode: Mode) {
         self.username = username
         self.mode = mode
     }
+    
+    // SELECT - select, deselect
+    init(username: String, usersComponentId: String, mode: Mode, isSelected: Bool) {
+        self.username = username
+        self.usersComponentId = usersComponentId
+        self.mode = mode
+        self.isSelected = isSelected
+    }
+    
+    // SELECT - down, move, up
+    init(username: String, usersComponentId: String, mode: Mode, action: Int, moveX: Int, moveY: Int) {
+        self.username = username
+        self.usersComponentId = usersComponentId
+        self.mode = mode
+        self.action = action
+        self.moveX = moveX
+        self.moveY = moveY
+    }
+    
  
     // MARK: IMAGE MESSAGE
     init(username: String, mode: Mode, bitmapByteArray: [UInt8]) {

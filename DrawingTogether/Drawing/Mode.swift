@@ -10,5 +10,7 @@ import Foundation
 
 enum Mode: String, Codable {
     case DRAW
+    case ERASE
     case BACKGROUND_IMAGE
+    case MID
 }
