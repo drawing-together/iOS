@@ -29,7 +29,7 @@ class JSONParser {
     func jsonReader(msg: String) -> MqttMessageFormat? {
         if let data = msg.data(using: .utf8), let mqttMessageFormat = try? JSONParser.decoder.decode(MqttMessageFormat.self, from: data) {
             
-            print("JsonString to MqttMessageFormat")
+            print("success JsonString to MqttMessageFormat")
             return mqttMessageFormat
         }
         
@@ -37,8 +37,33 @@ class JSONParser {
         return nil
     }
     
-//    func createDrawingComponent(dc: DrawingComponent) -> String {
-//
-//    }
+    func createDrawingComponent(dc: DrawingComponent) -> DrawingComponent? {
+        if let data = try? JSONParser.encoder.encode(dc) {
+            print("success DrawingComponent to JsonString")
+            
+            switch dc.type {
+            case .STROKE:
+                return try? JSONParser.decoder.decode(Stroke.self, from: data)
+            case .RECT:
+                return try? JSONParser.decoder.decode(Rect.self, from: data)
+            default:
+                print("?")
+            }
+            
+        }
+        
+        return nil
+    }
+    
+    func getDrawingComponents(adapters: [DrawingComponentAdapter]) -> [DrawingComponent] {
+        
+        var dcs: [DrawingComponent] = []
+        
+        for idx in 0..<adapters.count {
+            dcs.append(adapters[idx].getComponent()!)
+        }
+        
+        return dcs
+    }
     
 }

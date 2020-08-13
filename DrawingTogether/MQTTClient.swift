@@ -38,6 +38,10 @@ class MQTTClient: NSObject {
     private var userList = [User]()
     private var drawingCV: DrawingViewController!
     
+    // DRAWING
+    private var parser: JSONParser = JSONParser.parser
+    private var de: DrawingEditor = DrawingEditor.INSTANCE
+
     // 생성자
     private override init() {
         super.init()
@@ -193,17 +197,20 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
     // callback
     func newMessage(_ session: MQTTSession!, data: Data!, onTopic topic: String!, qos: MQTTQosLevel, retained: Bool, mid: UInt32) {
         let message = String(data: data, encoding: .utf8)!
-        let jsonParser = JSONParser()
-        let mqttmessageFormat = jsonParser.jsonReader(msg: message)
+        print("Message \(message)")
+        //let jsonParser = JSONParser()
+        let mqttMessageFormat = parser.jsonReader(msg: message)!
+        
         
         if (topic == topic_join) {
             print("TOPIC_JOIN : \(message)")
-            let joinMessage = mqttmessageFormat?.joinMessage
+            let joinMessage = mqttMessageFormat.joinMessage
             if joinMessage?.master != nil {
                 // intercept
                 
                 if let to = joinMessage?.to, to == myName {
-                    // drawing setting
+                    de.drawingComponents = parser.getDrawingComponents(adapters: mqttMessageFormat.drawingComponents!)
+                    print("mid \(de.drawingComponents.count)")
                 }
             }
             else if let joinName = joinMessage?.name, myName != joinName {
@@ -247,7 +254,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         
         if (topic == topic_noti) {
             print("TOPIC_NOTI : \(message)")
-            let notiMessage = mqttmessageFormat?.notiMessage
+            let notiMessage = mqttMessageFormat.notiMessage
             var notiName: String!
             if let name = notiMessage?.name {
                 notiName = name
@@ -263,7 +270,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         
         if (topic == topic_exit) {
             print("TOPIC_EXIT : \(message)")
-            let exitMessage = mqttmessageFormat?.exitMessage
+            let exitMessage = mqttMessageFormat.exitMessage
             var exitName: String!
             if let name = exitMessage?.name {
                 exitName = name
@@ -281,7 +288,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         
         if (topic == topic_delete) {
             print("TOPIC_DELETE : \(message)")
-            let deleteMessage = mqttmessageFormat?.deleteMessage
+            let deleteMessage = mqttMessageFormat.deleteMessage
             var deleteName: String!
             if let name = deleteMessage?.name {
                 deleteName = name
@@ -296,6 +303,18 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         
         if (topic == topic_data) {
             print("TOPIC_DATA : \(message)")
+            
+            let dc = mqttMessageFormat.component?.getComponent() // componentAdapter.getComponent()
+
+
+            if dc is Stroke {
+                print("stroke parsing ok")
+            }
+
+            if dc is Rect {
+                print("rect parsing ok")
+            }
+            
         }
         
         if (topic == topic_mid) {

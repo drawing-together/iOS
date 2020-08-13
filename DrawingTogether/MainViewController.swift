@@ -50,7 +50,7 @@ class MainViewController: UIViewController {
             let accessDatabase = AccessDatabase()
             accessDatabase.connect()
             var isExistTopic = false
-            
+
             accessDatabase.runTransaction(topic: topicTextField.text!, password: passwordTextField.text!, name: nameTextField.text!, masterMode: true) {
                 (masterName: String, existTopic: Bool) in
                 SVProgressHUD.dismiss()
