@@ -84,19 +84,17 @@ PODS:
     - nanopb/encode (= 1.30905.0)
   - nanopb/decode (1.30905.0)
   - nanopb/encode (1.30905.0)
+  - OpenCV (3.4.6)
   - PromisesObjC (1.2.8)
   - SVProgressHUD (2.2.5)
-  - SwiftMQTT (3.0.1)
-  - SwiftyJSON (5.0.0)
 
 DEPENDENCIES:
   - Firebase/Analytics
   - Firebase/Database
   - lottie-ios
   - MQTTClient
+  - OpenCV (~> 3.4)
   - SVProgressHUD
-  - SwiftMQTT
-  - SwiftyJSON
 
 SPEC REPOS:
   trunk:
@@ -116,10 +114,9 @@ SPEC REPOS:
     - lottie-ios
     - MQTTClient
     - nanopb
+    - OpenCV
     - PromisesObjC
     - SVProgressHUD
-    - SwiftMQTT
-    - SwiftyJSON
 
 SPEC CHECKSUMS:
   Firebase: 7cf5f9c67f03cb3b606d1d6535286e1080e57eb6
@@ -138,11 +135,10 @@ SPEC CHECKSUMS:
   lottie-ios: 48fac6be217c76937e36e340e2d09cf7b10b7f5f
   MQTTClient: 0dfa04e789479c2e461786464969895c1fcb0875
   nanopb: c43f40fadfe79e8b8db116583945847910cbabc9
+  OpenCV: 1df7b8ab75900ef4365905b989bf60f5ca4101aa
   PromisesObjC: c119f3cd559f50b7ae681fa59dc1acd19173b7e6
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
-  SwiftMQTT: 983eeb29e8c8173ed953e0238d2f99b79ff3ccd2
-  SwiftyJSON: 36413e04c44ee145039d332b4f4e2d3e8d6c4db7
 
-PODFILE CHECKSUM: 03589f1db30fe433e7b4c3d69ea1187e764f20b0
+PODFILE CHECKSUM: 0393b23d202463aa218b844a26a3f7ca665f1cd4
 
 COCOAPODS: 1.9.1
