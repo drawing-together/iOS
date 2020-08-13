@@ -25,24 +25,24 @@ class MqttMessageFormat: Codable {
     var isSelected: Bool?
     var moveX, moveY: Int?
 
-    var bitmapByteArray: [UInt8]?
+    var bitmapByteArray: [Int8]?
     
-//    var textAttr: TextAttribute?
-//    var textMode: TextMode?
-//
-//    var myTextArrayIndex: Int?
-//
+    var textAttr: TextAttribute?
+    var textMode: TextMode?
+
+    var myTextArrayIndex: Int?
+
     var joinMessage: JoinMessage?
     var notiMessage: NotiMessage?
     var exitMessage: ExitMessage?
     var deleteMessage: DeleteMessage?
-//    var AliveMessage: aliveMessage?
+    var aliveMessage: AliveMessage?
 //
 //    var audioMessage: AudioMessage?
-//    var warpingMessage: WarpingMessage?
+    var warpingMessage: WarpingMessage?
 //
     var drawingComponents: [DrawingComponentAdapter]?
-    var texts: [TextAttribute]?
+    var texts: [TextAdapter]?
     var history: [DrawingItem]?
     var undoArray: [DrawingItem]?
     var removedComponentId: [Int]?
@@ -114,14 +114,14 @@ class MqttMessageFormat: Codable {
     
  
     // MARK: IMAGE MESSAGE
-    init(username: String, mode: Mode, bitmapByteArray: [UInt8]) {
+    init(username: String, mode: Mode, bitmapByteArray: [Int8]) {
         self.username = username
         self.mode = mode
         self.bitmapByteArray = bitmapByteArray
     }
 
  
-/*
+
     // MARK: TEXT MESSAGE
     init(username: String, mode: Mode, type: ComponentType, textAttr: TextAttribute, textMode: TextMode, myTextArrayIndex: Int) {
         self.username = username
@@ -130,9 +130,9 @@ class MqttMessageFormat: Codable {
         self.textMode = textMode
         self.myTextArrayIndex = myTextArrayIndex
     }
-*/
+
     // MARK: MID MESSAGE
-    init(joinMessage: JoinMessage, drawingComponents: [DrawingComponentAdapter], texts: [TextAttribute], history: [DrawingItem], undoArray: [DrawingItem], removedComponentId: [Int], maxComponentId: Int, maxTextId: Int) {
+    init(joinMessage: JoinMessage, drawingComponents: [DrawingComponentAdapter], texts: [TextAdapter], history: [DrawingItem], undoArray: [DrawingItem], removedComponentId: [Int], maxComponentId: Int, maxTextId: Int) {
         self.joinMessage = joinMessage
         self.drawingComponents = drawingComponents
         self.texts = texts
@@ -143,7 +143,7 @@ class MqttMessageFormat: Codable {
         self.maxTextId = maxTextId
     }
     
-    init(joinMessage: JoinMessage, drawingComponents: [DrawingComponentAdapter], texts: [TextAttribute], history: [DrawingItem], undoArray: [DrawingItem], removedComponentId: [Int], maxComponentId: Int, maxTextId: Int, bitmapByteArray: [UInt8]) {
+    init(joinMessage: JoinMessage, drawingComponents: [DrawingComponentAdapter], texts: [TextAdapter], history: [DrawingItem], undoArray: [DrawingItem], removedComponentId: [Int], maxComponentId: Int, maxTextId: Int, bitmapByteArray: [Int8]) {
         self.joinMessage = joinMessage
         self.drawingComponents = drawingComponents
         self.texts = texts
@@ -154,6 +154,15 @@ class MqttMessageFormat: Codable {
         self.maxTextId = maxTextId
         self.bitmapByteArray = bitmapByteArray
     }
+    
+    // MARK: WARP MESSAGE
+       init(username: String, mode: Mode, type: ComponentType, action: Int, warpingMessage: WarpingMessage) {
+           self.username = username
+           self.mode = mode
+           self.action = action
+           self.type = type
+           self.warpingMessage = warpingMessage
+       }
 
     
 /*
@@ -188,14 +197,9 @@ class MqttMessageFormat: Codable {
     init(deleteMessage: DeleteMessage) {
         self.deleteMessage = deleteMessage
     }
-/*
+    
     init(aliveMessage: AliveMessage) {
         self.aliveMessage = aliveMessage
     }
-    
-    init(notiMessage: NotiMessage) {
-        self.notiMessage = notiMessage
-    }
- */
     
 }

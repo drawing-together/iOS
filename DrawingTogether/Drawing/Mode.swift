@@ -13,4 +13,7 @@ enum Mode: String, Codable {
     case ERASE
     case BACKGROUND_IMAGE
     case MID
+    case TEXT
+    case SELECT
+    case WARP
 }

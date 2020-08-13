@@ -6,12 +6,11 @@ target 'DrawingTogether' do
   use_frameworks!
 
   pod 'MQTTClient'
-  pod 'SwiftMQTT'
-  pod 'SwiftyJSON'
   pod 'SVProgressHUD'
   pod 'lottie-ios'
   pod 'Firebase/Analytics'
   pod 'Firebase/Database'
+  pod 'OpenCV', '~> 3.4'
   # Pods for DrawingTogether
 
 end

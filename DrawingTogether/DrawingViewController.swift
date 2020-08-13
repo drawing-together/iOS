@@ -12,14 +12,22 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     
     let de = DrawingEditor.INSTANCE
     let client = MQTTClient.client
+    let parser = JSONParser.parser
     
     @IBOutlet weak var userNumBtn: UIButton!
     
     @IBOutlet weak var backgroundImageView: UIImageView!
     @IBOutlet weak var drawingView: DrawingView!
     
-    @IBOutlet weak var textEditingView: TextEditingView!
-    @IBOutlet weak var editingText: UITextField!
+    @IBOutlet weak var drawingContainer: UIView!
+    @IBOutlet weak var currentColorBtn: UIButton!
+    
+    @IBOutlet weak var textColorChangeBtn: UIButton!
+    @IBOutlet weak var colorChangeBtnView: UIView!
+    
+    var textEditingView: TextEditingView!
+    
+    
     
     var ip: String = "54.180.154.63"
     var port: String = "1883"
@@ -29,6 +37,7 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     var master: Bool!
     
     var userListStr: String!
+    var userVC: UserViewController!
     
     // AUDIO
     var micFlag = false
@@ -40,10 +49,20 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     var imagePicker = UIImagePickerController()
     //
     
+    let src_triangle = UnsafeMutablePointer<Int32>.allocate(capacity: 2)
+    let dst_triangle = UnsafeMutablePointer<Int32>.allocate(capacity: 2)
+    var src: [Int32] = [], dst: [Int32] = []
+    var src2: [Int32] = [], dst2: [Int32] = []
+    var warpImg: UIImage?
+    
     // MARK: LIFE CYCLE
     override func viewDidLoad() {
         super.viewDidLoad()
         print("DrawingViewController : viewDidLoad")
+        
+        parser.drawingVC = self
+        
+        userVC = storyboard?.instantiateViewController(withIdentifier: "UserViewController") as? UserViewController
         
         client.initialize(ip, port, topic, name, master, masterName, self)
         print("DrawingViewController : [topic = \(topic!), my name = \(name!), master = \(master!)]")
@@ -53,7 +72,14 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         navigationController?.isNavigationBarHidden = false
         
         drawingView.isUserInteractionEnabled = true
-        de.initialize(drawingVC: self, drawingView: self.drawingView)
+        de.initialize(drawingVC: self, master: master)
+        
+        // Text Editing View Setup
+        print("drawing container size = \(drawingContainer.frame.width), \(drawingContainer.frame.height)")
+        textEditingView = TextEditingView(frame: CGRect(x: 0, y: 0, width: self.view.frame.width, height: self.view.frame.height)) // call initialize()
+        textEditingView.textView.delegate = self
+        textEditingView.drawingVC = self
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -111,21 +137,22 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         userNumBtn.setTitle("현재인원 : \(userNum)명", for: .normal)
     }
     
-    func convertUIImage2ByteArray(image: UIImage) -> [UInt8] { // UIImage -> Byte Array
+    func convertUIImage2ByteArray(image: UIImage) -> [Int8] { // UIImage -> Byte Array
         // UIImage -> NSData
         let imageData = image.jpegData(compressionQuality: 0.1)!
-        // NSData의 길이 구하기
-        let count = imageData.count / MemoryLayout<UInt8>.size
-        print("IMAGE : byte array size = \(count)")
-        // Byte Array 생성
-        var imageByteArray = [UInt8](repeating: 0, count: count)
-        // NSData -> Byte Array
-        imageData.copyBytes(to: &imageByteArray, count: count)
+        
+//        // NSData의 길이 구하기
+//        let count = imageData.count / MemoryLayout<UInt8>.size
+//        print("IMAGE : byte array size = \(count)")
+//        // Byte Array 생성
+//        var imageByteArray = [UInt8](repeating: 0, count: count)
+//        // NSData -> Byte Array
+//        imageData.copyBytes(to: &imageByteArray, count: count)
 
-        return imageByteArray
+        return imageData.map { Int8(bitPattern: $0) }
     }
     
-    func convertByteArray2UIImage(byteArray: [UInt8]) -> UIImage { // Byte Array -> UIImage
+    func convertByteArray2UIImage(byteArray: [Int8]) -> UIImage { // Byte Array -> UIImage
         // Byte Array의 길이 구하기
         let count = byteArray.count
         // NSData 생성, Byte Array -> NSData
@@ -198,6 +225,26 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
 
         present(alert, animated: true, completion: nil)
     }
+    
+    @IBAction func clickMore(_ sender: UIBarButtonItem) {
+        let alert = UIAlertController()
+        // Save Image
+        let saveImageAction = UIAlertAction(title: "저장하기", style: .default) {
+            action in
+            print("저장하기")
+        }
+        // Plus Person
+        let plusPersonAction = UIAlertAction(title: "친구 추가", style: .default) {
+            action in
+            print("친구 추가")
+        }
+
+        alert.addAction(saveImageAction)
+        alert.addAction(plusPersonAction)
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
+
+        present(alert, animated: true, completion: nil)
+    }
 
     @IBAction func clickUndo(_ sender: UIButton) {
         print("undo")
@@ -211,26 +258,51 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         print("pen")
         print(sender.accessibilityIdentifier!) // 각 버튼의 Accessibility의 identifier 속성을 10, 20, 30으로 설정
         de.strokeWidth = CGFloat(NSString(string: sender.accessibilityIdentifier!).floatValue)
+        
+        de.currentMode = Mode.DRAW
+        de.currentType = ComponentType.STROKE
     }
     
     @IBAction func clickShape(_ sender: UIButton) {
         print("shape")
+        de.currentMode = Mode.DRAW
+        de.currentType = ComponentType.RECT
     }
     
     @IBAction func clickText(_ sender: UIButton) {
         print("text")
+        
+        de.currentMode = .TEXT
+        
+        let text = Text()
+        let textAttr = TextAttribute(id: de.setTextStringId(), username: de.myUsername!, text: "", textSize: 15, textColor: "#000000", textBackgroundColor: nil, textGravity: nil, style: nil, generatedLayoutWidth: Int(drawingContainer.frame.width), generatedLayoutHeight: Int(drawingContainer.frame.height))
+        
+        text.create(textAttribute: textAttr, drawingVC: self)
+        
+        text.changeLabelToTextView()
+        
+        self.view.addSubview(textEditingView)
+        
+        print("\(textEditingView.center.x), \(textEditingView.center.y), \(textEditingView.frame.width), \(textEditingView.frame.height)")
+
     }
     
     @IBAction func clickEraser(_ sender: UIButton) {
         print("eraser")
+        de.currentMode = .ERASE
+    }
+    
+    @IBAction func clickSelector(_ sender: UIButton) {
+        print("selector")
+        de.currentMode = Mode.SELECT
     }
     
     @IBAction func clickWarping(_ sender: UIButton) {
         print("warping")
+        de.currentMode = Mode.WARP
     }
     
     @IBAction func clickUserBtn(_ sender: UIButton) {
-        let userVC = storyboard?.instantiateViewController(withIdentifier: "UserViewController") as! UserViewController
         
         userVC.modalPresentationStyle = .popover
         userVC.preferredContentSize = CGSize(width: 100, height: 150)
@@ -246,6 +318,156 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         
         userVC.userLabel.text! = userListStr
     }
+    
+    @IBAction func clickColor(_ btn: UIButton) {
+        
+        currentColorBtn.backgroundColor = btn.backgroundColor
+        
+        switch de.currentMode {
+        case .DRAW, .ERASE, .SELECT:
+        
+            de.strokeColor = btn.backgroundColor?.toHexString()
+            de.fillColor = btn.backgroundColor?.toHexString()
+            break
+        
+        case .TEXT :
+            if let text = de.currentText {
+                text.textAttribute.textColor = btn.backgroundColor?.toHexString()
+                text.setLabelAttribute()
+            }
+            break
+            
+        case .none:
+            break
+        case .some(_):
+            break
+        }
+    }
+    
+    
+    @IBAction func clickTextColorChange(_ btn: UIButton) {
+        if let text = de.currentText {
+            text.textAttribute.username = nil
+            text.textAttribute.isTextChangedColor = false
+            
+            text.sendMqttMessage(textMode: .FINISH_COLOR_CHANGE)
+            
+            text.setLabelBorder(color: .clear)
+            
+            colorChangeBtnView.isHidden = true
+            
+            de.currentMode = .DRAW
+        }
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        var xList: [Int] = []
+        var yList: [Int] = []
+        src = []
+        dst = []
+        for touch in touches {
+            let startPoint = touch.location(in: self.backgroundImageView)
+            let x = Int32(startPoint.x)
+            let y = Int32(startPoint.y)
+            xList.append(Int(x))
+            yList.append(Int(y))
+            src.append(x)
+            src.append(y)
+            print(src)
+        }
+        if let image = self.backgroundImageView.image {
+            warpImg = image
+        }
+        src_triangle.initialize(from: &src, count: 4)
+        print(src_triangle)
+        let message = MqttMessageFormat(username: de.myUsername!, mode: .WARP, type: de.currentType!, action: 0, warpingMessage: WarpingMessage(action: 0, pointerCount: touches.count/2, x: xList, y: yList))
+        client.publish(topic: client.topic_data, message: parser.jsonWrite(object: message)!)
+        
+//        if let theTouch = touches.first {
+//            let startPoint = theTouch.location(in: self.backgroundImageView)
+//            let x = Int32(startPoint.x)
+//            let y = Int32(startPoint.y)
+//            src = [x, y]
+////            print(src)
+//            if let image = self.backgroundImageView.image {
+//                warpImg = image
+//            }
+//            src_triangle.initialize(from: &src, count: 2)
+//            let message = MqttMessageFormat(username: de.myUsername!, mode: .WARP, type: de.currentType!, action: 0, warpingMessage: WarpingMessage(action: 0, pointerCount: 1, x: [Int(x)], y: [Int(y)]))
+//            client.publish(topic: client.topic_data, message: parser.jsonWrite(object: message)!)
+//        }
+        
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        var xList: [Int] = []
+        var yList: [Int] = []
+        dst = []
+        for touch in touches {
+            let movePoint = touch.location(in: self.backgroundImageView)
+            let x = Int32(movePoint.x)
+            let y = Int32(movePoint.y)
+            xList.append(Int(x))
+            yList.append(Int(y))
+            dst.append(x)
+            dst.append(y)
+            print(dst)
+        }
+        dst_triangle.initialize(from: &dst, count: 4)
+        let message = MqttMessageFormat(username: de.myUsername!, mode: .WARP, type: de.currentType!, action: 0, warpingMessage: WarpingMessage(action: 2, pointerCount: xList.count, x: xList, y: yList))
+       client.publish(topic: client.topic_data, message: parser.jsonWrite(object: message)!)
+        
+//        if let theTouch = touches.first {
+//            let movePoint = theTouch.location(in: self.view)
+//            let x = Int32(movePoint.x)
+//            let y = Int32(movePoint.y)
+//            dst = [x, y]
+//
+////            print(movePoint)
+//            print("=========")
+//            dst_triangle.initialize(from: &dst, count: 2)
+//            let message = MqttMessageFormat(username: de.myUsername!, mode: .WARP, type: de.currentType!, action: 0, warpingMessage: WarpingMessage(action: 2, pointerCount: 1, x: [Int(x)], y: [Int(y)]))
+//            client.publish(topic: client.topic_data, message: parser.jsonWrite(object: message)!)
+//        }
+        let size = CGSize(width:  self.backgroundImageView.frame.width  , height: self.backgroundImageView.frame.height )
+        let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+        if let image = warpImg {
+            self.backgroundImageView.image = OpenCVWrapper.cvWarp(image, w:  Int32(rect.width)  , h: Int32(rect.height), src: self.src_triangle, dst: self.dst_triangle)
+        }
+        self.src = self.dst
+        
+    }
+    
+    func warp(warpData: WarpData) {
+        DispatchQueue.main.async {
+            if warpData.action == 0 {
+                self.src = []
+                self.dst = []
+                for point in warpData.points {
+                    self.src.append(Int32(point.x))
+                    self.src.append(Int32(point.y))
+                }
+                if let image = self.backgroundImageView.image {
+                    self.warpImg = image
+                }
+                self.src_triangle.initialize(from: &self.src, count: 2)
+            }
+            else if warpData.action == 2 {
+                self.dst = []
+                for point in warpData.points {
+                    self.dst.append(Int32(point.x))
+                    self.dst.append(Int32(point.y))
+                }
+                self.dst_triangle.initialize(from: &self.dst, count: 2)
+                let size = CGSize(width:  self.backgroundImageView.frame.width  , height: self.backgroundImageView.frame.height )
+                let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+                if let image = self.warpImg {
+                    self.backgroundImageView.image = OpenCVWrapper.cvWarp(image, w:  Int32(rect.width)  , h: Int32(rect.height), src: self.src_triangle, dst: self.dst_triangle)
+                }
+                self.src = self.dst
+            }
+        }
+    }
 }
 
 extension DrawingViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
@@ -254,13 +476,15 @@ extension DrawingViewController: UIImagePickerControllerDelegate, UINavigationCo
         let image = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
         backgroundImageView.image = image
         
+        de.bitmapByteArray = convertUIImage2ByteArray(image: image)
+        
         //        let imageByte = convertUIImage2ByteArray(image: image
         //        let message = "{\"action\":0,\"bitmapByteArray\":\(imageByte),\"mode\":\"BACKGROUND_IMAGE\",\"myTextArrayIndex\":0,\"username\":\"jiyeon\"}"
-        //        client.publish(topic: "\(topic!)_data", message: message)
+        let message = MqttMessageFormat(username: name!, mode: .BACKGROUND_IMAGE, bitmapByteArray: de.bitmapByteArray!)
+        client.publish(topic: client.topic_data, message: parser.jsonWrite(object: message)!)
         
         dismiss(animated: true, completion: nil)
     }
-    
 }
 
 extension UIViewController {
@@ -282,5 +506,43 @@ extension UIViewController {
         }, completion: {(isCompleted) in
             toastLabel.removeFromSuperview()
         })
+    }
+}
+
+extension UIColor {
+    convenience init(hexString:String) {
+        let hexString: String = hexString.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines).uppercased()
+        let scanner = Scanner(string: hexString)
+        
+        if (hexString.hasPrefix("#")) {
+            scanner.currentIndex = scanner.string.index(after: scanner.currentIndex)
+        }
+        
+        var color:UInt64 = 0
+        scanner.scanHexInt64(&color)
+
+        let mask = 0x000000FF
+        let r = Int(color >> 16) & mask
+        let g = Int(color >> 8) & mask
+        let b = Int(color) & mask
+
+        let red   = CGFloat(r) / 255.0
+        let green = CGFloat(g) / 255.0
+        let blue  = CGFloat(b) / 255.0
+
+        self.init(red:red, green:green, blue:blue, alpha:1)
+    }
+    
+    func toHexString() -> String {
+        var r:CGFloat = 0
+        var g:CGFloat = 0
+        var b:CGFloat = 0
+        var a:CGFloat = 0
+        
+        getRed(&r, green: &g, blue: &b, alpha: &a)
+        
+        let rgb:Int = (Int)(r*255)<<16 | (Int)(g*255)<<8 | (Int)(b*255)<<0
+        
+        return String(format:"#%06x", rgb)
     }
 }

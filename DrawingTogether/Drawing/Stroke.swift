@@ -22,8 +22,9 @@ class Stroke: DrawingComponent {
         context.setLineCap(.round)
         context.setLineJoin(.round)
         context.setLineWidth(self.strokeWidth! / 2)     // TODO: width
-        context.setAlpha(1.0)
-        context.setStrokeColor(self.getUIColorFromAndroidColorInt(intColor: self.strokeColor!).cgColor)   // TOTO: color
+        context.setAlpha(Alpha.getIOSAlpha(alpha: self.strokeAlpha!))
+        //context.setStrokeColor(self.getUIColorFromAndroidColorInt(intColor: self.strokeColor!).cgColor)   // TODO: color
+        context.setStrokeColor(self.hexStringToUIColor(hex: self.strokeColor!).cgColor)
         
         let from = (self.preSize == 0) ? self.points[preSize] : self.points[preSize - 1]
         let to = self.points[preSize]
@@ -31,7 +32,7 @@ class Stroke: DrawingComponent {
         context.move(to: CGPoint(x: CGFloat(from.x) * (xRatio), y: CGFloat(from.y) * (yRatio)))
         context.addLine(to: CGPoint(x: CGFloat(to.x) * (xRatio), y: CGFloat(to.y) * (yRatio)))
         //print("\(CGFloat(to.x) * (xRatio)), \(CGFloat(to.y) * (yRatio))")
-        print("draw xRatio=\(xRatio), yRatio=\(yRatio)")
+        //print("draw xRatio=\(xRatio), yRatio=\(yRatio)")
         
         context.strokePath()
         drawingView.image = UIGraphicsGetImageFromCurrentImageContext()
@@ -49,10 +50,13 @@ class Stroke: DrawingComponent {
         context.setLineCap(.round)
         context.setLineJoin(.round)
         context.setLineWidth(self.strokeWidth! / 2)     // **
-        context.setAlpha(1.0)
-        context.setStrokeColor(self.getUIColorFromAndroidColorInt(intColor: self.strokeColor!).cgColor)   // **
+        context.setAlpha(Alpha.getIOSAlpha(alpha: self.strokeAlpha!))
+        //context.setStrokeColor(self.getUIColorFromAndroidColorInt(intColor: self.strokeColor!).cgColor)   // **
+        context.setStrokeColor(self.hexStringToUIColor(hex: self.strokeColor!).cgColor)
         
-        print("drawComponent xRatio=\(xRatio), yRatio=\(yRatio)")
+        //print("drawComponent xRatio=\(xRatio), yRatio=\(yRatio)")
+        
+        if self.points.count == 0 { return }
         
         context.move(to: CGPoint(x: CGFloat(self.points[0].x) * xRatio, y: CGFloat(self.points[0].y) * yRatio))
         for i in 1..<self.points.count {

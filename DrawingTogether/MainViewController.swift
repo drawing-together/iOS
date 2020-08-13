@@ -17,13 +17,20 @@ class MainViewController: UIViewController {
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var nameTextField: UITextField!
     
+    @IBOutlet weak var topicErrorLabel: UILabel!
+    @IBOutlet weak var passwordErrorLabel: UILabel!
+    @IBOutlet weak var nameErrorLabel: UILabel!
+    
     var masterName: String!
+    var specialCharacterAndBlank: Bool!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         let tapGseture = UITapGestureRecognizer(target: self, action: #selector(dismissKeybord))
         view.addGestureRecognizer(tapGseture)
+        
+        SendMqttMessage.INSTANCE.startThread()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -40,35 +47,83 @@ class MainViewController: UIViewController {
         nameTextField.resignFirstResponder()
     }
     
-    @objc func isFilled() -> Bool {
-        if topicTextField.text?.isEmpty ?? true || passwordTextField.text?.isEmpty ?? true || nameTextField.text?.isEmpty ?? true {
-            print("not filled")
-            return false
+    func hasSpecialCharacterAndBlank() {
+        specialCharacterAndBlank = false
+        
+        if topicTextField.text!.isEmpty {
+            topicErrorLabel.text = "빈칸을 채워주세요."
+            specialCharacterAndBlank = true
         }
-        print("filled")
-        return true
+        
+        if passwordTextField.text!.isEmpty {
+            passwordErrorLabel.text = "빈칸을 채워주세요."
+            specialCharacterAndBlank = true
+        }
+        
+        if nameTextField.text!.isEmpty {
+            nameErrorLabel.text = "빈칸을 채워주세요."
+            specialCharacterAndBlank = true
+        }
+        
+        if let topic = topicTextField.text {
+            if topic.containsSpecialCharacter() {
+                topicErrorLabel.text = "특수문자를 포함하면 안됩니다."
+                specialCharacterAndBlank = true
+            }
+            if topic.containsWhitespace() {
+                topicErrorLabel.text = "공백을 포함하면 안됩니다."
+                specialCharacterAndBlank = true
+            }
+        }
+        
+        if let password = passwordTextField.text {
+            if password.containsSpecialCharacter() {
+                passwordErrorLabel.text = "특수문자를 포함하면 안됩니다."
+                specialCharacterAndBlank = true
+            }
+            if password.containsWhitespace() {
+                passwordErrorLabel.text = "공백을 포함하면 안됩니다."
+                specialCharacterAndBlank = true
+            }
+        }
+        
+        if let name = nameTextField.text {
+            if name.containsSpecialCharacter() {
+                nameErrorLabel.text = "특수문자를 포함하면 안됩니다."
+                specialCharacterAndBlank = true
+            }
+            if name.containsWhitespace() {
+                nameErrorLabel.text = "공백을 포함하면 안됩니다."
+                specialCharacterAndBlank = true
+            }
+        }
         
     }
 
     // 마스터 로그인 버튼
     @IBAction func onMasterLoginBtnClick(_ sender: UIButton) {
-        if isFilled() {
+        topicErrorLabel.text = nil
+        passwordErrorLabel.text = nil
+        nameErrorLabel.text = nil
+        
+        hasSpecialCharacterAndBlank()
+        
+        if !specialCharacterAndBlank {
+            
             let offset = UIOffset(horizontal: view.frame.width/2, vertical: view.frame.height/2)
             SVProgressHUD.setOffsetFromCenter(offset)
             SVProgressHUD.show()
             
             let accessDatabase = AccessDatabase()
             accessDatabase.connect()
-            var isExistTopic = false
 
             accessDatabase.runTransaction(topic: topicTextField.text!, password: passwordTextField.text!, name: nameTextField.text!, masterMode: true) {
-                (masterName: String, existTopic: Bool) in
-                SVProgressHUD.dismiss()
+                (masterName: String, topicError: Bool, passwordError: Bool, nameError: Bool) in
+                //SVProgressHUD.dismiss()
                 print("transaction completed")
-                isExistTopic = existTopic
                 
-                if isExistTopic {
-                    return
+                if topicError {
+                    self.topicErrorLabel.text = "이미 존재하는 토픽입니다."
                 }
                 else {
                     self.masterName = masterName
@@ -81,24 +136,40 @@ class MainViewController: UIViewController {
     
     // 조인 버튼
     @IBAction func onJoinBtnClick(_ sender: UIButton) {
-        if isFilled() {
+        topicErrorLabel.text = nil
+        passwordErrorLabel.text = nil
+        nameErrorLabel.text = nil
+        
+        hasSpecialCharacterAndBlank()
+        
+        if !specialCharacterAndBlank {
+            let offset = UIOffset(horizontal: view.frame.width/2, vertical: view.frame.height/2)
+            SVProgressHUD.setOffsetFromCenter(offset)
+            SVProgressHUD.show()
+            
             let accessDatabase = AccessDatabase()
             accessDatabase.connect()
-            var isExistTopic = false
             
             accessDatabase.runTransaction(topic: topicTextField.text!, password: passwordTextField.text!, name: nameTextField.text!, masterMode: false) {
-                (masterName: String, existTopic: Bool) in
-                SVProgressHUD.dismiss()
+                (masterName: String, topicError: Bool, passwordError: Bool, nameError: Bool) in
+                //SVProgressHUD.dismiss()
                 print("transaction completed")
-                isExistTopic = existTopic
                 
-                if isExistTopic {
+                if passwordError {
+                    self.passwordErrorLabel.text = "비밀번호가 일치하지 않습니다."
+                    return
+                }
+                if nameError {
+                    self.nameErrorLabel.text = "이미 사용중인 이름입니다."
+                    return
+                }
+                if topicError {
                     self.masterName = masterName
                     self.performSegue(withIdentifier: "segueJoin", sender: sender)
                     print("join 클릭하여 drawing 화면으로 넘어감")
                 }
                 else {
-                    return
+                    self.topicErrorLabel.text = "존재하지 않는 토픽입니다."
                 }
             }
         }
@@ -124,6 +195,10 @@ class MainViewController: UIViewController {
         topicTextField.text = nil
         passwordTextField.text = nil
         nameTextField.text = nil
+        
+        topicErrorLabel.text = nil
+        passwordErrorLabel.text = nil
+        nameErrorLabel.text = nil
     }
     
 }
@@ -145,4 +220,17 @@ class MainViewController: UIViewController {
         return CGSize(width: size.width + leftInset + rightInset,
                       height: size.height + topInset + bottomInset)
     }
+}
+
+extension String {
+    
+    func containsSpecialCharacter() -> Bool {
+        let regex = try! NSRegularExpression(pattern: ".*[^0-9a-zA-Zㄱ-ㅎㅏ-ㅣ가-힁].*", options: .caseInsensitive)
+        return regex.firstMatch(in: self, options: [], range: NSMakeRange(0, self.count)) != nil
+    }
+    
+    func containsWhitespace() -> Bool {
+        return rangeOfCharacter(from: .whitespaces) != nil
+    }
+    
 }

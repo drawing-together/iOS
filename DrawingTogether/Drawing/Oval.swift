@@ -1,15 +1,15 @@
 //
-//  Rect.swift
+//  Oval.swift
 //  DrawingTogether
 //
-//  Created by 권나연 on 2020/06/08.
+//  Created by MJ B on 2020/06/15.
 //  Copyright © 2020 hansung. All rights reserved.
 //
 
 import UIKit
 import CoreGraphics
 
-class Rect: DrawingComponent {
+class Oval: DrawingComponent {
     
     override func draw(drawingView: DrawingView) {
         drawingView.redraw(usersComponentId: self.usersComponentId!)
@@ -42,7 +42,7 @@ class Rect: DrawingComponent {
             datum = Point(x: datum.x, y: datum.y - height)
         }
         
-        let rect = CGRect(x: CGFloat(datum.x) * xRatio, y: CGFloat(datum.y) * yRatio, width: CGFloat(width) * xRatio, height: CGFloat(height) * yRatio)
+        let oval = CGRect(x: CGFloat(datum.x) * xRatio, y: CGFloat(datum.y) * yRatio, width: CGFloat(width) * xRatio, height: CGFloat(height) * yRatio)
         
         print("shape drawComponent begin=\(String(describing: from?.toString())), end=\(String(describing: to?.toString())), slope=\(slope), xRatio=\(xRatio), yRatio=\(yRatio)")
         
@@ -52,11 +52,13 @@ class Rect: DrawingComponent {
         
         context.setFillColor(self.hexStringToUIColor(hex: self.strokeColor!).cgColor)
         context.setAlpha(0.3)
-        context.fill(rect)
+        context.fillEllipse(in: oval)
         
         context.setStrokeColor(self.hexStringToUIColor(hex: self.strokeColor!).cgColor)   // **
         context.setAlpha(1.0)
-        context.stroke(rect)
+        context.addEllipse(in: oval)
+        
+        //DrawingEditor.INSTANCE.drawSelectedComponentBorder(component: self, color: UIColor.lightGray.cgColor)
         
         context.strokePath()
         drawingView.image = UIGraphicsGetImageFromCurrentImageContext()

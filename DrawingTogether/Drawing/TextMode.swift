@@ -9,8 +9,19 @@
 import Foundation
 
 enum TextMode: String, Codable {
-    case DRAG_STARTED, DRAG_LOCATION, DROP, DRAG_ENDED, DRAG_EXITED
-    case MODIFY_START, MODIFY, DONE
+    case CREATE
+    
+    case DRAG_STARTED
+    case DRAG_LOCATION
+    case DROP
+    case DRAG_ENDED
+    case DRAG_EXITED
+    
+    case MODIFY_START
+    case DONE
+    
     case ERASE
-    case START_COLOR_CHANGE, FINISH_COLOR_CHANGE
+    
+    case START_COLOR_CHANGE
+    case FINISH_COLOR_CHANGE
 }

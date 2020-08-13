@@ -13,6 +13,7 @@ class UserViewController: UIViewController {
     @IBOutlet weak var userLabel: UILabel!
     
     override func viewDidLoad() {
+        print("UserViewController viewDidLoaded")
         super.viewDidLoad()
     }
 

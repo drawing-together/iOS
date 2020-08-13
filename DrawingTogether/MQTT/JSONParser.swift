@@ -16,32 +16,60 @@ class JSONParser {
     static let decoder = JSONDecoder()
     static let encoder = JSONEncoder()
     
+    var drawingVC: DrawingViewController!
+    
     func jsonWrite(object: MqttMessageFormat) -> String? {
         
-        if let data = try? JSONParser.encoder.encode(object) {
-            print("success MqttMessageFormat to JsonString")
+//        if let data = try? JSONParser.encoder.encode(object) {
+//            //print("success MqttMessageFormat to JsonString")
+//            return String(data: data, encoding: .utf8)!
+//        }
+//
+//        print("failed MqttMessageFormat to JsonString")
+//        return nil
+        
+        do {
+            let data = try JSONParser.encoder.encode(object)
             return String(data: data, encoding: .utf8)!
+        } catch {
+            print(error)
         }
         
-        print("failed MqttMessageFormat to JsonString")
         return nil
         
     }
     
     func jsonReader(msg: String) -> MqttMessageFormat? {
-        if let data = msg.data(using: .utf8), let mqttMessageFormat = try? JSONParser.decoder.decode(MqttMessageFormat.self, from: data) {
-            
-            print("success JsonString to MqttMessageFormat")
-            return mqttMessageFormat
+        if let data = msg.data(using: .utf8) {
+            do {
+                let mqttMessageFormat = try JSONParser.decoder.decode(MqttMessageFormat.self, from: data)
+                
+                return mqttMessageFormat
+            } catch {
+                print(error)
+            }
+//            } catch let DecodingError.dataCorrupted(context) {
+//                print(context)
+//            } catch let DecodingError.keyNotFound(key, context) {
+//                print("Key '\(key)' not found:", context.debugDescription)
+//                print("codingPath:", context.codingPath)
+//            } catch let DecodingError.valueNotFound(value, context) {
+//                print("Value '\(value)' not found:", context.debugDescription)
+//                print("codingPath:", context.codingPath)
+//            } catch let DecodingError.typeMismatch(type, context)  {
+//                print("Type '\(type)' mismatch:", context.debugDescription)
+//                print("codingPath:", context.codingPath)
+//            } catch {
+//                print("error: ", error)
+//            }
         }
-        
-        print("failed JsonString to MqttMessageFormat")
         return nil
     }
     
+    
     func createDrawingComponent(dc: DrawingComponent) -> DrawingComponent? {
         if let data = try? JSONParser.encoder.encode(dc) {
-            print("success DrawingComponent to JsonString")
+            //print("success DrawingComponent to JsonString")
             
             switch dc.type {
             case .STROKE:
@@ -73,7 +101,7 @@ class JSONParser {
         
         for idx in 0..<components.count {
             let adapter = DrawingComponentAdapter()
-            adapter.CLASSNAME = String(describing: components[idx])
+            adapter.CLASSNAME = String(describing: components[idx]).components(separatedBy: ".").last!
             adapter.OBJECT = components[idx]
             
             adapters.append(adapter)
@@ -84,10 +112,35 @@ class JSONParser {
     
     func getDrawingComponentAdapter(component: DrawingComponent) -> DrawingComponentAdapter {
         let adapter = DrawingComponentAdapter()
-        adapter.CLASSNAME = String(describing: component)
+        adapter.CLASSNAME = String(describing: component).components(separatedBy: ".").last!
         adapter.OBJECT = component
         return adapter
     }
     
+    
+    func getTexts(textAdapters: [TextAdapter]) -> [Text] {
+        var texts: [Text] = []
+        
+        for idx in 0..<textAdapters.count {
+            
+            let text = Text()
+            text.create(textAttribute: textAdapters[idx].textAttribute!, drawingVC: drawingVC)
+            
+            texts.append(text)
+        }
+        
+        return texts
+    }
+    
+    func getTextAdapters(texts: [Text]) -> [TextAdapter] {
+        var textAdapters: [TextAdapter] = []
+        
+        for idx in 0..<texts.count {
+            textAdapters.append(TextAdapter())
+            textAdapters[idx].textAttribute = texts[idx].textAttribute
+        }
+        
+        return textAdapters
+    }
     
 }

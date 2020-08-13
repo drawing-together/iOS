@@ -27,13 +27,16 @@ class DrawingComponentAdapter: Codable {
             
             return rect
             
+        case "Oval":
+            return JSONParser.parser.createDrawingComponent(dc: OBJECT!)
+            
         default:
             print("error get DrawingComponent")
         }
-
+        
         return nil
         
     }
-
+    
     
 }
