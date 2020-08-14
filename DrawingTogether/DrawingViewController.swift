@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SVProgressHUD
 
 class DrawingViewController: UIViewController, UIPopoverPresentationControllerDelegate {
     
@@ -27,11 +28,10 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     
     var textEditingView: TextEditingView!
     
-    
-    
     var ip: String = "54.180.154.63"
     var port: String = "1883"
     var topic: String!
+    var password: String!
     var name: String!
     var masterName: String!
     var master: Bool!
@@ -115,10 +115,24 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
             // exit task
             self.client.exitTask()
             self.client.unsubscribeAllTopics()
-            // move to home
-            if let topViewController = self.navigationController?.viewControllers.first {
-                self.navigationController?.popToViewController(topViewController, animated: true)
-            }
+            
+            let offset = UIOffset(horizontal: self.view.frame.width/2, vertical: self.view.frame.height/2)
+            SVProgressHUD.setOffsetFromCenter(offset)
+            SVProgressHUD.show()
+            
+            // database delete
+            let dt = DatabaseTransaction()
+            dt.connect()
+            dt.runTranscationExit(topic: self.topic!, name: self.name!, masterMode: self.master!, handler: {(result) in
+                if result == "commited" {
+                    SVProgressHUD.dismiss()
+                    
+                    // move to home
+                    if let topViewController = self.navigationController?.viewControllers.first {
+                        self.navigationController?.popToViewController(topViewController, animated: true)
+                    }
+                }
+            })
         }
         alertController.addAction(yesAction)
         if selectable {
@@ -135,6 +149,24 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     
     func setUserNum(userNum: Int) {
         userNumBtn.setTitle("현재인원 : \(userNum)명", for: .normal)
+    }
+    
+    // UIBarButtonItem -> iPad 위치 지정 필요
+    func setLocationAlert(sender: UIBarButtonItem, alertController: UIAlertController) {
+        if UIDevice.current.userInterfaceIdiom == .pad {  // 디바이스 타입이 iPad일 때
+            if let popoverController = alertController.popoverPresentationController {
+                // set alert sheet location
+                popoverController.sourceView = self.view
+                popoverController.sourceRect = CGRect(x: self.view.bounds.midX, y: self.view.bounds.midY, width: 0, height: 0)
+                popoverController.permittedArrowDirections = []
+                
+                popoverController.barButtonItem = sender
+                present(alertController, animated: true, completion: nil)
+            }
+        }
+        else {
+            present(alertController, animated: true, completion: nil)
+        }
     }
     
     func convertUIImage2ByteArray(image: UIImage) -> [Int8] { // UIImage -> Byte Array
@@ -223,7 +255,9 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         alert.addAction(cameraAction)
         alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
 
-        present(alert, animated: true, completion: nil)
+        setLocationAlert(sender: sender, alertController: alert)
+        //        present(alert, animated: true, completion: nil)
+
     }
     
     @IBAction func clickMore(_ sender: UIBarButtonItem) {
@@ -234,16 +268,45 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
             print("저장하기")
         }
         // Plus Person
-        let plusPersonAction = UIAlertAction(title: "친구 추가", style: .default) {
+        let plusPersonAction = UIAlertAction(title: "친구 초대", style: .default) {
             action in
-            print("친구 추가")
+            print("친구 초대")
+            
+            // 카카오톡 링크 보내기
+            let template = KMTTextTemplate { (textTemplateBuilder) in
+                
+                // text
+                textTemplateBuilder.text = "시시콜콜! 들어와!"
+                // link
+                textTemplateBuilder.link = KMTLinkObject(builderBlock: { (linkBuilder) in
+                    
+                    linkBuilder.iosExecutionParams = "topic=\(self.topic!)&password=\(self.password!)"
+                    linkBuilder.androidExecutionParams = "topic=\(self.topic!)&password=\(self.password!)"
+                    
+                })
+                // button
+                textTemplateBuilder.buttonTitle = "앱으로 이동!"
+            }
+            
+            KLKTalkLinkCenter.shared().sendDefault(with: template, success: { (warningMsg, argumentMsg) in
+                            
+                // success
+                print("warning message: \(String(describing: warningMsg))")
+                print("argument message: \(String(describing: argumentMsg))")
+                
+            }, failure: {(error) in
+                
+                // failure
+                print("error: \(error)")
+            })
         }
-
         alert.addAction(saveImageAction)
         alert.addAction(plusPersonAction)
         alert.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
-
-        present(alert, animated: true, completion: nil)
+                
+        setLocationAlert(sender: sender, alertController: alert)
+        //        present(alert, animated: true, completion: nil)
+            
     }
 
     @IBAction func clickUndo(_ sender: UIButton) {

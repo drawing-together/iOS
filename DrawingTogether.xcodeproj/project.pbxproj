@@ -37,14 +37,18 @@
 		844049AB24BD5A5B004B8290 /* back.png in Resources */ = {isa = PBXBuildFile; fileRef = 844049AA24BD5A5B004B8290 /* back.png */; };
 		844049AD24BD64E9004B8290 /* AliveThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844049AC24BD64E9004B8290 /* AliveThread.swift */; };
 		844049AF24BD64F7004B8290 /* AliveMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844049AE24BD64F7004B8290 /* AliveMessage.swift */; };
+		84404A0524E6659A004B8290 /* JoinAckMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84404A0424E6659A004B8290 /* JoinAckMessage.swift */; };
+		84404A0724E667A5004B8290 /* ObserveThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84404A0624E667A5004B8290 /* ObserveThread.swift */; };
+		84404A0924E6695E004B8290 /* DatabaseTransaction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84404A0824E6695E004B8290 /* DatabaseTransaction.swift */; };
+		84404A0B24E66D2A004B8290 /* KakaoOpenSDK-1.23.3 in Resources */ = {isa = PBXBuildFile; fileRef = 84404A0A24E66D2A004B8290 /* KakaoOpenSDK-1.23.3 */; };
+		84404A0D24E66D52004B8290 /* KakaoLink.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84404A0C24E66D52004B8290 /* KakaoLink.framework */; };
+		84404A0E24E66D52004B8290 /* KakaoLink.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 84404A0C24E66D52004B8290 /* KakaoLink.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8450CC4424879561003286A4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8450CC4324879561003286A4 /* GoogleService-Info.plist */; };
-		8450CC482487EC22003286A4 /* AccessDatabaseForLogin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8450CC472487EC22003286A4 /* AccessDatabaseForLogin.swift */; };
 		8450CC52248E1A49003286A4 /* JoinMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8450CC51248E1A49003286A4 /* JoinMessage.swift */; };
 		8450CC57248E1A55003286A4 /* MqttMessageFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8450CC54248E1A55003286A4 /* MqttMessageFormat.swift */; };
 		8450CC58248E1A55003286A4 /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8450CC55248E1A55003286A4 /* JSONParser.swift */; };
 		8450CC5A248E1BA8003286A4 /* ExitMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8450CC59248E1BA8003286A4 /* ExitMessage.swift */; };
-		8450CC5C248E1C55003286A4 /* DeleteMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8450CC5B248E1C55003286A4 /* DeleteMessage.swift */; };
-		8450CC5E248E2109003286A4 /* NotiMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8450CC5D248E2109003286A4 /* NotiMessage.swift */; };
+		8450CC5C248E1C55003286A4 /* CloseMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8450CC5B248E1C55003286A4 /* CloseMessage.swift */; };
 		952F4EB224910C4E00B665F4 /* DrawingItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952F4EB124910C4E00B665F4 /* DrawingItem.swift */; };
 		953A67B62490E8A7008AC2BA /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67B52490E8A7008AC2BA /* User.swift */; };
 		953A67C52490EDB9008AC2BA /* Text.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67B72490EDB8008AC2BA /* Text.swift */; };
@@ -86,6 +90,20 @@
 		CEDE687C24765A7C0057E9D2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEDE687A24765A7C0057E9D2 /* LaunchScreen.storyboard */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		84404A0F24E66D52004B8290 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				84404A0E24E66D52004B8290 /* KakaoLink.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		111D1577247B88BA00095A31 /* DrawingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingViewController.swift; sourceTree = "<group>"; };
 		113E8EDF247F912400F33359 /* MQTTClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MQTTClient.swift; sourceTree = "<group>"; };
@@ -119,14 +137,17 @@
 		844049AA24BD5A5B004B8290 /* back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back.png; sourceTree = "<group>"; };
 		844049AC24BD64E9004B8290 /* AliveThread.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AliveThread.swift; sourceTree = "<group>"; };
 		844049AE24BD64F7004B8290 /* AliveMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AliveMessage.swift; sourceTree = "<group>"; };
+		84404A0424E6659A004B8290 /* JoinAckMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinAckMessage.swift; sourceTree = "<group>"; };
+		84404A0624E667A5004B8290 /* ObserveThread.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObserveThread.swift; sourceTree = "<group>"; };
+		84404A0824E6695E004B8290 /* DatabaseTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseTransaction.swift; sourceTree = "<group>"; };
+		84404A0A24E66D2A004B8290 /* KakaoOpenSDK-1.23.3 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "KakaoOpenSDK-1.23.3"; sourceTree = "<group>"; };
+		84404A0C24E66D52004B8290 /* KakaoLink.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KakaoLink.framework; path = "KakaoOpenSDK-1.23.3/KakaoLink.framework"; sourceTree = "<group>"; };
 		8450CC4324879561003286A4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		8450CC472487EC22003286A4 /* AccessDatabaseForLogin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessDatabaseForLogin.swift; sourceTree = "<group>"; };
 		8450CC51248E1A49003286A4 /* JoinMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JoinMessage.swift; sourceTree = "<group>"; };
 		8450CC54248E1A55003286A4 /* MqttMessageFormat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MqttMessageFormat.swift; sourceTree = "<group>"; };
 		8450CC55248E1A55003286A4 /* JSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParser.swift; sourceTree = "<group>"; };
 		8450CC59248E1BA8003286A4 /* ExitMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExitMessage.swift; sourceTree = "<group>"; };
-		8450CC5B248E1C55003286A4 /* DeleteMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteMessage.swift; sourceTree = "<group>"; };
-		8450CC5D248E2109003286A4 /* NotiMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotiMessage.swift; sourceTree = "<group>"; };
+		8450CC5B248E1C55003286A4 /* CloseMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseMessage.swift; sourceTree = "<group>"; };
 		952F4EB124910C4E00B665F4 /* DrawingItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingItem.swift; sourceTree = "<group>"; };
 		953A67B52490E8A7008AC2BA /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		953A67B72490EDB8008AC2BA /* Text.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Text.swift; sourceTree = "<group>"; };
@@ -177,6 +198,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84404A0D24E66D52004B8290 /* KakaoLink.framework in Frameworks */,
 				0A7E9DA10627382D01D7095A /* Pods_DrawingTogether.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -220,10 +242,10 @@
 				8450CC54248E1A55003286A4 /* MqttMessageFormat.swift */,
 				CE59F5F924D8FA72008A6CCC /* WarpingMessage.swift */,
 				8450CC51248E1A49003286A4 /* JoinMessage.swift */,
-				8450CC5D248E2109003286A4 /* NotiMessage.swift */,
 				8450CC59248E1BA8003286A4 /* ExitMessage.swift */,
-				8450CC5B248E1C55003286A4 /* DeleteMessage.swift */,
+				8450CC5B248E1C55003286A4 /* CloseMessage.swift */,
 				8450CC55248E1A55003286A4 /* JSONParser.swift */,
+				84404A0424E6659A004B8290 /* JoinAckMessage.swift */,
 			);
 			path = MQTT;
 			sourceTree = "<group>";
@@ -271,6 +293,8 @@
 		457A817C1883B4582D704CBB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				84404A0A24E66D2A004B8290 /* KakaoOpenSDK-1.23.3 */,
+				84404A0C24E66D52004B8290 /* KakaoLink.framework */,
 				2BFA4C93A455D3A8A4BACA03 /* Pods_DrawingTogether.framework */,
 			);
 			name = Frameworks;
@@ -309,7 +333,6 @@
 				116988E22494AB21003C3E34 /* image */,
 				116988FC2494B2BF003C3E34 /* Drawing */,
 				116988FB2494B2B7003C3E34 /* MQTT */,
-				8450CC472487EC22003286A4 /* AccessDatabaseForLogin.swift */,
 				844049AE24BD64F7004B8290 /* AliveMessage.swift */,
 				844049AC24BD64E9004B8290 /* AliveThread.swift */,
 				CEDE686F24765A780057E9D2 /* AppDelegate.swift */,
@@ -325,6 +348,8 @@
 				11C5BCA424965BFB0066517B /* SplashViewController.swift */,
 				953A67B52490E8A7008AC2BA /* User.swift */,
 				116989072494C19B003C3E34 /* UserViewController.swift */,
+				84404A0624E667A5004B8290 /* ObserveThread.swift */,
+				84404A0824E6695E004B8290 /* DatabaseTransaction.swift */,
 			);
 			path = DrawingTogether;
 			sourceTree = "<group>";
@@ -341,6 +366,7 @@
 				CEDE686924765A780057E9D2 /* Frameworks */,
 				CEDE686A24765A780057E9D2 /* Resources */,
 				51C828340C80696FB4593B13 /* [CP] Embed Pods Frameworks */,
+				84404A0F24E66D52004B8290 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -406,6 +432,7 @@
 				1160A6852498B81900BC79C8 /* new_master_login.png in Resources */,
 				844049A724BD5A37004B8290 /* join.png in Resources */,
 				115402212497132200B53F96 /* pen23.png in Resources */,
+				84404A0B24E66D2A004B8290 /* KakaoOpenSDK-1.23.3 in Resources */,
 				116988F62494AB3D003C3E34 /* redo.png in Resources */,
 				116988F12494AB3D003C3E34 /* eraser.png in Resources */,
 				1169890C2495DB89003C3E34 /* selector.png in Resources */,
@@ -477,6 +504,7 @@
 				953A67C92490EDB9008AC2BA /* TextEditingView.swift in Sources */,
 				953A67CC2490EDB9008AC2BA /* DrawingComponentAdapter.swift in Sources */,
 				844049AD24BD64E9004B8290 /* AliveThread.swift in Sources */,
+				84404A0924E6695E004B8290 /* DatabaseTransaction.swift in Sources */,
 				BD5D2AC424969A5600B6D811 /* MotionEvent.swift in Sources */,
 				CE59F5FA24D8FA72008A6CCC /* WarpingMessage.swift in Sources */,
 				953A67CA2490EDB9008AC2BA /* DrawingEditor.swift in Sources */,
@@ -493,7 +521,7 @@
 				952F4EB224910C4E00B665F4 /* DrawingItem.swift in Sources */,
 				111D1578247B88BA00095A31 /* DrawingViewController.swift in Sources */,
 				BDBEA31A24C92E6E009693D0 /* Alpha.swift in Sources */,
-				8450CC5C248E1C55003286A4 /* DeleteMessage.swift in Sources */,
+				8450CC5C248E1C55003286A4 /* CloseMessage.swift in Sources */,
 				8450CC58248E1A55003286A4 /* JSONParser.swift in Sources */,
 				953A67D12490EDB9008AC2BA /* Mode.swift in Sources */,
 				1160A67D2498788600BC79C8 /* TextAdapter.swift in Sources */,
@@ -501,11 +529,12 @@
 				CE59F60124D8FC0C008A6CCC /* WarpData.swift in Sources */,
 				953A67CE2490EDB9008AC2BA /* DrawingView.swift in Sources */,
 				953A67CD2490EDB9008AC2BA /* Rect.swift in Sources */,
+				84404A0724E667A5004B8290 /* ObserveThread.swift in Sources */,
 				BD5D2AC824969A7900B6D811 /* Command.swift in Sources */,
 				953A67C82490EDB9008AC2BA /* Stroke.swift in Sources */,
 				CEDE687024765A780057E9D2 /* AppDelegate.swift in Sources */,
-				8450CC5E248E2109003286A4 /* NotiMessage.swift in Sources */,
 				953A67C52490EDB9008AC2BA /* Text.swift in Sources */,
+				84404A0524E6659A004B8290 /* JoinAckMessage.swift in Sources */,
 				116989082494C19B003C3E34 /* UserViewController.swift in Sources */,
 				953A67C62490EDB9008AC2BA /* Point.swift in Sources */,
 				CE59F60724D900EF008A6CCC /* OpenCVWrapper.mm in Sources */,
@@ -514,7 +543,6 @@
 				BD5D2AC624969A6900B6D811 /* EraseCommand.swift in Sources */,
 				BDBEA31E24C93141009693D0 /* DrawingTool.swift in Sources */,
 				BDBEA32624C93248009693D0 /* SendMqttMessage.swift in Sources */,
-				8450CC482487EC22003286A4 /* AccessDatabaseForLogin.swift in Sources */,
 				BD5D2ACA24969A8F00B6D811 /* Eraser.swift in Sources */,
 				953A67D22490EDB9008AC2BA /* DrawingComponent.swift in Sources */,
 				CEDE687224765A780057E9D2 /* SceneDelegate.swift in Sources */,
@@ -666,14 +694,87 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = GYJHR3KXF9;
+				DEVELOPMENT_TEAM = 725GFJMUCZ;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/KakaoOpenSDK-1.23.3",
+				);
 				INFOPLIST_FILE = DrawingTogether/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = hansung.seeseecallcall2;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-l\"icucore\"",
+					"-l\"sqlite3\"",
+					"-l\"z\"",
+					"-framework",
+					"\"AVFoundation\"",
+					"-framework",
+					"\"AssetsLibrary\"",
+					"-framework",
+					"\"CFNetwork\"",
+					"-framework",
+					"\"CoreGraphics\"",
+					"-framework",
+					"\"CoreMedia\"",
+					"-framework",
+					"\"CoreTelephony\"",
+					"-framework",
+					"\"CoreVideo\"",
+					"-framework",
+					"\"FBLPromises\"",
+					"-framework",
+					"\"FIRAnalyticsConnector\"",
+					"-framework",
+					"\"FirebaseAnalytics\"",
+					"-framework",
+					"\"FirebaseCore\"",
+					"-framework",
+					"\"FirebaseCoreDiagnostics\"",
+					"-framework",
+					"\"FirebaseDatabase\"",
+					"-framework",
+					"\"FirebaseInstallations\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"GoogleAppMeasurement\"",
+					"-framework",
+					"\"GoogleDataTransport\"",
+					"-framework",
+					"\"GoogleDataTransportCCTSupport\"",
+					"-framework",
+					"\"GoogleUtilities\"",
+					"-framework",
+					"\"Lottie\"",
+					"-framework",
+					"\"MQTTClient\"",
+					"-framework",
+					"\"QuartzCore\"",
+					"-framework",
+					"\"SVProgressHUD\"",
+					"-framework",
+					"\"Security\"",
+					"-framework",
+					"\"StoreKit\"",
+					"-framework",
+					"\"SystemConfiguration\"",
+					"-framework",
+					"\"UIKit\"",
+					"-framework",
+					"\"leveldb\"",
+					"-framework",
+					"\"nanopb\"",
+					"-framework",
+					"\"opencv2\"",
+					"-all_load",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = hansung.seeseecallcall;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "DrawingTogether/Drawing/DrawingTogether-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -689,14 +790,87 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = GYJHR3KXF9;
+				DEVELOPMENT_TEAM = 725GFJMUCZ;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/KakaoOpenSDK-1.23.3",
+				);
 				INFOPLIST_FILE = DrawingTogether/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = hansung.seeseecallcall2;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-ObjC",
+					"-l\"c++\"",
+					"-l\"icucore\"",
+					"-l\"sqlite3\"",
+					"-l\"z\"",
+					"-framework",
+					"\"AVFoundation\"",
+					"-framework",
+					"\"AssetsLibrary\"",
+					"-framework",
+					"\"CFNetwork\"",
+					"-framework",
+					"\"CoreGraphics\"",
+					"-framework",
+					"\"CoreMedia\"",
+					"-framework",
+					"\"CoreTelephony\"",
+					"-framework",
+					"\"CoreVideo\"",
+					"-framework",
+					"\"FBLPromises\"",
+					"-framework",
+					"\"FIRAnalyticsConnector\"",
+					"-framework",
+					"\"FirebaseAnalytics\"",
+					"-framework",
+					"\"FirebaseCore\"",
+					"-framework",
+					"\"FirebaseCoreDiagnostics\"",
+					"-framework",
+					"\"FirebaseDatabase\"",
+					"-framework",
+					"\"FirebaseInstallations\"",
+					"-framework",
+					"\"Foundation\"",
+					"-framework",
+					"\"GoogleAppMeasurement\"",
+					"-framework",
+					"\"GoogleDataTransport\"",
+					"-framework",
+					"\"GoogleDataTransportCCTSupport\"",
+					"-framework",
+					"\"GoogleUtilities\"",
+					"-framework",
+					"\"Lottie\"",
+					"-framework",
+					"\"MQTTClient\"",
+					"-framework",
+					"\"QuartzCore\"",
+					"-framework",
+					"\"SVProgressHUD\"",
+					"-framework",
+					"\"Security\"",
+					"-framework",
+					"\"StoreKit\"",
+					"-framework",
+					"\"SystemConfiguration\"",
+					"-framework",
+					"\"UIKit\"",
+					"-framework",
+					"\"leveldb\"",
+					"-framework",
+					"\"nanopb\"",
+					"-framework",
+					"\"opencv2\"",
+					"-all_load",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = hansung.seeseecallcall;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "DrawingTogether/Drawing/DrawingTogether-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;

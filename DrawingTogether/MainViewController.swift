@@ -31,6 +31,19 @@ class MainViewController: UIViewController {
         view.addGestureRecognizer(tapGseture)
         
         SendMqttMessage.INSTANCE.startThread()
+        
+        // kakao params setting
+        let app = UIApplication.shared.delegate as! AppDelegate
+        if let kakaoTopic = app.appTopic, let kakaoPassword = app.appPassword {
+            setKakaoTopic(topic: kakaoTopic)
+            setKakaoPassword(password: kakaoPassword)
+        }
+        
+        let scene =  UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate
+        if let kakaoTopic = scene.sceneTopic, let kakaoPassword = scene.scenePassword {
+            setKakaoTopic(topic: kakaoTopic)
+            setKakaoPassword(password: kakaoPassword)
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -45,6 +58,20 @@ class MainViewController: UIViewController {
         topicTextField.resignFirstResponder()
         passwordTextField.resignFirstResponder()
         nameTextField.resignFirstResponder()
+    }
+    
+    func setKakaoTopic(topic: String) {
+        let topViewController = navigationController?.topViewController
+        if topViewController == self {
+            topicTextField.text = topic
+        }
+    }
+    
+    func setKakaoPassword(password: String) {
+        let topViewController = navigationController?.topViewController
+        if topViewController == self {
+            passwordTextField.text = password
+        }
     }
     
     func hasSpecialCharacterAndBlank() {
@@ -114,12 +141,12 @@ class MainViewController: UIViewController {
             SVProgressHUD.setOffsetFromCenter(offset)
             SVProgressHUD.show()
             
-            let accessDatabase = AccessDatabase()
-            accessDatabase.connect()
+            let dt = DatabaseTransaction()
+            dt.connect()
 
-            accessDatabase.runTransaction(topic: topicTextField.text!, password: passwordTextField.text!, name: nameTextField.text!, masterMode: true) {
+            dt.runTransactionLogin(topic: topicTextField.text!, password: passwordTextField.text!, name: nameTextField.text!, masterMode: true) {
                 (masterName: String, topicError: Bool, passwordError: Bool, nameError: Bool) in
-                //SVProgressHUD.dismiss()
+                SVProgressHUD.dismiss()
                 print("transaction completed")
                 
                 if topicError {
@@ -147,12 +174,12 @@ class MainViewController: UIViewController {
             SVProgressHUD.setOffsetFromCenter(offset)
             SVProgressHUD.show()
             
-            let accessDatabase = AccessDatabase()
-            accessDatabase.connect()
+            let dt = DatabaseTransaction()
+            dt.connect()
             
-            accessDatabase.runTransaction(topic: topicTextField.text!, password: passwordTextField.text!, name: nameTextField.text!, masterMode: false) {
+            dt.runTransactionLogin(topic: topicTextField.text!, password: passwordTextField.text!, name: nameTextField.text!, masterMode: false) {
                 (masterName: String, topicError: Bool, passwordError: Bool, nameError: Bool) in
-                //SVProgressHUD.dismiss()
+                SVProgressHUD.dismiss()
                 print("transaction completed")
                 
                 if passwordError {
@@ -181,6 +208,7 @@ class MainViewController: UIViewController {
 //        drawingViewController.ip = ipTextField.text!
 //        drawingViewController.port = portTextField.text!
         drawingViewController.topic = topicTextField.text!
+        drawingViewController.password = passwordTextField.text!
         drawingViewController.name = nameTextField.text!
         drawingViewController.masterName = self.masterName
         

@@ -9,17 +9,8 @@
 import Foundation
 
 class JoinMessage: Codable {
-    var master: String?
+    
     var name: String?
-    
-    var to: String?
-    var userList: [User]?
-    
-    init(master: String, to: String, userList: [User]) {
-        self.master = master
-        self.to = to
-        self.userList = userList
-    }
     
     init(name: String) {
         self.name = name

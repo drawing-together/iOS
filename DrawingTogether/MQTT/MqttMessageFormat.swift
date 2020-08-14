@@ -33,9 +33,9 @@ class MqttMessageFormat: Codable {
     var myTextArrayIndex: Int?
 
     var joinMessage: JoinMessage?
-    var notiMessage: NotiMessage?
+    var joinAckMessage: JoinAckMessage?
     var exitMessage: ExitMessage?
-    var deleteMessage: DeleteMessage?
+    var closeMessage: CloseMessage?
     var aliveMessage: AliveMessage?
 //
 //    var audioMessage: AudioMessage?
@@ -132,8 +132,8 @@ class MqttMessageFormat: Codable {
     }
 
     // MARK: MID MESSAGE
-    init(joinMessage: JoinMessage, drawingComponents: [DrawingComponentAdapter], texts: [TextAdapter], history: [DrawingItem], undoArray: [DrawingItem], removedComponentId: [Int], maxComponentId: Int, maxTextId: Int) {
-        self.joinMessage = joinMessage
+    init(joinAckMessage: JoinAckMessage, drawingComponents: [DrawingComponentAdapter], texts: [TextAdapter], history: [DrawingItem], undoArray: [DrawingItem], removedComponentId: [Int], maxComponentId: Int, maxTextId: Int) {
+        self.joinAckMessage = joinAckMessage
         self.drawingComponents = drawingComponents
         self.texts = texts
         self.history = history
@@ -143,8 +143,8 @@ class MqttMessageFormat: Codable {
         self.maxTextId = maxTextId
     }
     
-    init(joinMessage: JoinMessage, drawingComponents: [DrawingComponentAdapter], texts: [TextAdapter], history: [DrawingItem], undoArray: [DrawingItem], removedComponentId: [Int], maxComponentId: Int, maxTextId: Int, bitmapByteArray: [Int8]) {
-        self.joinMessage = joinMessage
+    init(joinAckMessage: JoinAckMessage, drawingComponents: [DrawingComponentAdapter], texts: [TextAdapter], history: [DrawingItem], undoArray: [DrawingItem], removedComponentId: [Int], maxComponentId: Int, maxTextId: Int, bitmapByteArray: [Int8]) {
+        self.joinAckMessage = joinAckMessage
         self.drawingComponents = drawingComponents
         self.texts = texts
         self.history = history
@@ -186,16 +186,16 @@ class MqttMessageFormat: Codable {
         self.joinMessage = joinMessage
     }
     
-    init(notiMessage: NotiMessage) {
-        self.notiMessage = notiMessage
+    init(joinAckMessage: JoinAckMessage) {
+        self.joinAckMessage = joinAckMessage
     }
 
     init(exitMessage: ExitMessage) {
         self.exitMessage = exitMessage
     }
     
-    init(deleteMessage: DeleteMessage) {
-        self.deleteMessage = deleteMessage
+    init(closeMessage: CloseMessage) {
+        self.closeMessage = closeMessage
     }
     
     init(aliveMessage: AliveMessage) {
