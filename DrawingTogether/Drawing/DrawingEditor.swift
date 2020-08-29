@@ -19,7 +19,7 @@ class DrawingEditor {
     //var selectedView: UIImageView?
     var lastDrawingImage: UIImage?
     
-    var backgroundImage: CGImage?
+//    var backgroundImage: CGImage?
     
     var isIntercept = false
     
@@ -72,8 +72,7 @@ class DrawingEditor {
     // var fontStyle
     
     // MARK: 이미지
-    var bitmapByteArray: [Int8]?
-    
+    var backgroundImage: [Int8]?
     
     func initialize(drawingVC: DrawingViewController, master: Bool) {
         self.drawingVC = drawingVC
@@ -660,6 +659,30 @@ class DrawingEditor {
         for text in texts {
             text.removeFromSuperview()
         }
+    }
+    
+    // MARK: 배경 이미지
+    func convertUIImage2ByteArray(image: UIImage) -> [Int8] { // UIImage -> Byte Array
+        // UIImage -> NSData
+        let imageData = image.jpegData(compressionQuality: 0.1)!
+
+        return imageData.map { Int8(bitPattern: $0) }
+    }
+    
+    func convertByteArray2UIImage(byteArray: [Int8]) -> UIImage { // Byte Array -> UIImage
+        // Byte Array의 길이 구하기
+        let count = byteArray.count
+        // NSData 생성, Byte Array -> NSData
+        let imageData: NSData = NSData(bytes: byteArray, length: count)
+        // NSData -> UIImage
+        let image: UIImage = UIImage(data: imageData as Data)!
+        
+        return image
+    }
+    
+    func clearBackgroundImage() {
+        backgroundImage =  nil
+        drawingVC?.backgroundImageView.image = nil
     }
     
 }

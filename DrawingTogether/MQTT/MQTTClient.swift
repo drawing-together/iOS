@@ -30,6 +30,7 @@ class MQTTClient: NSObject {
     var topic_data: String!
     var topic_mid: String!
     var topic_audio: String!
+    var topic_image: String!
     var topic_alive: String!
     //
     
@@ -67,6 +68,7 @@ class MQTTClient: NSObject {
         self.topic_data = topic + "_data"
         self.topic_mid = topic + "_mid"
         self.topic_audio = topic + "_audio"
+        self.topic_image = topic + "_image"
         self.topic_alive = topic + "_alive"
         
         self.myName = name
@@ -157,8 +159,12 @@ class MQTTClient: NSObject {
     
     public func publish(topic: String, message: String) {
         session?.publishData(message.data(using: .utf8), onTopic: topic, retain: false, qos: qos)
-        //        print("pub: \(topic) \(message)")
     }
+    
+    public func publish(topic: String, message: [Int8]) {
+        session?.publishData(NSData(bytes: message, length: message.count) as Data, onTopic: topic, retain: false, qos: qos)
+    }
+    
     
     public func subscribeAllTopics() {
         subscribe(topic_join)
@@ -166,6 +172,7 @@ class MQTTClient: NSObject {
         subscribe(topic_close)
         subscribe(topic_data)
         subscribe(topic_mid)
+        subscribe(topic_image)
         subscribe(topic_alive)
     }
     
@@ -175,6 +182,7 @@ class MQTTClient: NSObject {
         unsubscribe(topic_close)
         unsubscribe(topic_data)
         unsubscribe(topic_mid)
+        unsubscribe(topic_image)
         unsubscribe(topic_alive)
     }
     
@@ -276,8 +284,17 @@ class MQTTClient: NSObject {
 extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
     // callback
     func newMessage(_ session: MQTTSession!, data: Data!, onTopic topic: String!, qos: MQTTQosLevel, retained: Bool, mid: UInt32) {
+        
+        if (topic == topic_image) {
+            let imageData = data.map { Int8(bitPattern: $0) }
+            de.backgroundImage = imageData
+            
+            drawingVC.backgroundImageView.image = de.convertByteArray2UIImage(byteArray: de.backgroundImage!)
+            
+            return
+        }
+        
         let message = String(data: data, encoding: .utf8)!
-        //        print("Message \(message)")
         
         if parser.jsonReader(msg: message) == nil { return }
         let mqttMessageFormat = parser.jsonReader(msg: message)!
@@ -312,23 +329,28 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                     }
                     if master {
                          if isUsersActionUp(username: joinName) /*&& isTextInUse()*/ { // fixme nayeon
-                            
                             let joinAckMsg = JoinAckMessage(name: myName, target: joinName)
-                            var messageFormat: MqttMessageFormat?
                             
-                            // 배경 이미지가 없는 경우
-                            if de.backgroundImage == nil {
-                                messageFormat = MqttMessageFormat(joinAckMessage: joinAckMsg, drawingComponents: parser.getDrawingComponentAdapters(components: de.drawingComponents), texts: parser.getTextAdapters(texts: de.texts), history: de.history, undoArray: de.undoArray, removedComponentId: de.removedComponentId, maxComponentId: de.maxComponentId, maxTextId: de.maxTextId);
-                                
-                            }
-                            // 배경 이미지가 있는 경우
-                            else {
-                                messageFormat = MqttMessageFormat(joinAckMessage: joinAckMsg, drawingComponents: parser.getDrawingComponentAdapters(components: de.drawingComponents), texts: parser.getTextAdapters(texts: de.texts), history: de.history, undoArray: de.undoArray, removedComponentId: de.removedComponentId, maxComponentId: de.maxComponentId, maxTextId: de.maxTextId, bitmapByteArray: de.bitmapByteArray!);
-                            }
+//                            var messageFormat: MqttMessageFormat?
+//                            // 배경 이미지가 없는 경우
+//                            if de.backgroundImage == nil {
+//                                messageFormat = MqttMessageFormat(joinAckMessage: joinAckMsg, drawingComponents: parser.getDrawingComponentAdapters(components: de.drawingComponents), texts: parser.getTextAdapters(texts: de.texts), history: de.history, undoArray: de.undoArray, removedComponentId: de.removedComponentId, maxComponentId: de.maxComponentId, maxTextId: de.maxTextId);
+//
+//                            }
+//                            // 배경 이미지가 있는 경우
+//                            else {
+//                                messageFormat = MqttMessageFormat(joinAckMessage: joinAckMsg, drawingComponents: parser.getDrawingComponentAdapters(components: de.drawingComponents), texts: parser.getTextAdapters(texts: de.texts), history: de.history, undoArray: de.undoArray, removedComponentId: de.removedComponentId, maxComponentId: de.maxComponentId, maxTextId: de.maxTextId, bitmapByteArray: de.bitmapByteArray!);
+//                            }
                             
-                            let json = parser.jsonWrite(object: messageFormat!);
+                            let messageFormat = MqttMessageFormat(joinAckMessage: joinAckMsg, drawingComponents:parser.getDrawingComponentAdapters(components: de.drawingComponents), texts:parser.getTextAdapters(texts: de.texts), history: de.history, undoArray: de.undoArray,removedComponentId: de.removedComponentId, maxComponentId: de.maxComponentId, maxTextId: de.maxTextId);
+                            let json = parser.jsonWrite(object: messageFormat);
                             MQTTClient.client2.publish(topic: topic_join, message: json!)
                             print("login data publish complete -> \(joinName)")
+                            
+                            if de.backgroundImage != nil {
+                                let backgroundImage = de.backgroundImage
+                                MQTTClient.client2.publish(topic: topic_image, message: backgroundImage!)
+                            }
                             
                             drawingVC.showToast(message: "[ \(joinName) ] 님에게 데이터 전송을 완료했습니다")
                             print("\(joinName) join 후 : \(userList)");
@@ -358,11 +380,11 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                          // 아이디 세팅
                          de.maxComponentId = mqttMessageFormat.maxComponentId!
                          
-                         // 배경 이미지 세팅
-                         if mqttMessageFormat.bitmapByteArray != nil {
-                             print("bitmap byte array")
-                             de.bitmapByteArray = mqttMessageFormat.bitmapByteArray!
-                         }
+//                         // 배경 이미지 세팅
+//                         if mqttMessageFormat.bitmapByteArray != nil {
+//                             print("bitmap byte array")
+//                             de.bitmapByteArray = mqttMessageFormat.bitmapByteArray!
+//                         }
                          
                          MQTTClient.client2.publish(topic: topic_mid, message: parser.jsonWrite(object: MqttMessageFormat(username: myName, mode: Mode.MID))!)                    }
                     
@@ -378,8 +400,6 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         }
         
         if (topic == topic_exit) {
-            print("TOPIC_EXIT : \(message)")
-            
             let exitMessage = mqttMessageFormat.exitMessage
             if let exitName = exitMessage?.name {
                 for i in 0..<userList.count {
@@ -394,8 +414,6 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         }
         
         if (topic == topic_close) {
-            print("TOPIC_CLOSE : \(message)")
-            
             let closeMessage = mqttMessageFormat.closeMessage
             if let closeName = closeMessage?.name, closeName != myName {
                 drawingVC.userVC.dismiss(animated: true, completion: nil)
@@ -404,8 +422,6 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         }
         
         if (topic == topic_data) {
-            //print("TOPIC_DATA : \(message)")
-            
             switch mqttMessageFormat.mode {
             case .DRAW:
                 self.draw(message: mqttMessageFormat)
@@ -416,14 +432,17 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             case .TEXT:
                 self.text(message: mqttMessageFormat)
                 break
-            case .BACKGROUND_IMAGE:
-                background(message: mqttMessageFormat)
-                break
                 /*case .SELECT:
                  self.select(message: mqttMessageFormat)
                  break*/
             case .WARP:
                 self.warp(message: mqttMessageFormat)
+                break
+            case .CLEAR:
+                self.clear(message: mqttMessageFormat)
+                break
+            case .CLEAR_BACKGROUND_IMAGE:
+                self.clearBackgroundImage(message: mqttMessageFormat)
                 break
             case .some(_):
                 break
@@ -434,8 +453,6 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         }
         
         if (topic == topic_mid) {
-            print("TOPIC_MID : \(message)")
-            
             if isMid, mqttMessageFormat.username == de.myUsername! {
                 isMid = false
                 print("mid username=\(String(describing: mqttMessageFormat.username))")
@@ -727,12 +744,6 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         }
     }
     
-    func background(message: MqttMessageFormat) {
-        if self.de.myUsername == message.username { return }
-        
-        drawingVC.backgroundImageView.image = drawingVC.convertByteArray2UIImage(byteArray: message.bitmapByteArray!)
-    }
-    
     func warp(message: MqttMessageFormat) {
         if self.de.myUsername == message.username { return }
         
@@ -753,11 +764,11 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                 //client.getBinding().backgroundView.addView(imageView);
                 
                 
-                // 배경이미지 -> WarpingView
-                if let imageBytes = self.de.bitmapByteArray {
-                    print("mid received image")
-                    self.drawingVC.backgroundImageView.image = self.drawingVC.convertByteArray2UIImage(byteArray: imageBytes)
-                }
+//                // 배경이미지 -> WarpingView
+//                if let imageBytes = self.de.backgroundImage {
+//                    print("mid received image")
+//                    self.drawingVC.backgroundImageView.image = self.de.convertByteArray2UIImage(byteArray: imageBytes)
+//                }
                 
                 if self.de.history.count > 0 {
                     //drawingCV.undoBtn.setEnabled(true)
@@ -781,5 +792,12 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         }
     }
     
+    func clear(message: MqttMessageFormat) {
+        print("clear")
+    }
     
+    func clearBackgroundImage(message: MqttMessageFormat) {
+        de.backgroundImage = nil
+        de.clearBackgroundImage()
+    }
 }

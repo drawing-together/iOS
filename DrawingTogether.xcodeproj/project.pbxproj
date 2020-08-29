@@ -10,6 +10,9 @@
 		0A7E9DA10627382D01D7095A /* Pods_DrawingTogether.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BFA4C93A455D3A8A4BACA03 /* Pods_DrawingTogether.framework */; };
 		111D1578247B88BA00095A31 /* DrawingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D1577247B88BA00095A31 /* DrawingViewController.swift */; };
 		113E8EE0247F912400F33359 /* MQTTClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113E8EDF247F912400F33359 /* MQTTClient.swift */; };
+		115122B824F7EE3600D11A9E /* back.png in Resources */ = {isa = PBXBuildFile; fileRef = 115122B724F7EE3600D11A9E /* back.png */; };
+		115122BA24F8CEA000D11A9E /* ShapeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115122B924F8CEA000D11A9E /* ShapeViewController.swift */; };
+		115122BC24F8D43D00D11A9E /* EraserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115122BB24F8D43D00D11A9E /* EraserViewController.swift */; };
 		1154021F2497131500B53F96 /* pen13.png in Resources */ = {isa = PBXBuildFile; fileRef = 1154021E2497131500B53F96 /* pen13.png */; };
 		115402212497132200B53F96 /* pen23.png in Resources */ = {isa = PBXBuildFile; fileRef = 115402202497132200B53F96 /* pen23.png */; };
 		115402232497132800B53F96 /* pen33.png in Resources */ = {isa = PBXBuildFile; fileRef = 115402222497132800B53F96 /* pen33.png */; };
@@ -33,8 +36,6 @@
 		844049A324BD5689004B8290 /* master_login.png in Resources */ = {isa = PBXBuildFile; fileRef = 844049A224BD5689004B8290 /* master_login.png */; };
 		844049A524BD5A27004B8290 /* color picker bar.png in Resources */ = {isa = PBXBuildFile; fileRef = 844049A424BD5A27004B8290 /* color picker bar.png */; };
 		844049A724BD5A37004B8290 /* join.png in Resources */ = {isa = PBXBuildFile; fileRef = 844049A624BD5A37004B8290 /* join.png */; };
-		844049A924BD5A4F004B8290 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 844049A824BD5A4F004B8290 /* logo.png */; };
-		844049AB24BD5A5B004B8290 /* back.png in Resources */ = {isa = PBXBuildFile; fileRef = 844049AA24BD5A5B004B8290 /* back.png */; };
 		844049AD24BD64E9004B8290 /* AliveThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844049AC24BD64E9004B8290 /* AliveThread.swift */; };
 		844049AF24BD64F7004B8290 /* AliveMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844049AE24BD64F7004B8290 /* AliveMessage.swift */; };
 		84404A0524E6659A004B8290 /* JoinAckMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84404A0424E6659A004B8290 /* JoinAckMessage.swift */; };
@@ -107,6 +108,9 @@
 /* Begin PBXFileReference section */
 		111D1577247B88BA00095A31 /* DrawingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingViewController.swift; sourceTree = "<group>"; };
 		113E8EDF247F912400F33359 /* MQTTClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MQTTClient.swift; sourceTree = "<group>"; };
+		115122B724F7EE3600D11A9E /* back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = back.png; path = "../../../Desktop/Capstone/UI(시시콜콜)/iOS/back.png"; sourceTree = "<group>"; };
+		115122B924F8CEA000D11A9E /* ShapeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeViewController.swift; sourceTree = "<group>"; };
+		115122BB24F8D43D00D11A9E /* EraserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EraserViewController.swift; sourceTree = "<group>"; };
 		1154021E2497131500B53F96 /* pen13.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pen13.png; sourceTree = "<group>"; };
 		115402202497132200B53F96 /* pen23.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pen23.png; sourceTree = "<group>"; };
 		115402222497132800B53F96 /* pen33.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pen33.png; sourceTree = "<group>"; };
@@ -133,8 +137,6 @@
 		844049A224BD5689004B8290 /* master_login.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = master_login.png; sourceTree = "<group>"; };
 		844049A424BD5A27004B8290 /* color picker bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "color picker bar.png"; sourceTree = "<group>"; };
 		844049A624BD5A37004B8290 /* join.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = join.png; sourceTree = "<group>"; };
-		844049A824BD5A4F004B8290 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
-		844049AA24BD5A5B004B8290 /* back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back.png; sourceTree = "<group>"; };
 		844049AC24BD64E9004B8290 /* AliveThread.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AliveThread.swift; sourceTree = "<group>"; };
 		844049AE24BD64F7004B8290 /* AliveMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AliveMessage.swift; sourceTree = "<group>"; };
 		84404A0424E6659A004B8290 /* JoinAckMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinAckMessage.swift; sourceTree = "<group>"; };
@@ -183,7 +185,7 @@
 		CE59F60524D900EF008A6CCC /* OpenCVWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenCVWrapper.h; sourceTree = "<group>"; };
 		CE59F60624D900EF008A6CCC /* OpenCVWrapper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCVWrapper.mm; sourceTree = "<group>"; };
 		CE59F60824D9013D008A6CCC /* DrawingTogether-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DrawingTogether-Bridging-Header.h"; sourceTree = "<group>"; };
-		CEDE686C24765A780057E9D2 /* DrawingTogether.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DrawingTogether.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CEDE686C24765A780057E9D2 /* 시시콜콜.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "시시콜콜.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEDE686F24765A780057E9D2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CEDE687124765A780057E9D2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		CEDE687324765A780057E9D2 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
@@ -211,11 +213,10 @@
 			children = (
 				844049A424BD5A27004B8290 /* color picker bar.png */,
 				9570971524C09F8300509AC8 /* backbutton.png */,
+				115122B724F7EE3600D11A9E /* back.png */,
 				1160A6822498B7F200BC79C8 /* new_logo.png */,
 				1160A6842498B81900BC79C8 /* new_master_login.png */,
-				844049AA24BD5A5B004B8290 /* back.png */,
 				844049A624BD5A37004B8290 /* join.png */,
-				844049A824BD5A4F004B8290 /* logo.png */,
 				844049A224BD5689004B8290 /* master_login.png */,
 				1169890B2495DB89003C3E34 /* selector.png */,
 				1169890D249604F3003C3E34 /* color_bar.png */,
@@ -322,7 +323,7 @@
 		CEDE686D24765A780057E9D2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CEDE686C24765A780057E9D2 /* DrawingTogether.app */,
+				CEDE686C24765A780057E9D2 /* 시시콜콜.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -337,19 +338,21 @@
 				844049AC24BD64E9004B8290 /* AliveThread.swift */,
 				CEDE686F24765A780057E9D2 /* AppDelegate.swift */,
 				CEDE687824765A7C0057E9D2 /* Assets.xcassets */,
+				CEDE687324765A780057E9D2 /* MainViewController.swift */,
 				111D1577247B88BA00095A31 /* DrawingViewController.swift */,
 				8450CC4324879561003286A4 /* GoogleService-Info.plist */,
 				CEDE687D24765A7C0057E9D2 /* Info.plist */,
 				BDBEA31724C92E1C009693D0 /* intro.json */,
 				CEDE687A24765A7C0057E9D2 /* LaunchScreen.storyboard */,
 				CEDE687524765A780057E9D2 /* Main.storyboard */,
-				CEDE687324765A780057E9D2 /* MainViewController.swift */,
 				CEDE687124765A780057E9D2 /* SceneDelegate.swift */,
 				11C5BCA424965BFB0066517B /* SplashViewController.swift */,
 				953A67B52490E8A7008AC2BA /* User.swift */,
 				116989072494C19B003C3E34 /* UserViewController.swift */,
 				84404A0624E667A5004B8290 /* ObserveThread.swift */,
 				84404A0824E6695E004B8290 /* DatabaseTransaction.swift */,
+				115122B924F8CEA000D11A9E /* ShapeViewController.swift */,
+				115122BB24F8D43D00D11A9E /* EraserViewController.swift */,
 			);
 			path = DrawingTogether;
 			sourceTree = "<group>";
@@ -374,7 +377,7 @@
 			);
 			name = DrawingTogether;
 			productName = DrawingTogether;
-			productReference = CEDE686C24765A780057E9D2 /* DrawingTogether.app */;
+			productReference = CEDE686C24765A780057E9D2 /* 시시콜콜.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -416,12 +419,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				844049A924BD5A4F004B8290 /* logo.png in Resources */,
 				116988F42494AB3D003C3E34 /* pen1.png in Resources */,
 				9570971624C09F8300509AC8 /* backbutton.png in Resources */,
-				844049AB24BD5A5B004B8290 /* back.png in Resources */,
 				CEDE687C24765A7C0057E9D2 /* LaunchScreen.storyboard in Resources */,
 				844049A524BD5A27004B8290 /* color picker bar.png in Resources */,
+				115122B824F7EE3600D11A9E /* back.png in Resources */,
 				BDBEA31824C92E1C009693D0 /* intro.json in Resources */,
 				116988F52494AB3D003C3E34 /* pen2.png in Resources */,
 				116988F72494AB3D003C3E34 /* shape.png in Resources */,
@@ -502,7 +504,9 @@
 				844049AF24BD64F7004B8290 /* AliveMessage.swift in Sources */,
 				BDBEA32024C931CC009693D0 /* Oval.swift in Sources */,
 				953A67C92490EDB9008AC2BA /* TextEditingView.swift in Sources */,
+				115122BC24F8D43D00D11A9E /* EraserViewController.swift in Sources */,
 				953A67CC2490EDB9008AC2BA /* DrawingComponentAdapter.swift in Sources */,
+				115122BA24F8CEA000D11A9E /* ShapeViewController.swift in Sources */,
 				844049AD24BD64E9004B8290 /* AliveThread.swift in Sources */,
 				84404A0924E6695E004B8290 /* DatabaseTransaction.swift in Sources */,
 				BD5D2AC424969A5600B6D811 /* MotionEvent.swift in Sources */,
@@ -775,7 +779,7 @@
 					"-all_load",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = hansung.seeseecallcall;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "시시콜콜";
 				SWIFT_OBJC_BRIDGING_HEADER = "DrawingTogether/Drawing/DrawingTogether-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.2;
@@ -871,7 +875,7 @@
 					"-all_load",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = hansung.seeseecallcall;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "시시콜콜";
 				SWIFT_OBJC_BRIDGING_HEADER = "DrawingTogether/Drawing/DrawingTogether-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = "1,2";

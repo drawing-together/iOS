@@ -23,6 +23,7 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     @IBOutlet weak var drawingContainer: UIView!
     @IBOutlet weak var currentColorBtn: UIButton!
     
+    @IBOutlet weak var drawingTools: UIStackView!
     @IBOutlet weak var textColorChangeBtn: UIButton!
     @IBOutlet weak var colorChangeBtnView: UIView!
     
@@ -47,7 +48,11 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
       
     // IMAGE
     var imagePicker = UIImagePickerController()
+    var cameraFlag = false
     //
+    
+    var shapeVC: ShapeViewController!
+    var eraserVC: EraserViewController!
     
     let src_triangle = UnsafeMutablePointer<Int32>.allocate(capacity: 2)
     let dst_triangle = UnsafeMutablePointer<Int32>.allocate(capacity: 2)
@@ -60,9 +65,13 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         super.viewDidLoad()
         print("DrawingViewController : viewDidLoad")
         
+        UIApplication.shared.isIdleTimerDisabled = true // 화면 안꺼지게
+        
         parser.drawingVC = self
         
         userVC = storyboard?.instantiateViewController(withIdentifier: "UserViewController") as? UserViewController
+        shapeVC = storyboard?.instantiateViewController(withIdentifier: "ShapeViewController") as? ShapeViewController
+        eraserVC = storyboard?.instantiateViewController(withIdentifier: "EraserViewController") as? EraserViewController
         
         client.initialize(ip, port, topic, name, master, masterName, self)
         print("DrawingViewController : [topic = \(topic!), my name = \(name!), master = \(master!)]")
@@ -95,6 +104,10 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillAppear(true)
         print("DrawingViewController : viewWillDisappear")
+        
+        if cameraFlag {
+            return
+        }
         
         setUserNum(userNum: 0)
         userListStr = ""
@@ -148,7 +161,7 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     }
     
     func setUserNum(userNum: Int) {
-        userNumBtn.setTitle("현재인원 : \(userNum)명", for: .normal)
+        userNumBtn.setTitle("현재 인원 : \(userNum)명", for: .normal)
     }
     
     // UIBarButtonItem -> iPad 위치 지정 필요
@@ -169,30 +182,11 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         }
     }
     
-    func convertUIImage2ByteArray(image: UIImage) -> [Int8] { // UIImage -> Byte Array
-        // UIImage -> NSData
-        let imageData = image.jpegData(compressionQuality: 0.1)!
-        
-//        // NSData의 길이 구하기
-//        let count = imageData.count / MemoryLayout<UInt8>.size
-//        print("IMAGE : byte array size = \(count)")
-//        // Byte Array 생성
-//        var imageByteArray = [UInt8](repeating: 0, count: count)
-//        // NSData -> Byte Array
-//        imageData.copyBytes(to: &imageByteArray, count: count)
-
-        return imageData.map { Int8(bitPattern: $0) }
-    }
-    
-    func convertByteArray2UIImage(byteArray: [Int8]) -> UIImage { // Byte Array -> UIImage
-        // Byte Array의 길이 구하기
-        let count = byteArray.count
-        // NSData 생성, Byte Array -> NSData
-        let imageData: NSData = NSData(bytes: byteArray, length: count)
-        // NSData -> UIImage
-        let image: UIImage = UIImage(data: imageData as Data)!
-        
-        return image
+    func changeClickedButtonBackground(_ button: UIButton) {
+        for view in drawingTools.arrangedSubviews {
+            view.backgroundColor = UIColor.clear
+        }
+        button.backgroundColor = UIColor(red: 233/255, green: 233/255, blue: 233/255, alpha: 1.0)
     }
     
     // MARK: IBACTION FUNCION
@@ -244,6 +238,7 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         let cameraAction = UIAlertAction(title: "카메라", style: .default) {
             action in
             if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                self.cameraFlag = true
                 self.imagePicker.sourceType = .camera
                 self.present(self.imagePicker, animated: false, completion: nil)
             } else {
@@ -319,6 +314,8 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     
     @IBAction func clickPen(_ sender: UIButton) {
         print("pen")
+        changeClickedButtonBackground(sender)
+        
         print(sender.accessibilityIdentifier!) // 각 버튼의 Accessibility의 identifier 속성을 10, 20, 30으로 설정
         de.strokeWidth = CGFloat(NSString(string: sender.accessibilityIdentifier!).floatValue)
         
@@ -328,12 +325,24 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     
     @IBAction func clickShape(_ sender: UIButton) {
         print("shape")
-        de.currentMode = Mode.DRAW
-        de.currentType = ComponentType.RECT
+        changeClickedButtonBackground(sender)
+
+        shapeVC.modalPresentationStyle = .popover
+        shapeVC.preferredContentSize = CGSize(width: 100, height: 110)
+        if let popoverController = shapeVC.popoverPresentationController {
+            popoverController.sourceView = sender
+            popoverController.sourceRect =  CGRect(x: -35, y: -5, width: 100, height: 35)
+            popoverController.permittedArrowDirections = .any
+            popoverController.delegate = self
+            shapeVC.popoverPresentationController?.delegate = self
+        }
+        
+        present(shapeVC, animated: true, completion: nil)
     }
     
     @IBAction func clickText(_ sender: UIButton) {
         print("text")
+        changeClickedButtonBackground(sender)
         
         de.currentMode = .TEXT
         
@@ -352,21 +361,38 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     
     @IBAction func clickEraser(_ sender: UIButton) {
         print("eraser")
+        changeClickedButtonBackground(sender)
+        
         de.currentMode = .ERASE
+        
+        eraserVC.modalPresentationStyle = .popover
+        eraserVC.preferredContentSize = CGSize(width: 100, height: 110)
+        if let popoverController = eraserVC.popoverPresentationController {
+            popoverController.sourceView = sender
+            popoverController.sourceRect =  CGRect(x: -35, y: -5, width: 100, height: 35)
+            popoverController.permittedArrowDirections = .any
+            popoverController.delegate = self
+            eraserVC.popoverPresentationController?.delegate = self
+        }
+        
+        present(eraserVC, animated: true, completion: nil)
     }
     
     @IBAction func clickSelector(_ sender: UIButton) {
         print("selector")
+        changeClickedButtonBackground(sender)
+        
         de.currentMode = Mode.SELECT
     }
     
     @IBAction func clickWarping(_ sender: UIButton) {
         print("warping")
+        changeClickedButtonBackground(sender)
+        
         de.currentMode = Mode.WARP
     }
     
     @IBAction func clickUserBtn(_ sender: UIButton) {
-        
         userVC.modalPresentationStyle = .popover
         userVC.preferredContentSize = CGSize(width: 100, height: 150)
         if let popoverController = userVC.popoverPresentationController {
@@ -535,16 +561,19 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
 
 extension DrawingViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    func imagePickerController(_ picker: UIImagePickerController,          didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if cameraFlag {
+            cameraFlag = false
+        }
+        
         let image = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
-        backgroundImageView.image = image
+//        backgroundImageView.image = image
         
-        de.bitmapByteArray = convertUIImage2ByteArray(image: image)
+        de.backgroundImage = de.convertUIImage2ByteArray(image: image)
+        client.publish(topic: client.topic_image, message: de.backgroundImage!)
         
-        //        let imageByte = convertUIImage2ByteArray(image: image
-        //        let message = "{\"action\":0,\"bitmapByteArray\":\(imageByte),\"mode\":\"BACKGROUND_IMAGE\",\"myTextArrayIndex\":0,\"username\":\"jiyeon\"}"
-        let message = MqttMessageFormat(username: name!, mode: .BACKGROUND_IMAGE, bitmapByteArray: de.bitmapByteArray!)
-        client.publish(topic: client.topic_data, message: parser.jsonWrite(object: message)!)
+//        let message = MqttMessageFormat(username: name!, mode: .BACKGROUND_IMAGE, bitmapByteArray: de.bitmapByteArray!)
+//        client.publish(topic: client.topic_data, message: parser.jsonWrite(object: message)!)
         
         dismiss(animated: true, completion: nil)
     }
@@ -554,17 +583,17 @@ extension UIViewController {
     
     func showToast(message : String/*, font: UIFont*/) {
         
-        let toastLabel = UILabel(frame: CGRect(x: self.view.frame.size.width/2 - 75, y: self.view.frame.size.height-150, width: 150, height: 35))
-        toastLabel.backgroundColor = UIColor.black.withAlphaComponent(0.6)
+        let toastLabel = UILabel(frame: CGRect(x: self.view.frame.size.width/2 - 125, y: self.view.frame.size.height-150, width: 250, height: 35))
+        toastLabel.backgroundColor = UIColor.black.withAlphaComponent(0.5)
         toastLabel.textColor = UIColor.white
-        //toastLabel.font = font
+        toastLabel.font = UIFont.systemFont(ofSize: 12)
         toastLabel.textAlignment = .center;
         toastLabel.text = message
         toastLabel.alpha = 1.0
         toastLabel.layer.cornerRadius = 10;
         toastLabel.clipsToBounds  =  true
         self.view.addSubview(toastLabel)
-        UIView.animate(withDuration: 4.0, delay: 0.1, options: .curveEaseOut, animations: {
+        UIView.animate(withDuration: 2.0, delay: 1.0, options: .curveEaseOut, animations: {
             toastLabel.alpha = 0.0
         }, completion: {(isCompleted) in
             toastLabel.removeFromSuperview()

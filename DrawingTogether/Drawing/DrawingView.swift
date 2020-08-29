@@ -103,6 +103,11 @@ class DrawingView: UIImageView {
         }
     }
     
+    func sendModeMqttMessage(mode: Mode) {
+        let messageFormat = MqttMessageFormat(username: de.myUsername!, mode: mode);
+        sendMqttMessage.putMqttMessage(messageFormat: messageFormat);
+    }
+    
     func setComponentAttribute(dComponent: DrawingComponent) {
         dComponent.username = de.username
         dComponent.usersComponentId = de.usersComponentIdCounter()
@@ -317,4 +322,43 @@ class DrawingView: UIImageView {
         }
     }
     
+    func clear() {
+        de.drawingVC!.eraserVC.dismiss(animated: true, completion: nil)
+        
+        let alertController = UIAlertController(title: "화면 초기화", message: "모든 그리기 내용이 삭제됩니다.\n그래도 지우시겠습니까?", preferredStyle: .alert)
+        let yesAction = UIAlertAction(title: "YES", style: .destructive) {
+            (action) in
+            
+            //        de.initSelectedBitmap();
+            //
+            //        sendModeMqttMessage(Mode.CLEAR); *****
+            //        de.clearDrawingComponents();
+            //        de.clearTexts();
+            //        de.getDrawingFragment().getBinding().redoBtn.setEnabled(false);
+            //        de.getDrawingFragment().getBinding().undoBtn.setEnabled(false);
+            //        invalidate();
+            self.sendModeMqttMessage(mode: Mode.CLEAR)
+        }
+        alertController.addAction(yesAction)
+        alertController.addAction(UIAlertAction(title: "NO", style: .cancel, handler: nil))
+        
+        de.drawingVC?.present(alertController, animated: true)
+    }
+    
+    func clearBackgroundImage() {
+        de.drawingVC!.eraserVC.dismiss(animated: true, completion: nil)
+        
+        let alertController = UIAlertController(title: "배경 초기화", message: "배경 이미지가 삭제됩니다.\n그래도 지우시겠습니까?", preferredStyle: .alert)
+        let yesAction = UIAlertAction(title: "YES", style: .destructive) {
+            (action) in
+            
+            self.sendModeMqttMessage(mode: Mode.CLEAR_BACKGROUND_IMAGE)
+            self.de.backgroundImage = nil
+            self.de.clearBackgroundImage()
+        }
+        alertController.addAction(yesAction)
+        alertController.addAction(UIAlertAction(title: "NO", style: .cancel, handler: nil))
+        
+        de.drawingVC?.present(alertController, animated: true)
+    }
 }
