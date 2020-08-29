@@ -39,6 +39,8 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     var userListStr: String!
     var userVC: UserViewController!
     
+    var closeFlag: Bool = false
+    
     // AUDIO
     var micFlag = false
     var speakerFlag = false
@@ -65,6 +67,7 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         userVC = storyboard?.instantiateViewController(withIdentifier: "UserViewController") as? UserViewController
         
         client.initialize(ip, port, topic, name, master, masterName, self)
+        closeFlag = false
         print("DrawingViewController : [topic = \(topic!), my name = \(name!), master = \(master!)]")
         
         imagePicker.delegate = self
@@ -98,8 +101,12 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         
         setUserNum(userNum: 0)
         userListStr = ""
-        client.exitTask()
-        client.unsubscribeAllTopics()
+        
+        if (!closeFlag) {
+            client.exitTask()
+            client.unsubscribeAllTopics()
+        }
+        client.session?.disconnect()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -112,33 +119,47 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let yesAction = UIAlertAction(title: "YES", style: .destructive) {
             (action) in
-            // exit task
-            self.client.exitTask()
-            self.client.unsubscribeAllTopics()
             
             let offset = UIOffset(horizontal: self.view.frame.width/2, vertical: self.view.frame.height/2)
             SVProgressHUD.setOffsetFromCenter(offset)
             SVProgressHUD.show()
             
+            // network checking ...
+            
             // database delete
             let dt = DatabaseTransaction()
             dt.connect()
-            dt.runTranscationExit(topic: self.topic!, name: self.name!, masterMode: self.master!, handler: {(result) in
-                if result == "commited" {
-                    SVProgressHUD.dismiss()
-                    
-                    // move to home
-                    if let topViewController = self.navigationController?.viewControllers.first {
-                        self.navigationController?.popToViewController(topViewController, animated: true)
-                    }
+            dt.runTranscationExit(topic: self.topic!, name: self.name!, masterMode: self.master!) {
+                (errorMsg) in
+                SVProgressHUD.dismiss()
+                if !errorMsg.isEmpty {
+                    self.showDatabaseErrorAlert(title: "데이터베이스 오류 발생", message: errorMsg)
+                    return
                 }
-            })
+                // mqtt connection check ...
+                
+                // exit task
+                self.client.exitTask()
+                self.client.unsubscribeAllTopics()
+                self.closeFlag = true
+                
+                // move to home
+                if let topViewController = self.navigationController?.viewControllers.first {
+                    self.navigationController?.popToViewController(topViewController, animated: true)
+                }
+            }
         }
         alertController.addAction(yesAction)
         if selectable {
             alertController.addAction(UIAlertAction(title: "NO", style: .cancel))
 
         }
+        present(alertController, animated: true)
+    }
+    
+    func showDatabaseErrorAlert(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "YES", style: .cancel))
         present(alertController, animated: true)
     }
     
@@ -198,11 +219,11 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     // MARK: IBACTION FUNCION
     @IBAction func backPressed(sender: UIBarButtonItem) {
         print("back pressed")
-        var title = "토픽 종료"
-        var message = "토픽을 종료하시겠습니까?"
+        var title = "회의방 종료"
+        var message = "회의방을 종료하시겠습니까?"
         if !master {
-            title = "토픽방 나가기"
-            message = "토픽방을 나가시겠습니까?"
+            title = "회의방 나가기"
+            message = "회의방을 나가시겠습니까?"
         }
         showAlert(title: title, message: message, selectable: true)
     }

@@ -27,20 +27,21 @@ class ObserveThread: Thread {
         
         while true {
             
+            if isCancelled {
+                break
+            }
             if isPubed {
                 lastPubTime = formatter.date(from: formatter.string(from: Date()))
-                print(lastPubTime)
                 isPubed = false
                 
             }
-            if lastPubTime.timeIntervalSinceNow < -10.0 {
+            if lastPubTime.timeIntervalSinceNow < -60.0 {
                 OperationQueue.main.addOperation {
                     self.mqttClient.drawingVC.showAlert(title: "non response", message: "1 minute passed", selectable: false)
-                    
                 }
-                
                 break
             }
+            
         }
     }
     

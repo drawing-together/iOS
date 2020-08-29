@@ -19,7 +19,7 @@ class MQTTClient: NSObject {
     var mqtt_port: UInt32!
     let qos: MQTTQosLevel = .exactlyOnce // 2
     var transport = MQTTCFSocketTransport()
-    fileprivate var session = MQTTSession()
+    var session = MQTTSession()
     //
     
     // TOPIC
@@ -90,8 +90,8 @@ class MQTTClient: NSObject {
                 let messageFormat = MqttMessageFormat(joinMessage: joinMessage)
                 self.publish(topic: self.topic_join, message: self.parser.jsonWrite(object: messageFormat)!)
 
-//                self.observeThread = ObserveThread()
-//                self.observeThread.start()
+                self.observeThread = ObserveThread()
+                self.observeThread.start()
 
                 self.aliveThread = AliveThread()
                 self.aliveThread.setSecond(second: 10.0)
@@ -179,6 +179,7 @@ class MQTTClient: NSObject {
     }
     
     public func exitTask() {
+        print("exit task start")
         if master {
             let closeMessage = CloseMessage(name: self.myName)
             let messageFormat = MqttMessageFormat(closeMessage: closeMessage)
@@ -190,7 +191,7 @@ class MQTTClient: NSObject {
         }
         userList.removeAll()
         aliveThread.cancel()
-//        observeThread.cancel()
+        observeThread.cancel()
         de.removeAllDrawingData()
         isMid = true
         
@@ -200,6 +201,7 @@ class MQTTClient: NSObject {
             audioPlaying = false
         }
         //
+        print("exit task end")
     }
     
     public func usernameList() -> String {
@@ -479,7 +481,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                         print(user.name! + " " + String(userList[i].count!))
                         
                         if userList[i].count == aliveLimitCount && user.name == masterName {
-                            drawingVC.showAlert(title: "토픽 종료", message: "마스터 접속이 끊겼습니다.\n(마스터가 alive publish를 제대로 못 한 경우 또는 마스터가 지우지 못한 토픽에 접속한 경우)", selectable: false)
+                            drawingVC.showAlert(title: "회의방 종료", message: "마스터 접속이 끊겼습니다.\n(마스터가 alive publish를 제대로 못 한 경우 또는 마스터가 지우지 못한 회의방에 접속한 경우)", selectable: false)
                             break
                         }
                         if userList[i].count == aliveLimitCount {

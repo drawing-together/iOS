@@ -137,28 +137,50 @@ class MainViewController: UIViewController {
         
         if !specialCharacterAndBlank {
             
-            let offset = UIOffset(horizontal: view.frame.width/2, vertical: view.frame.height/2)
-            SVProgressHUD.setOffsetFromCenter(offset)
-            SVProgressHUD.show()
+            let alertController = UIAlertController(title: "마스터 체크", message: "마스터가 맞습니까?", preferredStyle: .alert)
+            let yesAction = UIAlertAction(title: "YES", style: .destructive) {
+                (action) in
+                self.afterMasterCheck(sender);
+            }
+            alertController.addAction(yesAction)
+            alertController.addAction(UIAlertAction(title: "NO", style: .cancel))
+            present(alertController, animated: true)
             
-            let dt = DatabaseTransaction()
-            dt.connect()
+        }
+    }
+    
+    func afterMasterCheck(_ sender: UIButton) {
+        
+        // network checking ...
+        
+        let offset = UIOffset(horizontal: view.frame.width/2, vertical: view.frame.height/2)
+        SVProgressHUD.setOffsetFromCenter(offset)
+        SVProgressHUD.show()
+        
+        let dt = DatabaseTransaction()
+        dt.connect()
 
-            dt.runTransactionLogin(topic: topicTextField.text!, password: passwordTextField.text!, name: nameTextField.text!, masterMode: true) {
-                (masterName: String, topicError: Bool, passwordError: Bool, nameError: Bool) in
+        dt.runTransactionLogin(topic: topicTextField.text!, password: passwordTextField.text!, name: nameTextField.text!, masterMode: true) {
+            (errorMsg, masterName, topicError, passwordError, nameError) in
+//            SVProgressHUD.dismiss()
+            print("transaction completed")
+            
+            if !errorMsg.isEmpty {
                 SVProgressHUD.dismiss()
-                print("transaction completed")
-                
-                if topicError {
-                    self.topicErrorLabel.text = "이미 존재하는 토픽입니다."
-                }
-                else {
-                    self.masterName = masterName
-                    self.performSegue(withIdentifier: "segueMasterLogin", sender: sender)
-                    print("master login 클릭하여 drawing 화면으로 넘어감")
-                }
+                self.showDatabaseErrorAlert(title: "데이터베이스 오류 발생", message: errorMsg)
+                return
+            }
+            if topicError {
+                SVProgressHUD.dismiss()
+                self.topicErrorLabel.text = "이미 존재하는 회의명입니다."
+            }
+            else {
+                self.masterName = masterName
+                self.performSegue(withIdentifier: "segueMasterLogin", sender: sender)
+                print("master login 클릭하여 drawing 화면으로 넘어감")
             }
         }
+        
     }
     
     // 조인 버튼
@@ -170,6 +192,9 @@ class MainViewController: UIViewController {
         hasSpecialCharacterAndBlank()
         
         if !specialCharacterAndBlank {
+            
+            // network checking ...
+            
             let offset = UIOffset(horizontal: view.frame.width/2, vertical: view.frame.height/2)
             SVProgressHUD.setOffsetFromCenter(offset)
             SVProgressHUD.show()
@@ -178,15 +203,22 @@ class MainViewController: UIViewController {
             dt.connect()
             
             dt.runTransactionLogin(topic: topicTextField.text!, password: passwordTextField.text!, name: nameTextField.text!, masterMode: false) {
-                (masterName: String, topicError: Bool, passwordError: Bool, nameError: Bool) in
-                SVProgressHUD.dismiss()
+                (errorMsg, masterName, topicError, passwordError, nameError) in
+//                SVProgressHUD.dismiss()
                 print("transaction completed")
                 
+                if !errorMsg.isEmpty {
+                    SVProgressHUD.dismiss()
+                    self.showDatabaseErrorAlert(title: "데이터베이스 오류 발생", message: errorMsg)
+                    return
+                }
                 if passwordError {
+                    SVProgressHUD.dismiss()
                     self.passwordErrorLabel.text = "비밀번호가 일치하지 않습니다."
                     return
                 }
                 if nameError {
+                    SVProgressHUD.dismiss()
                     self.nameErrorLabel.text = "이미 사용중인 이름입니다."
                     return
                 }
@@ -196,10 +228,17 @@ class MainViewController: UIViewController {
                     print("join 클릭하여 drawing 화면으로 넘어감")
                 }
                 else {
-                    self.topicErrorLabel.text = "존재하지 않는 토픽입니다."
+                    SVProgressHUD.dismiss()
+                    self.topicErrorLabel.text = "존재하지 않는 회의명입니다."
                 }
             }
         }
+    }
+    
+    func showDatabaseErrorAlert(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "YES", style: .cancel))
+        present(alertController, animated: true)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

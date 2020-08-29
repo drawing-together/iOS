@@ -34,7 +34,6 @@
 		844049A524BD5A27004B8290 /* color picker bar.png in Resources */ = {isa = PBXBuildFile; fileRef = 844049A424BD5A27004B8290 /* color picker bar.png */; };
 		844049A724BD5A37004B8290 /* join.png in Resources */ = {isa = PBXBuildFile; fileRef = 844049A624BD5A37004B8290 /* join.png */; };
 		844049A924BD5A4F004B8290 /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 844049A824BD5A4F004B8290 /* logo.png */; };
-		844049AB24BD5A5B004B8290 /* back.png in Resources */ = {isa = PBXBuildFile; fileRef = 844049AA24BD5A5B004B8290 /* back.png */; };
 		844049AD24BD64E9004B8290 /* AliveThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844049AC24BD64E9004B8290 /* AliveThread.swift */; };
 		844049AF24BD64F7004B8290 /* AliveMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844049AE24BD64F7004B8290 /* AliveMessage.swift */; };
 		84404A0524E6659A004B8290 /* JoinAckMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84404A0424E6659A004B8290 /* JoinAckMessage.swift */; };
@@ -43,6 +42,7 @@
 		84404A0B24E66D2A004B8290 /* KakaoOpenSDK-1.23.3 in Resources */ = {isa = PBXBuildFile; fileRef = 84404A0A24E66D2A004B8290 /* KakaoOpenSDK-1.23.3 */; };
 		84404A0D24E66D52004B8290 /* KakaoLink.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84404A0C24E66D52004B8290 /* KakaoLink.framework */; };
 		84404A0E24E66D52004B8290 /* KakaoLink.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 84404A0C24E66D52004B8290 /* KakaoLink.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		84404A1324FA27EF004B8290 /* back.png in Resources */ = {isa = PBXBuildFile; fileRef = 84404A1224FA27EF004B8290 /* back.png */; };
 		8450CC4424879561003286A4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8450CC4324879561003286A4 /* GoogleService-Info.plist */; };
 		8450CC52248E1A49003286A4 /* JoinMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8450CC51248E1A49003286A4 /* JoinMessage.swift */; };
 		8450CC57248E1A55003286A4 /* MqttMessageFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8450CC54248E1A55003286A4 /* MqttMessageFormat.swift */; };
@@ -134,7 +134,6 @@
 		844049A424BD5A27004B8290 /* color picker bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "color picker bar.png"; sourceTree = "<group>"; };
 		844049A624BD5A37004B8290 /* join.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = join.png; sourceTree = "<group>"; };
 		844049A824BD5A4F004B8290 /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
-		844049AA24BD5A5B004B8290 /* back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back.png; sourceTree = "<group>"; };
 		844049AC24BD64E9004B8290 /* AliveThread.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AliveThread.swift; sourceTree = "<group>"; };
 		844049AE24BD64F7004B8290 /* AliveMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AliveMessage.swift; sourceTree = "<group>"; };
 		84404A0424E6659A004B8290 /* JoinAckMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinAckMessage.swift; sourceTree = "<group>"; };
@@ -142,6 +141,8 @@
 		84404A0824E6695E004B8290 /* DatabaseTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseTransaction.swift; sourceTree = "<group>"; };
 		84404A0A24E66D2A004B8290 /* KakaoOpenSDK-1.23.3 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "KakaoOpenSDK-1.23.3"; sourceTree = "<group>"; };
 		84404A0C24E66D52004B8290 /* KakaoLink.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KakaoLink.framework; path = "KakaoOpenSDK-1.23.3/KakaoLink.framework"; sourceTree = "<group>"; };
+		84404A1124F7B61B004B8290 /* KakaoOpenSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KakaoOpenSDK.h; sourceTree = "<group>"; };
+		84404A1224FA27EF004B8290 /* back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = back.png; path = "../../../../../../../Downloads/이미지들/back.png"; sourceTree = "<group>"; };
 		8450CC4324879561003286A4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8450CC51248E1A49003286A4 /* JoinMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JoinMessage.swift; sourceTree = "<group>"; };
 		8450CC54248E1A55003286A4 /* MqttMessageFormat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MqttMessageFormat.swift; sourceTree = "<group>"; };
@@ -211,9 +212,9 @@
 			children = (
 				844049A424BD5A27004B8290 /* color picker bar.png */,
 				9570971524C09F8300509AC8 /* backbutton.png */,
+				84404A1224FA27EF004B8290 /* back.png */,
 				1160A6822498B7F200BC79C8 /* new_logo.png */,
 				1160A6842498B81900BC79C8 /* new_master_login.png */,
-				844049AA24BD5A5B004B8290 /* back.png */,
 				844049A624BD5A37004B8290 /* join.png */,
 				844049A824BD5A4F004B8290 /* logo.png */,
 				844049A224BD5689004B8290 /* master_login.png */,
@@ -286,6 +287,7 @@
 				953A67BB2490EDB8008AC2BA /* TextEditingView.swift */,
 				1160A67A2498761E00BC79C8 /* TextEditingView.xib */,
 				953A67B92490EDB8008AC2BA /* TextMode.swift */,
+				84404A1124F7B61B004B8290 /* KakaoOpenSDK.h */,
 			);
 			path = Drawing;
 			sourceTree = "<group>";
@@ -419,12 +421,12 @@
 				844049A924BD5A4F004B8290 /* logo.png in Resources */,
 				116988F42494AB3D003C3E34 /* pen1.png in Resources */,
 				9570971624C09F8300509AC8 /* backbutton.png in Resources */,
-				844049AB24BD5A5B004B8290 /* back.png in Resources */,
 				CEDE687C24765A7C0057E9D2 /* LaunchScreen.storyboard in Resources */,
 				844049A524BD5A27004B8290 /* color picker bar.png in Resources */,
 				BDBEA31824C92E1C009693D0 /* intro.json in Resources */,
 				116988F52494AB3D003C3E34 /* pen2.png in Resources */,
 				116988F72494AB3D003C3E34 /* shape.png in Resources */,
+				84404A1324FA27EF004B8290 /* back.png in Resources */,
 				1169890E249604F3003C3E34 /* color_bar.png in Resources */,
 				1154021F2497131500B53F96 /* pen13.png in Resources */,
 				116988FA2494AB3D003C3E34 /* warping.png in Resources */,
