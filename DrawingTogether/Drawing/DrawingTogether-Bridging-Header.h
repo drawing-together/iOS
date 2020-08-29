@@ -3,12 +3,4 @@
 //
 
 #include "OpenCVWrapper.h"
-
-#ifndef KaKaoOpenSDK_Bridging_Header_h
-#define KaKaoOpenSDK_Bridging_Header_h
-
-#import <KakaoOpenSDK/KakaoOpenSDK.h>
-#import <KakaoLink/KakaoLink.h>
-#import <KakaoMessageTemplate/KakaoMessageTemplate.h>
-
-#endif /* KaKaoOpenSDK_Bridging_Header_h */
+#include "KakaoOpenSDK.h"

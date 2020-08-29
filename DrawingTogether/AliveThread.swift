@@ -21,7 +21,7 @@ class AliveThread: Thread {
         self.topic = self.mqttClient.getTopic()
         self.myName = self.mqttClient.getMyName()
         self.second = 10.0
-//        self.observeThread = self.mqttClient.observeThread
+        self.observeThread = self.mqttClient.observeThread
     }
     
     override func main() {
@@ -34,7 +34,8 @@ class AliveThread: Thread {
                 break
             }
             self.mqttClient.publish(topic: topic + "_alive", message: jsonParser.jsonWrite(object: messageFormat)!)
-//            self.observeThread.isPubed = true
+            print("alive pub")
+            self.observeThread.isPubed = true
             Thread.sleep(forTimeInterval: self.second)
         }
     }
