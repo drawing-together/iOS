@@ -237,7 +237,7 @@ class MainViewController: UIViewController {
     
     func showDatabaseErrorAlert(title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: "YES", style: .cancel))
+        alertController.addAction(UIAlertAction(title: "YES", style: .destructive))
         present(alertController, animated: true)
     }
     
@@ -268,25 +268,6 @@ class MainViewController: UIViewController {
         nameErrorLabel.text = nil
     }
     
-}
-
-@IBDesignable class PaddingLabel: UILabel {
-    
-    @IBInspectable var topInset: CGFloat = 8.0
-    @IBInspectable var bottomInset: CGFloat = 8.0
-    @IBInspectable var leftInset: CGFloat = 8.0
-    @IBInspectable var rightInset: CGFloat = 8.0
-    
-    override func drawText(in rect: CGRect) {
-        let insets = UIEdgeInsets.init(top: topInset, left: leftInset, bottom: bottomInset, right: rightInset)
-        super.drawText(in: rect.inset(by: insets))
-    }
-    
-    override var intrinsicContentSize: CGSize {
-        let size = super.intrinsicContentSize
-        return CGSize(width: size.width + leftInset + rightInset,
-                      height: size.height + topInset + bottomInset)
-    }
 }
 
 extension String {
