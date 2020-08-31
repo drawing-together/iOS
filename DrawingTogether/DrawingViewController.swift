@@ -19,13 +19,19 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     
     @IBOutlet weak var backgroundImageView: UIImageView!
     @IBOutlet weak var drawingView: DrawingView!
+    @IBOutlet weak var currentView: UIImageView!
+    @IBOutlet weak var myCurrentView: UIImageView!
     
     @IBOutlet weak var drawingContainer: UIView!
     @IBOutlet weak var currentColorBtn: UIButton!
-    
+    @IBOutlet weak var penModeView: UIStackView!
     @IBOutlet weak var drawingTools: UIStackView!
     @IBOutlet weak var textColorChangeBtn: UIButton!
     @IBOutlet weak var colorChangeBtnView: UIView!
+    
+    @IBOutlet weak var pencilBtn: UIButton!
+    @IBOutlet weak var highlightBtn: UIButton!
+    @IBOutlet weak var neonBtn: UIButton!
     
     var textEditingView: TextEditingView!
     
@@ -172,7 +178,7 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     
     func showDatabaseErrorAlert(title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: "YES", style: .cancel))
+        alertController.addAction(UIAlertAction(title: "YES", style: .destructive))
         present(alertController, animated: true)
     }
     
@@ -335,6 +341,7 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     
     @IBAction func clickPen(_ sender: UIButton) {
         print("pen")
+        penModeView.isHidden = false
         changeClickedButtonBackground(sender)
         
         print(sender.accessibilityIdentifier!) // 각 버튼의 Accessibility의 identifier 속성을 10, 20, 30으로 설정
@@ -344,8 +351,27 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         de.currentType = ComponentType.STROKE
     }
     
+    @IBAction func clickPencil(_ sender: UIButton) {
+        pencilBtn.setImage(UIImage(named:"pencil_1.png"), for: .normal)
+        highlightBtn.setImage(UIImage(named:"highlight_0.png"), for: .normal)
+        neonBtn.setImage(UIImage(named:"neon_0.png"), for: .normal)
+    }
+    
+    @IBAction func clickHighlight(_ sender: UIButton) {
+        pencilBtn.setImage(UIImage(named:"pencil_0.png"), for: .normal)
+        highlightBtn.setImage(UIImage(named:"highlight_1.png"), for: .normal)
+        neonBtn.setImage(UIImage(named:"neon_0.png"), for: .normal)
+    }
+    
+    @IBAction func clickNeon(_ sender: UIButton) {
+        pencilBtn.setImage(UIImage(named:"pencil_0.png"), for: .normal)
+        highlightBtn.setImage(UIImage(named:"highlight_0.png"), for: .normal)
+        neonBtn.setImage(UIImage(named:"neon_1.png"), for: .normal)
+    }
+    
     @IBAction func clickShape(_ sender: UIButton) {
         print("shape")
+        penModeView.isHidden = true
         changeClickedButtonBackground(sender)
 
         shapeVC.modalPresentationStyle = .popover
@@ -363,6 +389,7 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     
     @IBAction func clickText(_ sender: UIButton) {
         print("text")
+        penModeView.isHidden = true
         changeClickedButtonBackground(sender)
         
         de.currentMode = .TEXT
@@ -382,25 +409,29 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     
     @IBAction func clickEraser(_ sender: UIButton) {
         print("eraser")
+        penModeView.isHidden = true
         changeClickedButtonBackground(sender)
         
-        de.currentMode = .ERASE
-        
-        eraserVC.modalPresentationStyle = .popover
-        eraserVC.preferredContentSize = CGSize(width: 100, height: 110)
-        if let popoverController = eraserVC.popoverPresentationController {
-            popoverController.sourceView = sender
-            popoverController.sourceRect =  CGRect(x: -35, y: -5, width: 100, height: 35)
-            popoverController.permittedArrowDirections = .any
-            popoverController.delegate = self
-            eraserVC.popoverPresentationController?.delegate = self
+        if de.currentMode == Mode.ERASE {
+            eraserVC.modalPresentationStyle = .popover
+            eraserVC.preferredContentSize = CGSize(width: 100, height: 110)
+            if let popoverController = eraserVC.popoverPresentationController {
+                popoverController.sourceView = sender
+                popoverController.sourceRect =  CGRect(x: -35, y: -5, width: 100, height: 35)
+                popoverController.permittedArrowDirections = .any
+                popoverController.delegate = self
+                eraserVC.popoverPresentationController?.delegate = self
+            }
+            
+            present(eraserVC, animated: true, completion: nil)
         }
         
-        present(eraserVC, animated: true, completion: nil)
+        de.currentMode = .ERASE
     }
     
     @IBAction func clickSelector(_ sender: UIButton) {
         print("selector")
+        penModeView.isHidden = true
         changeClickedButtonBackground(sender)
         
         de.currentMode = Mode.SELECT
@@ -408,6 +439,7 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     
     @IBAction func clickWarping(_ sender: UIButton) {
         print("warping")
+        penModeView.isHidden = true
         changeClickedButtonBackground(sender)
         
         de.currentMode = Mode.WARP
@@ -657,5 +689,38 @@ extension UIColor {
         let rgb:Int = (Int)(r*255)<<16 | (Int)(g*255)<<8 | (Int)(b*255)<<0
         
         return String(format:"#%06x", rgb)
+    }
+}
+
+
+@IBDesignable extension UIButton {
+    
+    @IBInspectable var cornerRadius: CGFloat {
+        set {
+            layer.cornerRadius = newValue
+        }
+        get {
+            return layer.cornerRadius
+        }
+    }
+
+    @IBInspectable var borderWidth: CGFloat {
+        set {
+            layer.borderWidth = newValue
+        }
+        get {
+            return layer.borderWidth
+        }
+    }
+
+    @IBInspectable var borderColor: UIColor? {
+        set {
+            guard let uiColor = newValue else { return }
+            layer.borderColor = uiColor.cgColor
+        }
+        get {
+            guard let color = layer.borderColor else { return nil }
+            return UIColor(cgColor: color)
+        }
     }
 }

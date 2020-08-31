@@ -8,9 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		0A7E9DA10627382D01D7095A /* Pods_DrawingTogether.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BFA4C93A455D3A8A4BACA03 /* Pods_DrawingTogether.framework */; };
+		1119FDC224FA4064007261D8 /* back.png in Resources */ = {isa = PBXBuildFile; fileRef = 1119FDC124FA4064007261D8 /* back.png */; };
+		1119FDC424FA705A007261D8 /* highlight_0.png in Resources */ = {isa = PBXBuildFile; fileRef = 1119FDC324FA705A007261D8 /* highlight_0.png */; };
+		1119FDC624FA7062007261D8 /* highlight_1.png in Resources */ = {isa = PBXBuildFile; fileRef = 1119FDC524FA7062007261D8 /* highlight_1.png */; };
+		1119FDC824FA706A007261D8 /* neon_0.png in Resources */ = {isa = PBXBuildFile; fileRef = 1119FDC724FA7069007261D8 /* neon_0.png */; };
+		1119FDCA24FA706F007261D8 /* neon_1.png in Resources */ = {isa = PBXBuildFile; fileRef = 1119FDC924FA706F007261D8 /* neon_1.png */; };
+		1119FDCC24FA7076007261D8 /* pencil_0.png in Resources */ = {isa = PBXBuildFile; fileRef = 1119FDCB24FA7076007261D8 /* pencil_0.png */; };
+		1119FDCE24FA707C007261D8 /* pencil_1.png in Resources */ = {isa = PBXBuildFile; fileRef = 1119FDCD24FA707C007261D8 /* pencil_1.png */; };
 		111D1578247B88BA00095A31 /* DrawingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D1577247B88BA00095A31 /* DrawingViewController.swift */; };
 		113E8EE0247F912400F33359 /* MQTTClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113E8EDF247F912400F33359 /* MQTTClient.swift */; };
-		115122B824F7EE3600D11A9E /* back.png in Resources */ = {isa = PBXBuildFile; fileRef = 115122B724F7EE3600D11A9E /* back.png */; };
 		115122BA24F8CEA000D11A9E /* ShapeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115122B924F8CEA000D11A9E /* ShapeViewController.swift */; };
 		115122BC24F8D43D00D11A9E /* EraserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115122BB24F8D43D00D11A9E /* EraserViewController.swift */; };
 		1154021F2497131500B53F96 /* pen13.png in Resources */ = {isa = PBXBuildFile; fileRef = 1154021E2497131500B53F96 /* pen13.png */; };
@@ -106,9 +112,15 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1119FDC124FA4064007261D8 /* back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back.png; sourceTree = "<group>"; };
+		1119FDC324FA705A007261D8 /* highlight_0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = highlight_0.png; sourceTree = "<group>"; };
+		1119FDC524FA7062007261D8 /* highlight_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = highlight_1.png; sourceTree = "<group>"; };
+		1119FDC724FA7069007261D8 /* neon_0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = neon_0.png; sourceTree = "<group>"; };
+		1119FDC924FA706F007261D8 /* neon_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = neon_1.png; sourceTree = "<group>"; };
+		1119FDCB24FA7076007261D8 /* pencil_0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pencil_0.png; sourceTree = "<group>"; };
+		1119FDCD24FA707C007261D8 /* pencil_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pencil_1.png; sourceTree = "<group>"; };
 		111D1577247B88BA00095A31 /* DrawingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingViewController.swift; sourceTree = "<group>"; };
 		113E8EDF247F912400F33359 /* MQTTClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MQTTClient.swift; sourceTree = "<group>"; };
-		115122B724F7EE3600D11A9E /* back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = back.png; path = "../../../Desktop/Capstone/UI(시시콜콜)/iOS/back.png"; sourceTree = "<group>"; };
 		115122B924F8CEA000D11A9E /* ShapeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeViewController.swift; sourceTree = "<group>"; };
 		115122BB24F8D43D00D11A9E /* EraserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EraserViewController.swift; sourceTree = "<group>"; };
 		1154021E2497131500B53F96 /* pen13.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pen13.png; sourceTree = "<group>"; };
@@ -144,6 +156,8 @@
 		84404A0824E6695E004B8290 /* DatabaseTransaction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseTransaction.swift; sourceTree = "<group>"; };
 		84404A0A24E66D2A004B8290 /* KakaoOpenSDK-1.23.3 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "KakaoOpenSDK-1.23.3"; sourceTree = "<group>"; };
 		84404A0C24E66D52004B8290 /* KakaoLink.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = KakaoLink.framework; path = "KakaoOpenSDK-1.23.3/KakaoLink.framework"; sourceTree = "<group>"; };
+		84404A1124F7B61B004B8290 /* KakaoOpenSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = KakaoOpenSDK.h; sourceTree = "<group>"; };
+		84404A1224FA27EF004B8290 /* back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = back.png; path = "/Downloads/이미지들/back.png"; sourceTree = "<absolute>"; };
 		8450CC4324879561003286A4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8450CC51248E1A49003286A4 /* JoinMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JoinMessage.swift; sourceTree = "<group>"; };
 		8450CC54248E1A55003286A4 /* MqttMessageFormat.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MqttMessageFormat.swift; sourceTree = "<group>"; };
@@ -208,12 +222,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1119FDBE24FA396A007261D8 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				84404A1224FA27EF004B8290 /* back.png */,
+			);
+			name = "Recovered References";
+			sourceTree = "<group>";
+		};
 		116988E22494AB21003C3E34 /* image */ = {
 			isa = PBXGroup;
 			children = (
 				844049A424BD5A27004B8290 /* color picker bar.png */,
 				9570971524C09F8300509AC8 /* backbutton.png */,
-				115122B724F7EE3600D11A9E /* back.png */,
+				1119FDC124FA4064007261D8 /* back.png */,
 				1160A6822498B7F200BC79C8 /* new_logo.png */,
 				1160A6842498B81900BC79C8 /* new_master_login.png */,
 				844049A624BD5A37004B8290 /* join.png */,
@@ -232,6 +254,12 @@
 				116988E32494AB3C003C3E34 /* text.png */,
 				116988E52494AB3C003C3E34 /* eraser.png */,
 				116988EE2494AB3D003C3E34 /* warping.png */,
+				1119FDC324FA705A007261D8 /* highlight_0.png */,
+				1119FDC524FA7062007261D8 /* highlight_1.png */,
+				1119FDC724FA7069007261D8 /* neon_0.png */,
+				1119FDC924FA706F007261D8 /* neon_1.png */,
+				1119FDCB24FA7076007261D8 /* pencil_0.png */,
+				1119FDCD24FA707C007261D8 /* pencil_1.png */,
 			);
 			path = image;
 			sourceTree = "<group>";
@@ -287,6 +315,7 @@
 				953A67BB2490EDB8008AC2BA /* TextEditingView.swift */,
 				1160A67A2498761E00BC79C8 /* TextEditingView.xib */,
 				953A67B92490EDB8008AC2BA /* TextMode.swift */,
+				84404A1124F7B61B004B8290 /* KakaoOpenSDK.h */,
 			);
 			path = Drawing;
 			sourceTree = "<group>";
@@ -317,6 +346,7 @@
 				CEDE686D24765A780057E9D2 /* Products */,
 				B588619159CC547280219286 /* Pods */,
 				457A817C1883B4582D704CBB /* Frameworks */,
+				1119FDBE24FA396A007261D8 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -422,8 +452,9 @@
 				116988F42494AB3D003C3E34 /* pen1.png in Resources */,
 				9570971624C09F8300509AC8 /* backbutton.png in Resources */,
 				CEDE687C24765A7C0057E9D2 /* LaunchScreen.storyboard in Resources */,
+				1119FDC824FA706A007261D8 /* neon_0.png in Resources */,
 				844049A524BD5A27004B8290 /* color picker bar.png in Resources */,
-				115122B824F7EE3600D11A9E /* back.png in Resources */,
+				1119FDC224FA4064007261D8 /* back.png in Resources */,
 				BDBEA31824C92E1C009693D0 /* intro.json in Resources */,
 				116988F52494AB3D003C3E34 /* pen2.png in Resources */,
 				116988F72494AB3D003C3E34 /* shape.png in Resources */,
@@ -434,11 +465,14 @@
 				1160A6852498B81900BC79C8 /* new_master_login.png in Resources */,
 				844049A724BD5A37004B8290 /* join.png in Resources */,
 				115402212497132200B53F96 /* pen23.png in Resources */,
+				1119FDCE24FA707C007261D8 /* pencil_1.png in Resources */,
 				84404A0B24E66D2A004B8290 /* KakaoOpenSDK-1.23.3 in Resources */,
 				116988F62494AB3D003C3E34 /* redo.png in Resources */,
 				116988F12494AB3D003C3E34 /* eraser.png in Resources */,
 				1169890C2495DB89003C3E34 /* selector.png in Resources */,
 				116988EF2494AB3D003C3E34 /* text.png in Resources */,
+				1119FDC424FA705A007261D8 /* highlight_0.png in Resources */,
+				1119FDCC24FA7076007261D8 /* pencil_0.png in Resources */,
 				8450CC4424879561003286A4 /* GoogleService-Info.plist in Resources */,
 				1160A67B2498761E00BC79C8 /* TextEditingView.xib in Resources */,
 				CEDE687924765A7C0057E9D2 /* Assets.xcassets in Resources */,
@@ -446,6 +480,8 @@
 				CEDE687724765A780057E9D2 /* Main.storyboard in Resources */,
 				116988F02494AB3D003C3E34 /* pen3.png in Resources */,
 				1160A6832498B7F200BC79C8 /* new_logo.png in Resources */,
+				1119FDCA24FA706F007261D8 /* neon_1.png in Resources */,
+				1119FDC624FA7062007261D8 /* highlight_1.png in Resources */,
 				115402232497132800B53F96 /* pen33.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

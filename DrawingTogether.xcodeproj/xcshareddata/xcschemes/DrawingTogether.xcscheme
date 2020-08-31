@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "CEDE686B24765A780057E9D2"
-               BuildableName = "DrawingTogether.app"
+               BuildableName = "&#x1109;&#x1175;&#x1109;&#x1175;&#x110f;&#x1169;&#x11af;&#x110f;&#x1169;&#x11af;.app"
                BlueprintName = "DrawingTogether"
                ReferencedContainer = "container:DrawingTogether.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CEDE686B24765A780057E9D2"
-            BuildableName = "DrawingTogether.app"
+            BuildableName = "&#x1109;&#x1175;&#x1109;&#x1175;&#x110f;&#x1169;&#x11af;&#x110f;&#x1169;&#x11af;.app"
             BlueprintName = "DrawingTogether"
             ReferencedContainer = "container:DrawingTogether.xcodeproj">
          </BuildableReference>
@@ -69,7 +69,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CEDE686B24765A780057E9D2"
-            BuildableName = "DrawingTogether.app"
+            BuildableName = "&#x1109;&#x1175;&#x1109;&#x1175;&#x110f;&#x1169;&#x11af;&#x110f;&#x1169;&#x11af;.app"
             BlueprintName = "DrawingTogether"
             ReferencedContainer = "container:DrawingTogether.xcodeproj">
          </BuildableReference>
