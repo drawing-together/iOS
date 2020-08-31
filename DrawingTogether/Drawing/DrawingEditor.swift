@@ -54,6 +54,9 @@ class DrawingEditor {
     var strokeAlpha = 180
     var fillAlpha = 0
     var strokeWidth: CGFloat = 10
+    var penMode: PenMode?
+    var highlightAlpha = 170
+    var normalAlpha = 255
     
     // MARK: 셀렉터
     var selectedComponent: DrawingComponent?
@@ -85,6 +88,7 @@ class DrawingEditor {
         self.drawingVC = drawingVC
         self.drawingView = drawingVC.drawingView
         currentType = ComponentType.STROKE
+        penMode = PenMode.NORMAL
         currentMode = Mode.DRAW
         myCanvasWidth = drawingView!.bounds.size.width
         myCanvasHeight = drawingView!.bounds.size.height
@@ -122,6 +126,7 @@ class DrawingEditor {
         
         currentMode = Mode.DRAW
         currentType = ComponentType.STROKE
+        penMode = PenMode.NORMAL
         strokeColor = "#000000"
         strokeWidth = 10
         

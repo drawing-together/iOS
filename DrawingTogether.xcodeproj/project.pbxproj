@@ -72,8 +72,8 @@
 		953A67D12490EDB9008AC2BA /* Mode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67C32490EDB9008AC2BA /* Mode.swift */; };
 		953A67D22490EDB9008AC2BA /* DrawingComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67C42490EDB9008AC2BA /* DrawingComponent.swift */; };
 		9570971624C09F8300509AC8 /* backbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 9570971524C09F8300509AC8 /* backbutton.png */; };
-		BD5ABFC024FCE891004503E2 /* PenMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5ABFBF24FCE890004503E2 /* PenMode.swift */; };
-		BD5ABFC224FD12E7004503E2 /* back.png in Resources */ = {isa = PBXBuildFile; fileRef = BD5ABFC124FD12E6004503E2 /* back.png */; };
+		BD5ABFCE24FD1E6C004503E2 /* PenMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5ABFCD24FD1E6C004503E2 /* PenMode.swift */; };
+		BD5ABFCF24FD1F5C004503E2 /* WarpData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5ABFCB24FD1E58004503E2 /* WarpData.swift */; };
 		BD5D2AC224969A4100B6D811 /* DrawingComponentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5D2AC124969A4100B6D811 /* DrawingComponentProtocol.swift */; };
 		BD5D2AC424969A5600B6D811 /* MotionEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5D2AC324969A5600B6D811 /* MotionEvent.swift */; };
 		BD5D2AC624969A6900B6D811 /* EraseCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5D2AC524969A6900B6D811 /* EraseCommand.swift */; };
@@ -89,7 +89,6 @@
 		BDBEA32424C93237009693D0 /* SelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBEA32324C93237009693D0 /* SelectorCommand.swift */; };
 		BDBEA32624C93248009693D0 /* SendMqttMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBEA32524C93248009693D0 /* SendMqttMessage.swift */; };
 		CE59F5FA24D8FA72008A6CCC /* WarpingMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE59F5F924D8FA72008A6CCC /* WarpingMessage.swift */; };
-		CE59F60124D8FC0C008A6CCC /* WarpData.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE59F5FF24D8FC0C008A6CCC /* WarpData.swift */; };
 		CE59F60724D900EF008A6CCC /* OpenCVWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE59F60624D900EF008A6CCC /* OpenCVWrapper.mm */; };
 		CEDE687024765A780057E9D2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDE686F24765A780057E9D2 /* AppDelegate.swift */; };
 		CEDE687224765A780057E9D2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDE687124765A780057E9D2 /* SceneDelegate.swift */; };
@@ -184,6 +183,8 @@
 		9570971524C09F8300509AC8 /* backbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backbutton.png; sourceTree = "<group>"; };
 		BD5ABFBF24FCE890004503E2 /* PenMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenMode.swift; sourceTree = "<group>"; };
 		BD5ABFC124FD12E6004503E2 /* back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back.png; sourceTree = "<group>"; };
+		BD5ABFCB24FD1E58004503E2 /* WarpData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WarpData.swift; sourceTree = "<group>"; };
+		BD5ABFCD24FD1E6C004503E2 /* PenMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenMode.swift; sourceTree = "<group>"; };
 		BD5D2AC124969A4100B6D811 /* DrawingComponentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingComponentProtocol.swift; sourceTree = "<group>"; };
 		BD5D2AC324969A5600B6D811 /* MotionEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionEvent.swift; sourceTree = "<group>"; };
 		BD5D2AC524969A6900B6D811 /* EraseCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EraseCommand.swift; sourceTree = "<group>"; };
@@ -230,6 +231,8 @@
 			isa = PBXGroup;
 			children = (
 				84404A1224FA27EF004B8290 /* back.png */,
+				CE59F5FF24D8FC0C008A6CCC /* WarpData.swift */,
+				BD5ABFBF24FCE890004503E2 /* PenMode.swift */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -302,11 +305,13 @@
 				BD5D2AC524969A6900B6D811 /* EraseCommand.swift */,
 				BD5D2AC924969A8F00B6D811 /* Eraser.swift */,
 				BD5D2ACB24969A9F00B6D811 /* EraserTask.swift */,
+				84404A1124F7B61B004B8290 /* KakaoOpenSDK.h */,
 				953A67C32490EDB9008AC2BA /* Mode.swift */,
 				BD5D2AC324969A5600B6D811 /* MotionEvent.swift */,
 				CE59F60524D900EF008A6CCC /* OpenCVWrapper.h */,
 				CE59F60624D900EF008A6CCC /* OpenCVWrapper.mm */,
 				BDBEA31F24C931CC009693D0 /* Oval.swift */,
+				BD5ABFCD24FD1E6C004503E2 /* PenMode.swift */,
 				953A67B82490EDB8008AC2BA /* Point.swift */,
 				953A67BF2490EDB8008AC2BA /* Rect.swift */,
 				BDBEA32124C9322C009693D0 /* Selector.swift */,
@@ -319,7 +324,7 @@
 				953A67BB2490EDB8008AC2BA /* TextEditingView.swift */,
 				1160A67A2498761E00BC79C8 /* TextEditingView.xib */,
 				953A67B92490EDB8008AC2BA /* TextMode.swift */,
-				84404A1124F7B61B004B8290 /* KakaoOpenSDK.h */,
+				BD5ABFCB24FD1E58004503E2 /* WarpData.swift */,
 			);
 			path = Drawing;
 			sourceTree = "<group>";
@@ -539,6 +544,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BD5ABFCF24FD1F5C004503E2 /* WarpData.swift in Sources */,
 				BDBEA31C24C92E88009693D0 /* CircularQueue.swift in Sources */,
 				11C5BCA524965BFB0066517B /* SplashViewController.swift in Sources */,
 				844049AF24BD64F7004B8290 /* AliveMessage.swift in Sources */,
@@ -552,6 +558,7 @@
 				BD5D2AC424969A5600B6D811 /* MotionEvent.swift in Sources */,
 				CE59F5FA24D8FA72008A6CCC /* WarpingMessage.swift in Sources */,
 				953A67CA2490EDB9008AC2BA /* DrawingEditor.swift in Sources */,
+				BD5ABFCE24FD1E6C004503E2 /* PenMode.swift in Sources */,
 				953A67B62490E8A7008AC2BA /* User.swift in Sources */,
 				CEDE687424765A780057E9D2 /* MainViewController.swift in Sources */,
 				BDBEA32224C9322C009693D0 /* Selector.swift in Sources */,
@@ -570,8 +577,6 @@
 				953A67D12490EDB9008AC2BA /* Mode.swift in Sources */,
 				1160A67D2498788600BC79C8 /* TextAdapter.swift in Sources */,
 				BD5D2AC224969A4100B6D811 /* DrawingComponentProtocol.swift in Sources */,
-				CE59F60124D8FC0C008A6CCC /* WarpData.swift in Sources */,
-				BD5ABFC024FCE891004503E2 /* PenMode.swift in Sources */,
 				953A67CE2490EDB9008AC2BA /* DrawingView.swift in Sources */,
 				953A67CD2490EDB9008AC2BA /* Rect.swift in Sources */,
 				84404A0724E667A5004B8290 /* ObserveThread.swift in Sources */,

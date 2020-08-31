@@ -37,7 +37,7 @@ class DrawingComponent: Codable, DrawingComponentProtocol {
     var height: Int?
     var isErased: Bool = false
     var isSelected: Bool = false
-    var penMode: PenMode = PenMode.NEON
+    var penMode: PenMode?
     
     
     //    init() {

@@ -351,24 +351,31 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         
         de.currentMode = Mode.DRAW
         de.currentType = ComponentType.STROKE
+        //de.penMode = PenMode.NORMAL
     }
     
     @IBAction func clickPencil(_ sender: UIButton) {
         pencilBtn.setImage(UIImage(named:"pencil_1.png"), for: .normal)
         highlightBtn.setImage(UIImage(named:"highlight_0.png"), for: .normal)
         neonBtn.setImage(UIImage(named:"neon_0.png"), for: .normal)
+        
+        de.penMode = PenMode.NORMAL
     }
     
     @IBAction func clickHighlight(_ sender: UIButton) {
         pencilBtn.setImage(UIImage(named:"pencil_0.png"), for: .normal)
         highlightBtn.setImage(UIImage(named:"highlight_1.png"), for: .normal)
         neonBtn.setImage(UIImage(named:"neon_0.png"), for: .normal)
+        
+        de.penMode = PenMode.HIGHLIGHT
     }
     
     @IBAction func clickNeon(_ sender: UIButton) {
         pencilBtn.setImage(UIImage(named:"pencil_0.png"), for: .normal)
         highlightBtn.setImage(UIImage(named:"highlight_0.png"), for: .normal)
         neonBtn.setImage(UIImage(named:"neon_1.png"), for: .normal)
+        
+        de.penMode = PenMode.NEON
     }
     
     @IBAction func clickShape(_ sender: UIButton) {

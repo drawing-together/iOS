@@ -167,9 +167,10 @@ class DrawingView: UIImageView {
         dComponent.username = de.username
         dComponent.usersComponentId = de.usersComponentIdCounter()
         dComponent.type = de.currentType
-        dComponent.fillColor = de.strokeColor   //todo
+        dComponent.penMode = de.penMode
         dComponent.strokeColor = de.strokeColor
         dComponent.strokeAlpha = de.strokeAlpha
+        dComponent.fillColor = de.strokeColor   //todo
         dComponent.fillAlpha = de.fillAlpha
         dComponent.strokeWidth = de.strokeWidth
         dComponent.drawnCanvasWidth = de.myCanvasWidth

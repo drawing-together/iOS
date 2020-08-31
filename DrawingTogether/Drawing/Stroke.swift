@@ -63,9 +63,9 @@ class Stroke: DrawingComponent {
         
         context.setLineCap(.round)
         context.setLineJoin(.round)
-        context.setLineWidth(self.strokeWidth! / 2)     // **
         
         if(self.penMode == PenMode.NEON) {
+            context.setLineWidth(self.strokeWidth! + 4 / 2)
             context.setShadow(offset: CGSize.zero, blur: 15.0, color: self.hexStringToUIColor(hex: self.strokeColor!).cgColor)
             context.setBlendMode(.normal)//.multiply)
             
@@ -102,7 +102,13 @@ class Stroke: DrawingComponent {
             context2.strokePath()
             
         } else {
-            context.setAlpha(Alpha.getIOSAlpha(alpha: self.strokeAlpha!))
+            if self.penMode == PenMode.HIGHLIGHT {
+                context.setAlpha(Alpha.getIOSAlpha(alpha: drawingEditor.highlightAlpha/*self.strokeAlpha!*/))
+            } else if self.penMode == PenMode.NORMAL {
+                context.setAlpha(Alpha.getIOSAlpha(alpha: drawingEditor.normalAlpha/*self.strokeAlpha!*/))
+            }
+            
+            context.setLineWidth(self.strokeWidth! / 2)     // **
             context.setStrokeColor(self.hexStringToUIColor(hex: self.strokeColor!).cgColor)
             
             //print("drawComponent xRatio=\(xRatio), yRatio=\(yRatio)")
