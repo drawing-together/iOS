@@ -10,7 +10,6 @@
 		0A7E9DA10627382D01D7095A /* Pods_DrawingTogether.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BFA4C93A455D3A8A4BACA03 /* Pods_DrawingTogether.framework */; };
 		111D1578247B88BA00095A31 /* DrawingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D1577247B88BA00095A31 /* DrawingViewController.swift */; };
 		113E8EE0247F912400F33359 /* MQTTClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113E8EDF247F912400F33359 /* MQTTClient.swift */; };
-		115122B824F7EE3600D11A9E /* back.png in Resources */ = {isa = PBXBuildFile; fileRef = 115122B724F7EE3600D11A9E /* back.png */; };
 		115122BA24F8CEA000D11A9E /* ShapeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115122B924F8CEA000D11A9E /* ShapeViewController.swift */; };
 		115122BC24F8D43D00D11A9E /* EraserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115122BB24F8D43D00D11A9E /* EraserViewController.swift */; };
 		1154021F2497131500B53F96 /* pen13.png in Resources */ = {isa = PBXBuildFile; fileRef = 1154021E2497131500B53F96 /* pen13.png */; };
@@ -66,6 +65,8 @@
 		953A67D12490EDB9008AC2BA /* Mode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67C32490EDB9008AC2BA /* Mode.swift */; };
 		953A67D22490EDB9008AC2BA /* DrawingComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67C42490EDB9008AC2BA /* DrawingComponent.swift */; };
 		9570971624C09F8300509AC8 /* backbutton.png in Resources */ = {isa = PBXBuildFile; fileRef = 9570971524C09F8300509AC8 /* backbutton.png */; };
+		BD5ABFC024FCE891004503E2 /* PenMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5ABFBF24FCE890004503E2 /* PenMode.swift */; };
+		BD5ABFC224FD12E7004503E2 /* back.png in Resources */ = {isa = PBXBuildFile; fileRef = BD5ABFC124FD12E6004503E2 /* back.png */; };
 		BD5D2AC224969A4100B6D811 /* DrawingComponentProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5D2AC124969A4100B6D811 /* DrawingComponentProtocol.swift */; };
 		BD5D2AC424969A5600B6D811 /* MotionEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5D2AC324969A5600B6D811 /* MotionEvent.swift */; };
 		BD5D2AC624969A6900B6D811 /* EraseCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5D2AC524969A6900B6D811 /* EraseCommand.swift */; };
@@ -108,7 +109,6 @@
 /* Begin PBXFileReference section */
 		111D1577247B88BA00095A31 /* DrawingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingViewController.swift; sourceTree = "<group>"; };
 		113E8EDF247F912400F33359 /* MQTTClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MQTTClient.swift; sourceTree = "<group>"; };
-		115122B724F7EE3600D11A9E /* back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = back.png; path = "../../../Desktop/Capstone/UI(시시콜콜)/iOS/back.png"; sourceTree = "<group>"; };
 		115122B924F8CEA000D11A9E /* ShapeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeViewController.swift; sourceTree = "<group>"; };
 		115122BB24F8D43D00D11A9E /* EraserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EraserViewController.swift; sourceTree = "<group>"; };
 		1154021E2497131500B53F96 /* pen13.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pen13.png; sourceTree = "<group>"; };
@@ -166,6 +166,8 @@
 		953A67C32490EDB9008AC2BA /* Mode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mode.swift; sourceTree = "<group>"; };
 		953A67C42490EDB9008AC2BA /* DrawingComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingComponent.swift; sourceTree = "<group>"; };
 		9570971524C09F8300509AC8 /* backbutton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = backbutton.png; sourceTree = "<group>"; };
+		BD5ABFBF24FCE890004503E2 /* PenMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenMode.swift; sourceTree = "<group>"; };
+		BD5ABFC124FD12E6004503E2 /* back.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = back.png; sourceTree = "<group>"; };
 		BD5D2AC124969A4100B6D811 /* DrawingComponentProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingComponentProtocol.swift; sourceTree = "<group>"; };
 		BD5D2AC324969A5600B6D811 /* MotionEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionEvent.swift; sourceTree = "<group>"; };
 		BD5D2AC524969A6900B6D811 /* EraseCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EraseCommand.swift; sourceTree = "<group>"; };
@@ -213,9 +215,9 @@
 			children = (
 				844049A424BD5A27004B8290 /* color picker bar.png */,
 				9570971524C09F8300509AC8 /* backbutton.png */,
-				115122B724F7EE3600D11A9E /* back.png */,
 				1160A6822498B7F200BC79C8 /* new_logo.png */,
 				1160A6842498B81900BC79C8 /* new_master_login.png */,
+				BD5ABFC124FD12E6004503E2 /* back.png */,
 				844049A624BD5A37004B8290 /* join.png */,
 				844049A224BD5689004B8290 /* master_login.png */,
 				1169890B2495DB89003C3E34 /* selector.png */,
@@ -239,14 +241,14 @@
 		116988FB2494B2B7003C3E34 /* MQTT */ = {
 			isa = PBXGroup;
 			children = (
+				8450CC5B248E1C55003286A4 /* CloseMessage.swift */,
+				8450CC59248E1BA8003286A4 /* ExitMessage.swift */,
+				84404A0424E6659A004B8290 /* JoinAckMessage.swift */,
+				8450CC51248E1A49003286A4 /* JoinMessage.swift */,
+				8450CC55248E1A55003286A4 /* JSONParser.swift */,
 				113E8EDF247F912400F33359 /* MQTTClient.swift */,
 				8450CC54248E1A55003286A4 /* MqttMessageFormat.swift */,
 				CE59F5F924D8FA72008A6CCC /* WarpingMessage.swift */,
-				8450CC51248E1A49003286A4 /* JoinMessage.swift */,
-				8450CC59248E1BA8003286A4 /* ExitMessage.swift */,
-				8450CC5B248E1C55003286A4 /* CloseMessage.swift */,
-				8450CC55248E1A55003286A4 /* JSONParser.swift */,
-				84404A0424E6659A004B8290 /* JoinAckMessage.swift */,
 			);
 			path = MQTT;
 			sourceTree = "<group>";
@@ -256,17 +258,14 @@
 			children = (
 				BDBEA31924C92E6E009693D0 /* Alpha.swift */,
 				BDBEA31B24C92E88009693D0 /* CircularQueue.swift */,
-				CE59F60824D9013D008A6CCC /* DrawingTogether-Bridging-Header.h */,
 				BD5D2AC724969A7900B6D811 /* Command.swift */,
 				953A67C22490EDB9008AC2BA /* ComponentType.swift */,
 				953A67C42490EDB9008AC2BA /* DrawingComponent.swift */,
 				953A67BE2490EDB8008AC2BA /* DrawingComponentAdapter.swift */,
 				BD5D2AC124969A4100B6D811 /* DrawingComponentProtocol.swift */,
-				CE59F60524D900EF008A6CCC /* OpenCVWrapper.h */,
-				CE59F60624D900EF008A6CCC /* OpenCVWrapper.mm */,
-				CE59F5FF24D8FC0C008A6CCC /* WarpData.swift */,
 				953A67BC2490EDB8008AC2BA /* DrawingEditor.swift */,
 				952F4EB124910C4E00B665F4 /* DrawingItem.swift */,
+				CE59F60824D9013D008A6CCC /* DrawingTogether-Bridging-Header.h */,
 				BDBEA31D24C93141009693D0 /* DrawingTool.swift */,
 				953A67C02490EDB9008AC2BA /* DrawingView.swift */,
 				BD5D2AC524969A6900B6D811 /* EraseCommand.swift */,
@@ -274,6 +273,8 @@
 				BD5D2ACB24969A9F00B6D811 /* EraserTask.swift */,
 				953A67C32490EDB9008AC2BA /* Mode.swift */,
 				BD5D2AC324969A5600B6D811 /* MotionEvent.swift */,
+				CE59F60524D900EF008A6CCC /* OpenCVWrapper.h */,
+				CE59F60624D900EF008A6CCC /* OpenCVWrapper.mm */,
 				BDBEA31F24C931CC009693D0 /* Oval.swift */,
 				953A67B82490EDB8008AC2BA /* Point.swift */,
 				953A67BF2490EDB8008AC2BA /* Rect.swift */,
@@ -287,6 +288,8 @@
 				953A67BB2490EDB8008AC2BA /* TextEditingView.swift */,
 				1160A67A2498761E00BC79C8 /* TextEditingView.xib */,
 				953A67B92490EDB8008AC2BA /* TextMode.swift */,
+				CE59F5FF24D8FC0C008A6CCC /* WarpData.swift */,
+				BD5ABFBF24FCE890004503E2 /* PenMode.swift */,
 			);
 			path = Drawing;
 			sourceTree = "<group>";
@@ -423,7 +426,7 @@
 				9570971624C09F8300509AC8 /* backbutton.png in Resources */,
 				CEDE687C24765A7C0057E9D2 /* LaunchScreen.storyboard in Resources */,
 				844049A524BD5A27004B8290 /* color picker bar.png in Resources */,
-				115122B824F7EE3600D11A9E /* back.png in Resources */,
+				BD5ABFC224FD12E7004503E2 /* back.png in Resources */,
 				BDBEA31824C92E1C009693D0 /* intro.json in Resources */,
 				116988F52494AB3D003C3E34 /* pen2.png in Resources */,
 				116988F72494AB3D003C3E34 /* shape.png in Resources */,
@@ -531,6 +534,7 @@
 				1160A67D2498788600BC79C8 /* TextAdapter.swift in Sources */,
 				BD5D2AC224969A4100B6D811 /* DrawingComponentProtocol.swift in Sources */,
 				CE59F60124D8FC0C008A6CCC /* WarpData.swift in Sources */,
+				BD5ABFC024FCE891004503E2 /* PenMode.swift in Sources */,
 				953A67CE2490EDB9008AC2BA /* DrawingView.swift in Sources */,
 				953A67CD2490EDB9008AC2BA /* Rect.swift in Sources */,
 				84404A0724E667A5004B8290 /* ObserveThread.swift in Sources */,
@@ -698,7 +702,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 725GFJMUCZ;
+				DEVELOPMENT_TEAM = GYJHR3KXF9;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/KakaoOpenSDK-1.23.3",
@@ -778,7 +782,7 @@
 					"\"opencv2\"",
 					"-all_load",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = hansung.seeseecallcall;
+				PRODUCT_BUNDLE_IDENTIFIER = hansung.seeseecallcall2;
 				PRODUCT_NAME = "시시콜콜";
 				SWIFT_OBJC_BRIDGING_HEADER = "DrawingTogether/Drawing/DrawingTogether-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -794,7 +798,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 725GFJMUCZ;
+				DEVELOPMENT_TEAM = GYJHR3KXF9;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/KakaoOpenSDK-1.23.3",
@@ -874,7 +878,7 @@
 					"\"opencv2\"",
 					"-all_load",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = hansung.seeseecallcall;
+				PRODUCT_BUNDLE_IDENTIFIER = hansung.seeseecallcall2;
 				PRODUCT_NAME = "시시콜콜";
 				SWIFT_OBJC_BRIDGING_HEADER = "DrawingTogether/Drawing/DrawingTogether-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;

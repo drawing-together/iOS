@@ -44,6 +44,7 @@ class MQTTClient: NSObject {
     private var parser: JSONParser = JSONParser.parser
     private var de: DrawingEditor = DrawingEditor.INSTANCE
     var isMid = true
+    let queue = DispatchQueue(label: "drawingQueue")
     
     // AUDIO
     private var audioPlaying: Bool = false
@@ -434,9 +435,9 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             case .TEXT:
                 self.text(message: mqttMessageFormat)
                 break
-                /*case .SELECT:
+            case .SELECT:
                  self.select(message: mqttMessageFormat)
-                 break*/
+                 break
             case .WARP:
                 self.warp(message: mqttMessageFormat)
                 break
@@ -522,6 +523,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         }
     }
     
+    
     func draw(message: MqttMessageFormat) {
         var dComponent: DrawingComponent?
         let username = message.username
@@ -530,8 +532,12 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         let myCanvasWidth = self.de.myCanvasWidth
         let myCanvasHeight = self.de.myCanvasHeight
         
-        DispatchQueue.global(qos: .background).async {
+        
+        self.queue.async {
             print("action=\(String(describing: action)) This is run on the background queue")
+            
+            if username == nil { return }
+            
             if let component = message.component?.getComponent() {
                 dComponent = component
                 
@@ -545,12 +551,8 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                 }
             }
             
-            DispatchQueue.main.async {
-                print("This is run on the main queue, after the previous code in outer block")
-                
-                switch action {
+            switch action {
                 case MotionEvent.ACTION_DOWN.rawValue:
-                    
                     dComponent!.clearPoints();
                     dComponent!.id = self.de.componentIdCounter()
                     
@@ -559,7 +561,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                     
                     self.updateUsersAction(username: username!, action: action!)
                     break
-                    
+                
                 case MotionEvent.ACTION_MOVE.rawValue:
                     if self.de.myUsername == username {
                         for point in message.movePoints! {
@@ -570,14 +572,68 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                         
                         //print("points[] = \(message.movePoints!)")
                         for point in message.movePoints! {
-                            self.de.drawingView!.addPointAndDraw(component: dComponent!, point: point)
+                            self.de.drawingView!.addPoint(component: dComponent!, point: point)
+                        }
+                            
+                        
+                    }
+                    break
+                case MotionEvent.ACTION_UP.rawValue:
+                    if self.de.myUsername == username {
+                        self.de.drawingView!.addPoint(component: dComponent!, point: message.point!)
+                        self.de.drawingView?.doInDrawActionUp(component: dComponent!, canvasWidth: myCanvasWidth!, canvasHeight: myCanvasHeight!)
+                        if(self.de.isIntercept) {
+                            self.de.drawingView!.isIntercept = true
+                            print("drawingview intercept true")
                         }
                     }
+                    break
+                
+                case .none: break
+                case .some(_): break
+            }
+            
+            DispatchQueue.main.async {
+                print("This is run on the main queue, after the previous code in outer block")
+                
+                switch action {
+                /*case MotionEvent.ACTION_DOWN.rawValue:
+                    
+                    dComponent!.clearPoints();
+                    dComponent!.id = self.de.componentIdCounter()
+                    
+                    self.de.addCurrentComponents(component: dComponent!)
+                    self.de.printDrawingComponentArray(name: "cc", array: self.de.currentComponents, status: "down")
+                    
+                    self.updateUsersAction(username: username!, action: action!)
+                    break*/
+                    
+                case MotionEvent.ACTION_MOVE.rawValue:
+                    /*if self.de.myUsername == username {
+                        for point in message.movePoints! {
+                            self.de.drawingView!.addPoint(component: dComponent!, point: point)
+                        }
+                    } else {
+                        dComponent!.calculateRatio(myCanvasWidth: myCanvasWidth!, myCanvasHeight: myCanvasHeight!)
+                        
+                        //print("points[] = \(message.movePoints!)")
+                        for point in message.movePoints! {
+                            self.de.drawingView!.addPointAndDraw(component: dComponent!, point: point, view: self.de.drawingVC!.currentView)
+                        }
+                    }
+                    self.updateUsersAction(username: username!, action: action!)
+                    break*/
+                    
+                    if self.de.myUsername != username {
+                        dComponent!.draw(view: self.de.drawingVC!.currentView, drawingEditor: self.de)
+                    }
+                    //self.de.drawingVC!.currentView.setNeedsDisplay()
                     self.updateUsersAction(username: username!, action: action!)
                     break
                     
                 case MotionEvent.ACTION_UP.rawValue:
-                    if self.de.myUsername == username {
+                    /*if self.de.myUsername == username {
+                        self.de.drawingView!.addPoint(component: dComponent!, point: message.point!)
                         self.de.drawingView?.doInDrawActionUp(component: dComponent!, canvasWidth: myCanvasWidth!, canvasHeight: myCanvasHeight!)
                         if(self.de.isIntercept) {
                             self.de.drawingView!.isIntercept = true
@@ -586,10 +642,34 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                     } else {
                         print("up \((dComponent!.username)!), \((dComponent!.id)!)")
                         // de.drawingView.redrawShape(dComponent);
+                        self.de.drawingView!.addPointAndDraw(component: dComponent!, point: message.point!, view: self.de.drawingVC!.currentView)
                         self.de.drawingView!.doInDrawActionUp(component: dComponent!, canvasWidth: myCanvasWidth!, canvasHeight: myCanvasHeight!);
                         
-                        self.de.lastDrawingImage = self.de.drawingView!.image
+                        //self.de.lastDrawingImage = self.de.drawingView!.image
+                        self.drawingVC.currentView.image = nil
+                        self.de.drawOthersCurrentComponent(username: dComponent?.username)
+                        dComponent!.drawComponent(view: self.de.drawingView!, drawingEditor: self.de)
                     }
+                    self.updateUsersAction(username: username!, action: action!);
+                    break*/
+                    
+                    if self.de.currentMode == Mode.SELECT {
+                        self.de.addPostSelectedComponent(component: dComponent!)
+                    }
+                    
+                    if self.de.myUsername != username {
+                        print("up \((dComponent!.username)!), \((dComponent!.id)!)")
+                        // de.drawingView.redrawShape(dComponent);
+                        self.de.drawingView!.addPointAndDraw(component: dComponent!, point: message.point!, view: self.de.drawingVC!.currentView)
+                        self.de.drawingView!.doInDrawActionUp(component: dComponent!, canvasWidth: myCanvasWidth!, canvasHeight: myCanvasHeight!);
+                        
+                        //self.de.lastDrawingImage = self.de.drawingView!.image
+                        self.drawingVC.currentView.image = nil
+                        self.de.drawOthersCurrentComponent(username: dComponent?.username)
+                        dComponent!.drawComponent(view: self.de.drawingView!, drawingEditor: self.de)
+                    }
+                    //self.de.drawingVC!.currentView.setNeedsDisplay()
+                    //self.de.drawingView?.setNeedsDisplay()
                     self.updateUsersAction(username: username!, action: action!);
                     break
                     
@@ -598,7 +678,9 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                     
                 }
                 
-                self.de.drawingView!.setNeedsDisplay()
+                
+                
+                //self.de.drawingView!.setNeedsDisplay()
                 
                 //client.updateUsersAction(username, action);
                 
@@ -610,10 +692,10 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
     }
     
     func erase(message: MqttMessageFormat) {
-        DispatchQueue.global(qos: .background).async {
+        self.queue.async {
             if self.de.myUsername == message.username { return }
             
-            DispatchQueue.main.async {
+            //DispatchQueue.main.async {
                 print("MESSAGE ARRIVED message: username=\(String(describing: message.username)), mode=\(String(describing: message.mode)), id=\(message.componentIds!)")
                 let erasedComponentIds = message.componentIds!
                 EraserTask(erasedComponentIds: erasedComponentIds).execute()
@@ -621,11 +703,11 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                 self.de.clearUndoArray()
                 
                 //self.de.drawingView!.setNeedsDisplay()
-            }
+            //}
         }
     }
     
-    /*func select(message: MqttMessageFormat) {
+    func select(message: MqttMessageFormat) {
         let myCanvasWidth = self.de.myCanvasWidth
         let myCanvasHeight = self.de.myCanvasHeight
         
@@ -633,43 +715,74 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             if self.de.myUsername == message.username { return }
             
             if message.action == nil {
-                let selectedComponent = self.de.findDrawingComponentByUsersComponentId(usersComponentId: message.usersComponentId!)
-                if selectedComponent != nil {
-                    selectedComponent!.isSelected = message.isSelected!
+                if let selectedComponent = self.de.findDrawingComponentByUsersComponentId(usersComponentId: message.usersComponentId!), let isSelected = message.isSelected {
+                    selectedComponent.isSelected = isSelected
                 }
+            }
+            
+            let selectedComponent = self.de.findDrawingComponentByUsersComponentId(usersComponentId: message.usersComponentId!)
+            if selectedComponent == nil { return }
+            
+            print("MESSAGE ARRIVED message: username=\(String(describing: message.username)), mode=\(String(describing: message.mode)), uid=\(message.usersComponentId!)")
+            
+            switch message.action {
+            case MotionEvent.ACTION_DOWN.rawValue:
+                print("other selected true")
+                break
+            case MotionEvent.ACTION_MOVE.rawValue:
+                if let moveSelectPoints = message.moveSelectPoints, moveSelectPoints.count > 0 {
+                    for point in moveSelectPoints {
+                        self.de.moveSelectedComponent(selectedComponent: selectedComponent!, moveX: point.x, moveY: point.y)
+                    }
+                }
+                break
+            
+            case .none:
+                break
+            case .some(_):
+                break
             }
             
             DispatchQueue.main.async {
                 
-                let selectedComponent = self.de.findDrawingComponentByUsersComponentId(usersComponentId: message.usersComponentId!)
-                if selectedComponent == nil { return }
-                
-                print("MESSAGE ARRIVED message: username=\(String(describing: message.username)), mode=\(String(describing: message.mode)), uid=\(message.usersComponentId!)")
-                
                 if message.action == nil {
-                    if message.isSelected! {
-                        self.de.clearSelectedBitmap()
-                        self.de.drawSelectedComponentBorder(component: selectedComponent!, color: self.de.selectedBorderColor);
+                    /*if message.isSelected! {
+                        self.de.clearMyCurrentImage()
+                        self.de.drawSelectedComponentBorder(component: selectedComponent!, color: self.de.selectedBorderColor.cgColor)
                     } else {
-                        self.de.clearSelectedBitmap()
-                    }
+                        self.de.clearMyCurrentImage()
+                    }*/
                 } else {
                     switch message.action {
-                    case MotionEvent.ACTION_DOWN.rawValue:
-                        print("other selected true")
-                        break
+                    
                     case MotionEvent.ACTION_MOVE.rawValue:
-                        self.de.moveSelectedComponent(selectedComponent: selectedComponent!, moveX: message.moveX!, moveY: message.moveY!)
+                        //self.de.clearMyCurrentImage()
+                        self.de.updateSelectedComponent(newComponent: selectedComponent!)
+                        self.de.clearDrawingImage()
+                        self.de.drawAllDrawingComponents()
+                        
                         break
                     case MotionEvent.ACTION_UP.rawValue:
-                        self.de.clearSelectedBitmap()
-                        self.de.drawSelectedComponentBorder(component: selectedComponent!, color: self.de.selectedBorderColor)
-                        self.de.updateSelectedComponent(component: selectedComponent!, canvasWidth: myCanvasWidth!, canvasHeight: myCanvasHeight!)
-                        self.de.updateDrawingComponents(newComponent: selectedComponent!)
-                        self.de.clearDrawingBitmap()
+                        //self.de.clearMyCurrentImage()
+                        self.de.splitPointsOfSelectedComponent(component: selectedComponent!, canvasWidth: self.de.myCanvasWidth!, canvasHeight: self.de.myCanvasHeight!)
+                        self.de.updateSelectedComponent(newComponent: selectedComponent!)
+                        self.de.clearDrawingImage()
                         self.de.drawAllDrawingComponents()
+                        
+                        self.de.clearUndoArray()
+
+                        /*if self.de.currentMode == Mode.SELECT && self.de.drawingView!.isSelected  {
+                            self.de.setPreAndPostSelectedComponentsImage()
+
+                            self.de.clearMyCurrentImage()
+                            self.de.drawUnselectedComponents()
+                            self.de.selectedComponent!.drawComponent(view: self.de.drawingVC!.myCurrentView, drawingEditor: self.de)
+                            self.de.drawSelectedComponentBorder(component: selectedComponent!, color: self.de.mySelectedBorderColor.cgColor)
+                        }*/
+                        
                         print("other selected finish")
                         break
+                        
                     case .none:
                         break
                     case .some(_):
@@ -678,7 +791,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                 }
             }
         }
-    }*/
+    }
     
     
     

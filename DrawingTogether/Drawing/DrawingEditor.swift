@@ -16,10 +16,12 @@ class DrawingEditor {
     
     var drawingView: DrawingView?
     var drawingVC: DrawingViewController?
-    //var selectedView: UIImageView?
+    
+    var currentImage: UIImage?
+    var myCurrentImage: UIImage?
     var lastDrawingImage: UIImage?
     
-//    var backgroundImage: CGImage?
+    //    var backgroundImage: CGImage?
     
     var isIntercept = false
     
@@ -49,13 +51,18 @@ class DrawingEditor {
     // MARK: 드로잉 펜 속성
     var fillColor: String! = "#000000"
     var strokeColor: String! = "#000000"
-    var strokeAlpha = 255
-    var fillAlpha = 100
+    var strokeAlpha = 180
+    var fillAlpha = 0
     var strokeWidth: CGFloat = 10
     
     // MARK: 셀렉터
-    var selectedBorderColor: UIColor?
-    var mySelectedBorderColor: UIColor?
+    var selectedComponent: DrawingComponent?
+    var preSelectedComponents = [DrawingComponent]()
+    var postSelectedComponents = [DrawingComponent]()
+    //var preSelectedComponentsImage = UIImage()
+    var unselectedComponentsView = UIImageView()
+    var selectedBorderColor = UIColor.lightGray
+    var mySelectedBorderColor = UIColor.gray
     
     // MARK: 텍스트에 필요한 객체
     var texts: [Text] = []
@@ -77,11 +84,12 @@ class DrawingEditor {
     func initialize(drawingVC: DrawingViewController, master: Bool) {
         self.drawingVC = drawingVC
         self.drawingView = drawingVC.drawingView
-        //self.selectedView = drawinvVC.selectedView
         currentType = ComponentType.STROKE
         currentMode = Mode.DRAW
         myCanvasWidth = drawingView!.bounds.size.width
         myCanvasHeight = drawingView!.bounds.size.height
+        
+        unselectedComponentsView.frame = drawingView!.frame
         
         if(drawingBoardArray == nil) {
             print("drawingview width=\(Int(myCanvasWidth!)), height=\(Int(myCanvasHeight!))")
@@ -105,7 +113,7 @@ class DrawingEditor {
         drawingComponents.removeAll()
         currentComponents.removeAll()
         
-//        removeAllTextLabelToDrawingContainer()
+        //        removeAllTextLabelToDrawingContainer()
         texts.removeAll()
         currentText = nil
         
@@ -123,29 +131,40 @@ class DrawingEditor {
     
     // MARK: Drawing FUNCTION
     func drawAllDrawingComponents() {
+        drawingComponents = drawingComponents.sorted(by: {$0.id! < $1.id!})
+        
         for component in drawingComponents {
-            component.drawComponent(drawingView: drawingView!)
+            component.drawComponent(view: drawingView!, drawingEditor: self)
         }
     }
     
-    func drawAllCurrentStrokes() {
-        for component in currentComponents {
-            if component.type == ComponentType.STROKE {
-                component.drawComponent(drawingView: drawingView!)
+    func drawOthersCurrentComponent(username: String?) {
+        if username == nil {
+            for component in currentComponents {
+                if component.username != self.myUsername {
+                    component.drawComponent(view: drawingVC!.currentView, drawingEditor: self)
+                }
+            }
+        } else {
+            for component in currentComponents {
+                if ((component.username != self.myUsername) && (component.username != username)) {
+                    component.drawComponent(view: drawingVC!.currentView, drawingEditor: self)
+                }
             }
         }
+        
     }
     
     func drawAllDrawingComponentsForMid() {   //drawingComponents draw
         //print("drawn width=\((drawingComponents[0].drawnCanvasWidth)!), height=\((drawingComponents[0].drawnCanvasHeight)!)")
         for component in drawingComponents {
-
+            
             component.calculateRatio(myCanvasWidth: myCanvasWidth!, myCanvasHeight: myCanvasHeight!)
-            component.drawComponent(drawingView: drawingView!)
-
+            component.drawComponent(view: drawingView!, drawingEditor: self)
+            
             splitPoints(component: component, canvasWidth: CGFloat(drawingBoardArray![0].count), canvasHeight: CGFloat(drawingBoardArray!.count));
         }
-
+        
         print("drawingBoardArray[][] w=\(drawingBoardArray![0].count), h=\(drawingBoardArray!.count)")
         print("dba[0][0] = \(drawingBoardArray![0][0][0])")
     }
@@ -193,12 +212,12 @@ class DrawingEditor {
     }
     
     /*func printCurrentComponents(status: String) {
-        var str = "cc( \(status) ) [ \(currentComponents.count) ] = "
-        for component in currentComponents {
-            str += "\(component.id!) (\(component.usersComponentId!)) "
-        }
-        print(str)
-    }*/
+     var str = "cc( \(status) ) [ \(currentComponents.count) ] = "
+     for component in currentComponents {
+     str += "\(component.id!) (\(component.usersComponentId!)) "
+     }
+     print(str)
+     }*/
     
     func addDrawingComponents(component: DrawingComponent) {
         self.drawingComponents.append(component)
@@ -207,13 +226,13 @@ class DrawingEditor {
     func addAllDrawingComponents(components: [DrawingComponent]) {
         self.drawingComponents.append(contentsOf: components)
     }
-
+    
     /*func removeAllDrawingComponents(ids: [Int]) {
-        for i in ids {
-            self.removeDrawingComponents(id: i)
-        }
-    }*/
-
+     for i in ids {
+     self.removeDrawingComponents(id: i)
+     }
+     }*/
+    
     func removeDrawingComponents(id: Int) -> Int {
         for i in 0..<drawingComponents.count {
             if drawingComponents[i].id == id {
@@ -241,7 +260,7 @@ class DrawingEditor {
         }
         return nil
     }
-
+    
     func findDrawingComponentByUsersComponentId(usersComponentId: String) -> DrawingComponent? {
         for component in drawingComponents {
             if component.usersComponentId == usersComponentId {
@@ -262,7 +281,7 @@ class DrawingEditor {
             }
         }
     }
-
+    
     func clearDrawingBoardArray() {
         for i in 0..<drawingBoardArray!.count {
             for j in 0..<drawingBoardArray![i].count {
@@ -299,10 +318,10 @@ class DrawingEditor {
         drawingBoardMap.updateValue(newPoints, forKey: component.id!)
         
         /*var str = "newPoints(\(newPoints.count)) = "
-        for point in newPoints {
-            str += "\(point.toString()) "
-        }
-        print(str)*/
+         for point in newPoints {
+         str += "\(point.toString()) "
+         }
+         print(str)*/
         
         for point in newPoints {
             let x = point.x
@@ -314,8 +333,7 @@ class DrawingEditor {
         }
     }
     
-    
-    func strokeSplitPoints(component: DrawingComponent) -> [Point]? {
+    func strokeSplitPoints(component: DrawingComponent) -> [Point]! {
         
         var calcPoints = [Point]()    //화면 비율 보정한 Point 배열
         for point in component.points {
@@ -334,7 +352,10 @@ class DrawingEditor {
         var slope: Int?       //기울기
         var yIntercept: Int?  //y절편
         
-        if calcPoints.count < 2 { return nil }
+        if calcPoints.count < 2 {
+            newPoints.append(Point(x: calcPoints[0].x, y: calcPoints[0].y))
+            return newPoints
+        }
         
         for i in 0..<calcPoints.count-1 {
             let from = calcPoints[i]
@@ -359,32 +380,33 @@ class DrawingEditor {
         return newPoints
     }
     
+    
     func rectSplitPoints(component: DrawingComponent) -> [Point] {   //테두리만
-
+        
         let calcBeginPoint = Point(x: Int(CGFloat(component.beginPoint!.x) * (component.xRatio)), y: Int(CGFloat(component.beginPoint!.y) * (component.yRatio)))
         let calcEndPoint = Point(x: Int(CGFloat(component.endPoint!.x) * (component.xRatio)), y: Int(CGFloat(component.endPoint!.y) * (component.yRatio)))
         print("calcBegin = \(calcBeginPoint), calcEnd = \(calcEndPoint)")
-
+        
         let width = abs(calcEndPoint.x - calcBeginPoint.x)
         let height = abs(calcEndPoint.y - calcBeginPoint.y)
-
+        
         let datumPoint:Point = (calcBeginPoint.x < calcEndPoint.x) ? calcBeginPoint : calcEndPoint; //기준점 (사각형의 왼쪽위 꼭짓점)
-
+        
         var newPoints = [Point]()     //사이 점 채워진 Point 배열
         let slope:Int = (calcEndPoint.x - calcBeginPoint.x) == 0 ? 0 : (calcEndPoint.y - calcBeginPoint.y) / (calcEndPoint.x - calcBeginPoint.x);
-
+        
         if(slope == 0) {
             newPoints.append(calcBeginPoint)
         } else if(slope < 0) {
             datumPoint.y -= height;
         }
-
+        
         //component.beginPoint = calcBeginPoint
         //component.endPoint = calcEndPoint
         component.datumPoint = Point(x: Int(CGFloat(datumPoint.x) / (component.xRatio)), y: Int(CGFloat(datumPoint.y) / (component.yRatio)))
         component.width = width
         component.height = height
-
+        
         for i in datumPoint.y..<datumPoint.y + height + 1 {
             newPoints.append(Point(x: datumPoint.x, y: i))
             newPoints.append(Point(x: datumPoint.x + width, y: i))
@@ -393,7 +415,7 @@ class DrawingEditor {
             newPoints.append(Point(x: i, y: datumPoint.y))
             newPoints.append(Point(x: i, y: datumPoint.y + height))
         }
-
+        
         //print("\(newPoints)")
         return newPoints;
     }
@@ -438,7 +460,7 @@ class DrawingEditor {
             }
         }
     }
-
+    
     func removeRemovedComponentIds(ids: [Int]) {
         for i in 0..<ids.count {
             if removedComponentId.contains(ids[i]) {
@@ -446,7 +468,7 @@ class DrawingEditor {
             }
         }
     }
-
+    
     func getNotRemovedComponentIds(ids: [Int]) -> [Int] {
         var temp = [Int]()
         for i in 0..<ids.count {
@@ -470,43 +492,104 @@ class DrawingEditor {
     func eraseDrawingBoardArray(erasedComponentIds: [Int]) {
         for i in 1..<erasedComponentIds.count {
             let id = erasedComponentIds[i]
-
+            
             let newPoints = drawingBoardMap[id]
             if newPoints == nil { return }
-
+            
             print("id=\(id), newPoints.size()=\(newPoints!.count)")
-
+            
             for j in 0..<newPoints!.count {
                 let x = newPoints![j].x
                 let y = newPoints![j].y
-
+                
                 if drawingBoardArray![y][x].contains(id) {
-                    let index = drawingBoardArray![y][x].index(of: id)
-                    drawingBoardArray![y][x].remove(at: index!)
+                    if let index = drawingBoardArray?[y][x].firstIndex(of: id) {
+                        drawingBoardArray?[y][x].remove(at: index)
+                    }
+                    //drawingBoardArray![y][x] = drawingBoardArray![y][x].filter() { $0 != id }
                 }
             }
             drawingBoardMap.removeValue(forKey: id)
         }
     }
     
-    func clearDrawingBitmap() {
+    func clearDrawingImage() {
         //UIGraphicsBeginImageContext(drawingView!.frame.size)
         drawingView!.image = nil
         //UIGraphicsEndImageContext()
         drawingView?.setNeedsDisplay()
     }
     
-    /*func clearSelectedBitmap() {
-        selectedView!.image = nil
-        selectedView?.setNeedsDisplay()
+    func clearMyCurrentImage() {
+        drawingVC?.myCurrentView.image = nil
+        
+    }
+    
+    func clearCurrentImage() {
+        drawingVC?.currentView.image = nil
+        
+    }
+    
+    func setDrawingComponentSelected(_ usersComponentId: String, isSelected: Bool) {
+        for component in drawingComponents {
+            if component.usersComponentId == usersComponentId {
+                component.isSelected = isSelected
+            }
+        }
+    }
+    
+    func setPreSelectedComponents(id: Int) {
+        preSelectedComponents.removeAll()
+        for component in drawingComponents {
+            if let compId = component.id, compId < id {
+                preSelectedComponents.append(component)
+            }
+        }
+        
+        var str = "pre selected = "
+        for component in preSelectedComponents {
+            str += "\(component.id!) "
+        }
+        print(str)
+    }
+    
+    func setPostSelectedComponents(id: Int) {
+        postSelectedComponents.removeAll()
+        tempPostSelectedComponents.removeAll()
+        for component in drawingComponents {
+            if let compId = component.id, compId > id {
+                postSelectedComponents.append(component)
+            }
+        }
+        
+        var str = "post selected = "
+        for component in postSelectedComponents {
+            str += "\(component.id!) "
+        }
+        print(str)
+    }
+    
+    func isContainsSelectedComponent(point: Point) -> Bool {
+        if let component = selectedComponent, component.type != ComponentType.STROKE {
+            
+            let datumPoint = Point(x: Int(CGFloat(component.datumPoint!.x) * component.xRatio), y: Int(CGFloat(component.datumPoint!.y) * component.yRatio))
+            
+            let width = component.width
+            let height = component.height
+            if (datumPoint.x <= point.x && point.x <= datumPoint.x + width!) && (datumPoint.y <= point.y && point.y <= datumPoint.y + height!) {
+                return true
+            }
+        }
+        return false
     }
     
     func drawSelectedComponentBorder(component: DrawingComponent, color: CGColor) {
         //component.calculateRatio(canvasWidth, canvasHeight);
         let strokeWidth = component.strokeWidth
         
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: myCanvasWidth!, height: myCanvasHeight!), false, 0)
         guard let context = UIGraphicsGetCurrentContext() else { return }
-        selectedView!.image?.draw(in: selectedView!.bounds)
+        drawingVC?.myCurrentView?.image?.draw(in: drawingVC!.myCurrentView!.bounds)
         
         let from = component.beginPoint
         let to = component.endPoint
@@ -528,10 +611,10 @@ class DrawingEditor {
         
         //let rect = CGRect(x: CGFloat(datum.x) * xRatio, y: CGFloat(datum.y) * yRatio, width: CGFloat(width) * xRatio, height: CGFloat(height) * yRatio)
         
-        let rX: CGFloat = CGFloat(datum.x) * component.xRatio - strokeWidth! / 2
-        let rY: CGFloat = CGFloat(datum.y) * component.yRatio - strokeWidth! / 2
-        let rW: CGFloat = CGFloat(width) * component.xRatio  + strokeWidth! / 2 + 5
-        let rH: CGFloat = CGFloat(height) * component.yRatio + strokeWidth! / 2 + 5
+        let rX: CGFloat = CGFloat(datum.x) * component.xRatio - strokeWidth! / 4 - 5
+        let rY: CGFloat = CGFloat(datum.y) * component.yRatio - strokeWidth! / 4 - 5
+        let rW: CGFloat = CGFloat(width) * component.xRatio + strokeWidth! / 2 + 10
+        let rH: CGFloat = CGFloat(height) * component.yRatio + strokeWidth! / 2 + 10
         
         let rect = CGRect(x: rX, y: rY , width: rW, height: rH)
         
@@ -548,15 +631,38 @@ class DrawingEditor {
         context.stroke(rect)
         
         context.strokePath()
-        selectedView!.image = UIGraphicsGetImageFromCurrentImageContext()
+        drawingVC?.myCurrentView?.image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        selectedView?.setNeedsDisplay()
     }
     
-    func updateDrawingComponents(newComponent: DrawingComponent) {    //속성 변경 update
+    func setPreAndPostSelectedComponentsImage() {
+        //postSelectedComponents.append(contentsOf: tempPostSelectedComponents)
+        unselectedComponentsView.image = nil
+        for component in preSelectedComponents {
+            component.drawComponent(view: unselectedComponentsView, drawingEditor: self)
+            //component.drawComponent(view: drawingView!, drawingEditor: self)
+        }
+        for component in postSelectedComponents {
+            component.drawComponent(view: unselectedComponentsView, drawingEditor: self)
+            //component.drawComponent(view: drawingView!, drawingEditor: self)
+        }
+    }
+    
+    var tempPostSelectedComponents = [DrawingComponent]()
+    func addPostSelectedComponent(component: DrawingComponent) {
+        postSelectedComponents.append(component)
+        //tempPostSelectedComponents.append(component)
+        //component.drawComponent(view: unselectedComponentsView, drawingEditor: self)
+        //component.drawComponent(view: drawingView!, drawingEditor: self)
+    }
+    
+    func drawUnselectedComponents() {
+        drawingView!.image = unselectedComponentsView.image
+    }
+    
+    func updateSelectedComponent(newComponent: DrawingComponent) {    //속성 변경 update
         removeDrawingComponents(usersComponentId: newComponent.usersComponentId!)
         drawingComponents.append(newComponent)
-        //addDrawingComponents(newComponent);
     }
     
     func moveSelectedComponent(selectedComponent: DrawingComponent, moveX: Int, moveY: Int) {
@@ -565,23 +671,31 @@ class DrawingEditor {
         selectedComponent.datumPoint = Point(x: selectedComponent.datumPoint!.x + moveX/*(int)(moveX*selectedComponent.getXRatio())*/, y: selectedComponent.datumPoint!.y + moveY/*(int)(moveY*selectedComponent.getYRatio())*/)
     }
     
-    func updateSelectedComponent(component: DrawingComponent, canvasWidth: CGFloat, canvasHeight: CGFloat) {
+    func updateDrawingImage(border: Bool) {
+        drawingView?.image = nil
+        drawAllDrawingComponents()
+        if border, let component = selectedComponent {
+            drawSelectedComponentBorder(component: component, color: mySelectedBorderColor.cgColor)
+        }
+    }
+    
+    func splitPointsOfSelectedComponent(component: DrawingComponent, canvasWidth: CGFloat, canvasHeight: CGFloat) {
         if component.type == nil { return }
-
+        
         var id = [Int]()
         id.append(-1)
         id.append(component.id!)
         eraseDrawingBoardArray(erasedComponentIds: id)
-
+        
         component.calculateRatio(myCanvasWidth: canvasWidth, myCanvasHeight: canvasHeight);
         var newPoints = [Point]()
         
         if component.type == ComponentType.STROKE { return }
-
+        
         let datumPoint = Point(x: Int(CGFloat(component.datumPoint!.x) * (component.xRatio)), y: Int(CGFloat(component.datumPoint!.y) * (component.yRatio)))
         let width = component.width
         let height = component.height
-
+        
         for i in datumPoint.y..<datumPoint.y + height! + 1 {
             newPoints.append(Point(x: datumPoint.x, y: i))
             newPoints.append(Point(x: datumPoint.x + width!, y: i))
@@ -590,7 +704,7 @@ class DrawingEditor {
             newPoints.append(Point(x: i, y: datumPoint.y))
             newPoints.append(Point(x: i, y: datumPoint.y + height!))
         }
-
+        
         drawingBoardMap.updateValue(newPoints, forKey: component.id!)
         
         for point in newPoints {
@@ -598,11 +712,11 @@ class DrawingEditor {
             let y = point.y
             
             /*if(!drawingBoardArray![y][x].contains(component.id!)) {
-                drawingBoardArray![y][x].append(component.id!)
-            }*/
-            print("(\(x), \(y))")
+             drawingBoardArray![y][x].append(component.id!)
+             }*/
+            //print("(\(x), \(y))")
         }
-    }*/
+    }
     
     
     
@@ -665,7 +779,7 @@ class DrawingEditor {
     func convertUIImage2ByteArray(image: UIImage) -> [Int8] { // UIImage -> Byte Array
         // UIImage -> NSData
         let imageData = image.jpegData(compressionQuality: 0.1)!
-
+        
         return imageData.map { Int8(bitPattern: $0) }
     }
     

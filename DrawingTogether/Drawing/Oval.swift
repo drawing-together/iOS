@@ -11,15 +11,24 @@ import CoreGraphics
 
 class Oval: DrawingComponent {
     
-    override func draw(drawingView: DrawingView) {
-        drawingView.redraw(usersComponentId: self.usersComponentId!)
-        drawComponent(drawingView: drawingView)
+    override func draw(view: UIImageView, drawingEditor: DrawingEditor) {
+        //drawingView.redraw(usersComponentId: self.usersComponentId!)
+        //drawComponent(view: view, drawingEditor: drawingEditor)
+        
+        if(view == drawingEditor.drawingVC?.myCurrentView) {
+            view.image = nil
+            drawComponent(view: view, drawingEditor: drawingEditor)
+        } else if(view == drawingEditor.drawingVC?.currentView) {
+            view.image = nil
+            drawingEditor.drawOthersCurrentComponent(username: nil)
+        }
     }
     
-    override func drawComponent(drawingView: DrawingView) {
-        UIGraphicsBeginImageContext(drawingView.frame.size)
+    override func drawComponent(view: UIImageView, drawingEditor: DrawingEditor) {
+        //UIGraphicsBeginImageContext(drawingView.frame.size)
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: drawingEditor.myCanvasWidth!, height: drawingEditor.myCanvasHeight!), false, 0)
         guard let context = UIGraphicsGetCurrentContext() else { return }
-        drawingView.image?.draw(in: drawingView.bounds)
+        view.image?.draw(in: view.bounds)
         
         //      context.setBlendMode(.normal)
         //      context.setBlendMode(.clear)
@@ -44,24 +53,22 @@ class Oval: DrawingComponent {
         
         let oval = CGRect(x: CGFloat(datum.x) * xRatio, y: CGFloat(datum.y) * yRatio, width: CGFloat(width) * xRatio, height: CGFloat(height) * yRatio)
         
-        print("shape drawComponent begin=\(String(describing: from?.toString())), end=\(String(describing: to?.toString())), slope=\(slope), xRatio=\(xRatio), yRatio=\(yRatio)")
+        //print("shape drawComponent begin=\(String(describing: from?.toString())), end=\(String(describing: to?.toString())), slope=\(slope), xRatio=\(xRatio), yRatio=\(yRatio)")
         
-        context.setLineCap(.round)
+        //context.setLineCap(.round)
         context.setLineJoin(.round)
         context.setLineWidth(self.strokeWidth! / 2)     // **
         
         context.setFillColor(self.hexStringToUIColor(hex: self.strokeColor!).cgColor)
-        context.setAlpha(0.3)
+        context.setAlpha(Alpha.getIOSAlpha(alpha: self.fillAlpha!))
         context.fillEllipse(in: oval)
         
         context.setStrokeColor(self.hexStringToUIColor(hex: self.strokeColor!).cgColor)   // **
-        context.setAlpha(1.0)
+        context.setAlpha(Alpha.getIOSAlpha(alpha: self.strokeAlpha!))
         context.addEllipse(in: oval)
         
-        //DrawingEditor.INSTANCE.drawSelectedComponentBorder(component: self, color: UIColor.lightGray.cgColor)
-        
         context.strokePath()
-        drawingView.image = UIGraphicsGetImageFromCurrentImageContext()
+        view.image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
     }
     

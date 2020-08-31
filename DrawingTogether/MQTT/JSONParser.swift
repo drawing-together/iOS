@@ -76,6 +76,8 @@ class JSONParser {
                 return try? JSONParser.decoder.decode(Stroke.self, from: data)
             case .RECT:
                 return try? JSONParser.decoder.decode(Rect.self, from: data)
+            case .OVAL:
+                return try? JSONParser.decoder.decode(Oval.self, from: data)
             default:
                 print("?")
             }

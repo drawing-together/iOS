@@ -37,6 +37,7 @@ class DrawingComponent: Codable, DrawingComponentProtocol {
     var height: Int?
     var isErased: Bool = false
     var isSelected: Bool = false
+    var penMode: PenMode = PenMode.NEON
     
     
     //    init() {
@@ -63,11 +64,11 @@ class DrawingComponent: Codable, DrawingComponentProtocol {
         self.yRatio = myCanvasHeight / drawnCanvasHeight!
     }
     
-    func draw(drawingView: DrawingView) {
+    func draw(view: UIImageView, drawingEditor: DrawingEditor) {
         
     }
     
-    func drawComponent(drawingView: DrawingView) {
+    func drawComponent(view: UIImageView, drawingEditor: DrawingEditor) {
         
     }
     

@@ -19,6 +19,8 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     
     @IBOutlet weak var backgroundImageView: UIImageView!
     @IBOutlet weak var drawingView: DrawingView!
+    @IBOutlet weak var currentView: UIImageView!
+    @IBOutlet weak var myCurrentView: UIImageView!
     
     @IBOutlet weak var drawingContainer: UIView!
     @IBOutlet weak var currentColorBtn: UIButton!
@@ -83,6 +85,8 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         
         navigationController?.isNavigationBarHidden = false
         
+        //let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(drawingTapped))
+        //drawingView.addGestureRecognizer(tapGestureRecognizer)
         drawingView.isUserInteractionEnabled = true
         de.initialize(drawingVC: self, master: master)
         
@@ -578,6 +582,18 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
             }
         }
     }
+    
+    /*@objc func drawingTapped(_ tapGesture: UITapGestureRecognizer) {
+        if de.currentMode != Mode.SELECT { return }
+        
+        if tapGesture.state == .ended {
+            let touchLocation: CGPoint = tapGesture.location(in: tapGesture.view)
+            drawingView.selectTapped(point: Point(x: Int(touchLocation.x), y: Int(touchLocation.y)))
+            //print(touchLocation)
+        }
+        //print(tapGesture.location(in: tapGesture.view))
+    }*/
+
 }
 
 extension DrawingViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {

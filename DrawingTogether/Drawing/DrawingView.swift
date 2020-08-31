@@ -22,8 +22,18 @@ class DrawingView: UIImageView {
     
     var dTool: DrawingTool = DrawingTool()
     var eraserCommand: Command = EraseCommand()
-    //selectCommand
+    var selectCommand: Command = SelectCommand()
+    var isExit = false
     var isIntercept = false
+    
+    var isSelected = false
+    var selectMsgChunkSize = 10
+    var selectDownPoint: Point?
+    var selectPrePoint: Point?
+    var selectPostPoint: Point?
+    var moveX: Int = 0
+    var moveY: Int = 0
+    var moveSelectPoints = [Point]()
     
     var dComponent: DrawingComponent?
     var stroke = Stroke()
@@ -34,32 +44,70 @@ class DrawingView: UIImageView {
     let dst_triangle = UnsafeMutablePointer<Int32>.allocate(capacity: 2)
     var src: [Int32] = [], dst: [Int32] = []
     
-    /*func drawComponent(component: DrawingComponent) {
-        
-        UIGraphicsBeginImageContext(self.frame.size)
-        guard let context = UIGraphicsGetCurrentContext() else { return }
-        self.image?.draw(in: self.bounds)
-        
-//      context.setBlendMode(.normal)
-//      context.setBlendMode(.clear)
-        
-        context.setLineCap(.round)
-        context.setLineJoin(.round)
-        context.setLineWidth(component.strokeWidth!)
-        context.setStrokeColor(de.strokeColor)  //
     
-        
-        if component.type == ComponentType.STROKE {
-            context.move(to: CGPoint(x: component.points[0].x, y: component.points[0].y))
-            for i in 1..<component.points.count {
-                context.addLine(to: CGPoint(x: component.points[i].x, y: component.points[i].y))
-            }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        print(#function)
+        switch de.currentMode {
+        case .DRAW:
+            drawTouchesBegan(touches, with: event)
+            break
+        case .ERASE:
+            eraseTouchesBegan(touches, with: event)
+            break
+        case .SELECT:
+            selectTouchBegan(touches, with: event)
+            break
+        case .WARP:
+            super.touchesBegan(touches, with: event)
+            break
+            
+        case .none:
+            break
+        case .some:
+            break
         }
-        
-        context.strokePath()
-        self.image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-    }*/
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        //print(#function)
+        switch de.currentMode {
+        case .DRAW:
+            drawTouchesMoved(touches, with: event)
+            break
+        case .ERASE:
+            eraseTouchesBegan(touches, with: event)
+            break
+        case .SELECT:
+            selectTouchMoved(touches, with: event)
+            break
+        case .WARP:
+            super.touchesMoved(touches, with: event)
+            break
+            
+        case .none:
+            break
+        case .some:
+            break
+        }
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        print(#function)
+        switch de.currentMode {
+        case .DRAW:
+            drawTouchesEnded(touches, with: event)
+            break
+        case .SELECT:
+            selectTouchEnded(touches, with: event)
+            break
+            
+        case .none:
+            break
+        case .some:
+            break
+        }
+    }
     
     func setEditorAttribute() {
         topicData = client.topic_data
@@ -108,11 +156,18 @@ class DrawingView: UIImageView {
         sendMqttMessage.putMqttMessage(messageFormat: messageFormat);
     }
     
+    func sendSelectMqttMessage(isSelected: Bool) {
+        if let comp = de.selectedComponent {
+            let messageFormat = MqttMessageFormat(username: de.myUsername!, usersComponentId: comp.usersComponentId!, mode: Mode.SELECT, isSelected: isSelected)
+            sendMqttMessage.putMqttMessage(messageFormat: messageFormat)
+        }
+    }
+    
     func setComponentAttribute(dComponent: DrawingComponent) {
         dComponent.username = de.username
         dComponent.usersComponentId = de.usersComponentIdCounter()
         dComponent.type = de.currentType
-        //dComponent.setFillColor = de.FillColor
+        dComponent.fillColor = de.strokeColor   //todo
         dComponent.strokeColor = de.strokeColor
         dComponent.strokeAlpha = de.strokeAlpha
         dComponent.fillAlpha = de.fillAlpha
@@ -130,12 +185,12 @@ class DrawingView: UIImageView {
         component.endPoint = point
     }
     
-    func addPointAndDraw(component: DrawingComponent, point: Point) {
+    func addPointAndDraw(component: DrawingComponent, point: Point, view: UIImageView) {
         component.preSize = component.points.count
         component.addPoint(point)
         component.beginPoint = component.points[0]
         component.endPoint = point
-        component.draw(drawingView: self)
+        component.draw(view: view, drawingEditor: de)
         if component.type == ComponentType.STROKE {
             de.lastDrawingImage = self.image
         }
@@ -143,51 +198,25 @@ class DrawingView: UIImageView {
     }
     
     func doInDrawActionUp(component: DrawingComponent, canvasWidth: CGFloat, canvasHeight: CGFloat) {
-
         //de.removeCurrentShapes(dComponent.getUsersComponentId());
         de.splitPoints(component: component, canvasWidth: canvasWidth, canvasHeight: canvasHeight)
         de.addDrawingComponents(component: component)
         de.addHistory(item: DrawingItem(mode: de.currentMode!, component: parser.getDrawingComponentAdapter(component: component))) // 드로잉 컴포넌트가 생성되면 History 에 저장
         //print("history.size()=\(de.history.count), id=\(String(describing: dComponent!.id))")
-
+        
         de.removeCurrentComponents(usersComponentId: component.usersComponentId!)
-
+        
         if de.history.count == 1 {
             //de.drawingVC.undoBtn.setEnabled(true)
         }
         de.clearUndoArray()
-
+        
         //if(de.isIntercept()) this.isIntercept = true;   //**
-
+        
         //de.setDrawingShape(false);
-
+        
         de.printDrawingComponentArray(name: "cc", array:de.currentComponents, status: "up")
         de.printDrawingComponentArray(name: "dc", array:de.drawingComponents, status: "up")
-    }
-    
-    func redrawShape(component: DrawingComponent) {
-        if component.type != ComponentType.STROKE  { // 도형이 그려졌다면 lastDrawingBitmap 에 drawingBitmap 내용 복사
-            
-            //de.lastDrawingView!.image = self.image
-            //de.lastDrawingView?.setNeedsDisplay()
-            
-            //self.image = nil
-            //self.setNeedsDisplay()
-            
-            de.lastDrawingImage = self.image
-        }
-    }
-    
-    func redraw(usersComponentId: String) {
-        if de.lastDrawingImage == nil  {
-            self.image = nil
-            self.setNeedsDisplay()
-            return
-        }
-
-        self.image = de.lastDrawingImage
-        //de.drawingVC?.selectedView.image = UIImage()
-        self.setNeedsDisplay()
     }
     
     func doErase(point: Point) {
@@ -199,126 +228,314 @@ class DrawingView: UIImageView {
         
     }
     
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        print(#function)
-        switch de.currentMode {
-        case .DRAW:
-            for touch in touches {
-                setEditorAttribute()
-                initDrawingComponent()
-                setDrawingComponentType()
-                setComponentAttribute(dComponent: dComponent!)
-                
-                let location = touch.location(in: self)
-                let point = Point(x: Int(location.x), y: Int(location.y))
-                
-                self.addPointAndDraw(component: dComponent!, point: point)
-                
-                let messageFormat = MqttMessageFormat(username: de.myUsername!, usersComponentId: dComponent!.usersComponentId!, mode: de.currentMode!, type: de.currentType!, component: parser.getDrawingComponentAdapter(component: dComponent!), action: MotionEvent.ACTION_DOWN.rawValue)
-                //client.publish(topic: topicData!, message: parser.jsonWrite(object: messageFormat)!)
-                sendMqttMessage.putMqttMessage(messageFormat: messageFormat)
-            }
-            break
-            
-        case .ERASE:
-            for touch in touches {
-                let location = touch.location(in: self)
-                let point = Point(x: Int(location.x), y: Int(location.y))
-                doErase(point: point)
-            }
-            break
-        case .WARP:
-            super.touchesBegan(touches, with: event)
-            break
-        case .none:
-            break
-        case .some:
-            break
-            
+    
+    func doInMyDrawActionUP(point: Point) {
+        self.addPointAndDraw(component: dComponent!, point: point, view: de.drawingVC!.myCurrentView)
+        
+        dComponent?.drawComponent(view: self, drawingEditor: de)
+        de.drawingVC?.myCurrentView.image = nil
+        
+        //de.lastDrawingImage = self.image
+        //redrawShape(component: dComponent!)
+        
+        if(points.count != 0) {
+            let messageFormat = MqttMessageFormat(username: de.myUsername!, usersComponentId: dComponent!.usersComponentId!, mode: de.currentMode!, type: de.currentType!, movePoints: points, action: MotionEvent.ACTION_MOVE.rawValue)
+            //client.publish(topic: topicData!, message: parser.jsonWrite(object: messageFormat)!)
+            sendMqttMessage.putMqttMessage(messageFormat: messageFormat)
+            points.removeAll()
         }
         
+        let messageFormat = MqttMessageFormat(username: de.myUsername!, usersComponentId: dComponent!.usersComponentId!, mode: de.currentMode!, type: de.currentType!, point: point, action: MotionEvent.ACTION_UP.rawValue)
+        //client.publish(topic: topicData!, message: parser.jsonWrite(object: messageFormat)!)
+        sendMqttMessage.putMqttMessage(messageFormat: messageFormat)
     }
     
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        //print(#function)
-        switch de.currentMode {
-        case .DRAW:
-            for touch in touches {
-                setEditorAttribute()
-                setDrawingComponentType()
+    func drawTouchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for touch in touches {
+            //print("view w=\(self.bounds.size.width), h=\(self.bounds.size.height) | image w=\(self.image!.size.width), h=\(self.image!.size.height)")
+            
+            isExit = false
+            print("isExit false")
+            
+            setEditorAttribute()
+            initDrawingComponent()
+            setDrawingComponentType()
+            setComponentAttribute(dComponent: dComponent!)
+            
+            let location = touch.location(in: self)
+            let point = Point(x: Int(location.x), y: Int(location.y))
+            //self.addPointAndDraw(component: dComponent!, point: point)
+            
+            let messageFormat = MqttMessageFormat(username: de.myUsername!, usersComponentId: dComponent!.usersComponentId!, mode: de.currentMode!, type: de.currentType!, component: parser.getDrawingComponentAdapter(component: dComponent!), action: MotionEvent.ACTION_DOWN.rawValue)
+            //client.publish(topic: topicData!, message: parser.jsonWrite(object: messageFormat)!)
+            sendMqttMessage.putMqttMessage(messageFormat: messageFormat)
+        }
+    }
+    
+    func drawTouchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for touch in touches {
+            if isExit {
+                print("drawing exit 1")
+                return
+            }
+            
+            setEditorAttribute()
+            setDrawingComponentType()
+            
+            let location = touch.location(in: self)
+            let point = Point(x: Int(location.x), y: Int(location.y))
+            
+            //터치가 DrawingView 밖으로 나갔을 때
+            if (Int(location.x)-5 < 0) || (Int(location.y)-5 < 0) || (Int(de.myCanvasWidth!)-5 < Int(location.x)) || (Int(de.myCanvasHeight!)-5 < Int(location.y)) {
+                print("drawing exit 2")
                 
-                let location = touch.location(in: self)
-                let point = Point(x: Int(location.x), y: Int(location.y))
+                if dComponent?.points.count == 0 { return }
                 
-                self.addPointAndDraw(component: dComponent!, point: point)
+                doInMyDrawActionUP(point: dComponent!.endPoint!)
+                isExit = true
+                return
+            }
+            
+            self.addPointAndDraw(component: dComponent!, point: point, view: de.drawingVC!.myCurrentView)
+            
+            points.append(point)
+            if points.count == msgChunkSize {
+                print("send move chunk")
+                let messageFormat = MqttMessageFormat(username: de.myUsername!, usersComponentId: dComponent!.usersComponentId!, mode: de.currentMode!, type: de.currentType!, movePoints: points, action: MotionEvent.ACTION_MOVE.rawValue)
+                //client.publish(topic: topicData!, message: parser.jsonWrite(object: messageFormat)!)
+                sendMqttMessage.putMqttMessage(messageFormat: messageFormat)
+                points.removeAll()
+            }
+        }
+    }
+    
+    func drawTouchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for touch in touches {
+            if isExit {
+                print("drawing exit 1")
+                return
+            }
+            
+            setEditorAttribute()
+            setDrawingComponentType()
+            
+            let location = touch.location(in: self)
+            let point = Point(x: Int(location.x), y: Int(location.y))
+            
+            doInMyDrawActionUP(point: point)
+        }
+    }
+    
+    func eraseTouchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        for touch in touches {
+            let location = touch.location(in: self)
+            let point = Point(x: Int(location.x), y: Int(location.y))
+            doErase(point: point)
+        }
+    }
+    
+    func selectTappedEnded(point: Point) {
+        
+        //if !isSelected {
+        
+        dTool.command = selectCommand
+        dTool.doCommand(selectedPoint: point)
+        
+        if let ids = dTool.getIds(), ids.count > 0, ids[0] != -1, selectMoveCount < 8 {
+            let selectedComponentId = ids[0]
+            
+            if let component = de.findDrawingComponentById(id: selectedComponentId), let usersComponentId = component.usersComponentId {
                 
-                points.append(point)
-                if points.count == msgChunkSize {
-                    let messageFormat = MqttMessageFormat(username: de.myUsername!, usersComponentId: dComponent!.usersComponentId!, mode: de.currentMode!, type: de.currentType!, movePoints: points, action: MotionEvent.ACTION_MOVE.rawValue)
-                    //client.publish(topic: topicData!, message: parser.jsonWrite(object: messageFormat)!)
-                    sendMqttMessage.putMqttMessage(messageFormat: messageFormat)
-                    points.removeAll()
+                /*if component.isSelected {
+                 component.isSelected = false
+                 de.setDrawingComponentSelected(usersComponentId, isSelected: false)
+                 
+                 //todo publish - 다른 사람들 셀렉트 가능 --> 모드 바뀔 때 추가로 메시지 전송 필요
+                 sendSelectMqttMessage(isSelected: false);
+                 }*/
+                if !component.isSelected {
+                    isSelected = true
+                    
+                    de.selectedComponent = component
+                    component.isSelected = true
+                    de.setDrawingComponentSelected(usersComponentId, isSelected: true)
+                    
+                    de.setPreSelectedComponents(id: selectedComponentId)
+                    de.setPostSelectedComponents(id: selectedComponentId)
+                    
+                    //de.setPreAndPostSelectedComponentsImage()
+                    
+                    de.drawSelectedComponentBorder(component: component, color: de.mySelectedBorderColor.cgColor)
+                    
+                    
+                    //de.drawingVC?.myCurrentView?.setNeedsDisplay()
+                    
+                    //select success
+                    print("selected id=\(selectedComponentId)")
+                    
+                    //todo publish - 다른 사람들 셀렉트 못하게
+                    sendSelectMqttMessage(isSelected: true)
+                    
+                } else {
+                    print("already selected")
+                    de.drawingVC?.showToast(message: "다른 사람이 선택한 도형입니다")
                 }
                 
             }
-            break
-            
-        case .ERASE:
-            for touch in touches {
-                let location = touch.location(in: self)
-                let point = Point(x: Int(location.x), y: Int(location.y))
-                doErase(point: point)
-            }
-            break
-        case .WARP:
-            super.touchesMoved(touches, with: event)
-            break
-        
-        case .none:
-            break
-        case .some:
-            break
-            
         }
         
+        selectMoveCount = 0
+        //}
     }
     
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        print(#function)
-        switch de.currentMode {
-        case .DRAW:
-            for touch in touches {
-                setEditorAttribute()
-                setDrawingComponentType()
-                
-                let location = touch.location(in: self)
-                let point = Point(x: Int(location.x), y: Int(location.y))
-                
-                self.addPointAndDraw(component: dComponent!, point: point)
-                de.lastDrawingImage = self.image
-                //redrawShape(component: dComponent!)
-                
-                if(points.count != 0) {
-                    let messageFormat = MqttMessageFormat(username: de.myUsername!, usersComponentId: dComponent!.usersComponentId!, mode: de.currentMode!, type: de.currentType!, movePoints: points, action: MotionEvent.ACTION_MOVE.rawValue)
-                    //client.publish(topic: topicData!, message: parser.jsonWrite(object: messageFormat)!)
-                    sendMqttMessage.putMqttMessage(messageFormat: messageFormat)
-                    points.removeAll()
+    func selectTouchBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        for touch in touches {
+            let location = touch.location(in: self)
+            let point = Point(x: Int(location.x), y: Int(location.y))
+            
+            if !isSelected {
+                selectPrePoint = point
+                return
+            }
+            
+            print("selected down")
+            
+            selectDownPoint = point
+            if !de.isContainsSelectedComponent(point: selectDownPoint!) {
+                isSelected = false
+                if let component = de.selectedComponent, let usersComponentId = component.usersComponentId {
+                    component.isSelected = false
+                    print("selected false")
+                    //de.initSelectedBitmap();
+                    //de.deselect();
+                    
+                    de.setDrawingComponentSelected(usersComponentId, isSelected: false)
+                    de.clearMyCurrentImage()
+                    
+                    //todo publish - 다른 사람들 셀렉트 가능
+                    sendSelectMqttMessage(isSelected: false)
                 }
+                return
+            }
+            
+            if let component = de.selectedComponent, let usersComponentId = component.usersComponentId {
+                de.clearMyCurrentImage()
                 
-                let messageFormat = MqttMessageFormat(username: de.myUsername!, usersComponentId: dComponent!.usersComponentId!, mode: de.currentMode!, type: de.currentType!, point: point, action: MotionEvent.ACTION_UP.rawValue)
-                //client.publish(topic: topicData!, message: parser.jsonWrite(object: messageFormat)!)
+                de.setPreAndPostSelectedComponentsImage()
+                de.drawUnselectedComponents()
+                component.drawComponent(view: de.drawingVC!.myCurrentView, drawingEditor: de)
+                de.drawSelectedComponentBorder(component: component, color: de.mySelectedBorderColor.cgColor)
+                
+                print("selected true")
+                
+                //todo publish - selected down
+                moveSelectPoints.removeAll()
+                
+                let messageFormat = MqttMessageFormat(username: de.myUsername!, usersComponentId: usersComponentId, mode: Mode.SELECT, action: MotionEvent.ACTION_DOWN.rawValue, moveSelectPoints: moveSelectPoints)
                 sendMqttMessage.putMqttMessage(messageFormat: messageFormat)
             }
-            break
             
-        case .ERASE:
-            break
+            return
+        }
+    }
+    
+    var selectMoveCount = 0
+    func selectTouchMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         
-        case .none:
-            break
-        case .some:
-            break
+        for touch in touches {
+            let location = touch.location(in: self)
+            let point = Point(x: Int(location.x), y: Int(location.y))
             
+            if !isSelected {
+                selectPostPoint = point
+                if selectPrePoint === selectPostPoint {
+                    selectMoveCount += 1
+                    selectPrePoint = selectPostPoint
+                }
+                return
+            }
+            
+            print("selected move")
+            moveX = ((point.x - selectDownPoint!.x))
+            moveY = ((point.y - selectDownPoint!.y))
+            
+            if let component = de.selectedComponent, let usersComponentId = component.usersComponentId {
+                let datumPoint = Point(x: Int(CGFloat(component.datumPoint!.x) * (component.xRatio)), y: Int(CGFloat(component.datumPoint!.y) * (component.yRatio)))
+                let width = component.width
+                let height = component.height
+                
+                let rH = datumPoint.y + moveY + height! + 10
+                let rW = datumPoint.x + moveX + width! + 10
+                
+                if ((datumPoint.x+moveX-10 < 0) && (moveX < 0)) || ((datumPoint.y+moveY-10 < 0) && (moveY < 0)) {
+                    return
+                }
+                
+                if (rH > Int(de.myCanvasHeight!) && moveY > 0) || (rW > Int(de.myCanvasWidth!) && moveX > 0) {
+                    return
+                }
+                
+                selectDownPoint = point
+                
+                de.clearMyCurrentImage()
+                de.moveSelectedComponent(selectedComponent: component, moveX: moveX, moveY: moveY)
+                component.drawComponent(view: de.drawingVC!.myCurrentView, drawingEditor: de)
+                de.drawSelectedComponentBorder(component: component, color: de.mySelectedBorderColor.cgColor)
+                
+                //todo publish - selected move
+                moveSelectPoints.append(Point(x: moveX, y: moveY))
+                
+                if moveSelectPoints.count == selectMsgChunkSize {
+                    print("send selected move chunk")
+                    
+                    let messageFormat = MqttMessageFormat(username: de.myUsername!, usersComponentId: usersComponentId, mode: Mode.SELECT, action: MotionEvent.ACTION_MOVE.rawValue, moveSelectPoints: moveSelectPoints)
+                    
+                    sendMqttMessage.putMqttMessage(messageFormat: messageFormat)
+                    moveSelectPoints.removeAll()
+                }
+            }
+            
+            return
+        }
+    }
+    
+    func selectTouchEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        
+        for touch in touches {
+            let location = touch.location(in: self)
+            let point = Point(x: Int(location.x), y: Int(location.y))
+            
+            if !isSelected {
+                selectTappedEnded(point: point)
+                return
+            }
+            
+            print("selected up")
+            
+            if let component = de.selectedComponent, let usersComponentId = component.usersComponentId {
+                de.clearMyCurrentImage()
+                de.updateDrawingImage(border: true)
+                de.splitPointsOfSelectedComponent(component: component, canvasWidth: de.myCanvasWidth!, canvasHeight: de.myCanvasHeight!)
+                de.updateSelectedComponent(newComponent: component)
+                print("drawingComponents.size() = \(de.drawingComponents.count)")
+                
+                //de.addHistory(new DrawingItem(Mode.SELECT, de.getSelectedComponent())); //todo
+                //Log.i("drawing", "history.size()=" + de.getHistory().size() + ", id=" + de.getSelectedComponent().getId());
+                
+                de.clearUndoArray();
+                
+                //todo publish - selected up
+                if moveSelectPoints.count != 0 {
+                    print("send selected move chunk")
+                    
+                    sendMqttMessage.putMqttMessage(messageFormat: MqttMessageFormat(username: de.myUsername!, usersComponentId: usersComponentId, mode: Mode.SELECT, action: MotionEvent.ACTION_MOVE.rawValue, moveSelectPoints: moveSelectPoints))
+                    moveSelectPoints.removeAll()
+                }
+                sendMqttMessage.putMqttMessage(messageFormat: MqttMessageFormat(username: de.myUsername!, usersComponentId: usersComponentId, mode: Mode.SELECT, action: MotionEvent.ACTION_UP.rawValue, moveSelectPoints: moveSelectPoints))
+            }
+            
+            return
         }
     }
     

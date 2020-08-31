@@ -16,6 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var appTopic: String?
     var appPassword: String?
     
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         FirebaseApp.configure()
@@ -93,3 +94,4 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     
 }
+

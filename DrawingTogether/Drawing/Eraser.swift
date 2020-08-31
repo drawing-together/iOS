@@ -12,7 +12,7 @@ class Eraser {
     let de = DrawingEditor.INSTANCE
     let client = MQTTClient.client
     let parser = JSONParser.parser
-    //private SendMqttMessage sendMqttMessage = SendMqttMessage.getInstance();
+    let sendMqttMessage = SendMqttMessage.INSTANCE
     let squareScope = 10
     var erasedComponentIds: [Int]!
     
@@ -32,8 +32,10 @@ class Eraser {
             return
         }
 
-        for i in (y-squareScope)..<(y+squareScope) {
-            for j in (x-squareScope)..<(x+squareScope) {
+        //for i in (y-squareScope)..<(y+squareScope) {
+        for i in stride(from: (y-squareScope), through: (y+squareScope), by: 1) {
+            //for j in (x-squareScope)..<(x+squareScope) {
+            for j in stride(from: (x-squareScope), through: (x+squareScope), by: 1) {
                 let shapeIds = de.findEnclosingDrawingComponents(point: eraserPoint)
                 if shapeIds.count != 1 && !de.isContainsRemovedComponentIds(ids: shapeIds) {
                     erasedComponentIds?.append(contentsOf: shapeIds)
@@ -54,8 +56,6 @@ class Eraser {
                     de.addRemovedComponentIds(ids: de.getNotRemovedComponentIds(ids: dbArray![i][j]))
                     print("erased stroke ids = \(erasedComponentIds!)")
 
-                    
-                    
                     /*if(de.findEnclosingDrawingComponents(eraserPoint).size() != 1) {
                         erasedComponentIds.addAll(de.findEnclosingDrawingComponents(eraserPoint));
                     }*/
@@ -75,8 +75,8 @@ class Eraser {
 
         //publish
         let messageFormat = MqttMessageFormat(username: de.myUsername!, mode: Mode.ERASE, componentIds: NSArray(array: erasedComponentIds, copyItems: true) as! [Int])
-        //sendMqttMessage.putMqttMessage(messageFormat);
-        client.publish(topic: client.topic_data, message: parser.jsonWrite(object: messageFormat)!)
+        sendMqttMessage.putMqttMessage(messageFormat: messageFormat)
+        //client.publish(topic: client.topic_data, message: parser.jsonWrite(object: messageFormat)!)
 
         EraserTask(erasedComponentIds: erasedComponentIds).execute()
         self.erasedComponentIds!.removeAll()

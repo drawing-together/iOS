@@ -23,7 +23,7 @@ class MqttMessageFormat: Codable {
     var username: String?
     var componentIds: [Int]?
     var isSelected: Bool?
-    var moveX, moveY: Int?
+    var moveSelectPoints: [Point]?
 
     var bitmapByteArray: [Int8]?
     
@@ -103,13 +103,12 @@ class MqttMessageFormat: Codable {
     }
     
     // SELECT - down, move, up
-    init(username: String, usersComponentId: String, mode: Mode, action: Int, moveX: Int, moveY: Int) {
+    init(username: String, usersComponentId: String, mode: Mode, action: Int, moveSelectPoints: [Point]) {
         self.username = username
         self.usersComponentId = usersComponentId
         self.mode = mode
         self.action = action
-        self.moveX = moveX
-        self.moveY = moveY
+        self.moveSelectPoints = moveSelectPoints
     }
     
  

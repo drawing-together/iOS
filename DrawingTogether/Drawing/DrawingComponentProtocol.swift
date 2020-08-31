@@ -8,9 +8,9 @@
 
 protocol DrawingComponentProtocol {
     
-    func draw(drawingView: DrawingView) -> Void
+    func draw(view: UIImageView, drawingEditor: DrawingEditor) -> Void
     
-    func drawComponent(drawingView: DrawingView) -> Void
+    func drawComponent(view: UIImageView, drawingEditor: DrawingEditor) -> Void
     
     //func toString() -> String
 }
