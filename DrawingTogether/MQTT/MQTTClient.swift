@@ -45,6 +45,9 @@ class MQTTClient: NSObject {
     private var de: DrawingEditor = DrawingEditor.INSTANCE
     var isMid = true
     let queue = DispatchQueue(label: "drawingQueue")
+    var eraserTask = EraserTask()
+    var totalMoveX = 0
+    var totalMoveY = 0
     
     // AUDIO
     private var audioPlaying: Bool = false
@@ -321,9 +324,10 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                         }
                                                
                         de.isMidEntered = true
-                                               
-                        if de.currentMode == Mode.DRAW {
-                            de.isIntercept = true
+                           
+                        de.isIntercept = true
+                        if !drawingVC.drawingView!.isMovable {
+                            drawingVC.drawingView.isIntercept = true
                         }
                                                
                         drawingVC.showToast(message: "[ \(joinName) ] 님이 접속하셨습니다")
@@ -425,6 +429,12 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         }
         
         if (topic == topic_data) {
+            if de.isMidEntered, let action = mqttMessageFormat.action, action != MotionEvent.ACTION_UP.rawValue {
+                if let usersComponentId = mqttMessageFormat.usersComponentId, de.isIntercept, de.getCurrentComponent(usersComponentId: usersComponentId) != nil {
+                    return
+                }
+            }
+            
             switch mqttMessageFormat.mode {
             case .DRAW:
                 self.draw(message: mqttMessageFormat)
@@ -446,6 +456,12 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                 break
             case .CLEAR_BACKGROUND_IMAGE:
                 self.clearBackgroundImage(message: mqttMessageFormat)
+                break
+            case .UNDO:
+                self.undo(message: mqttMessageFormat)
+                break
+            case .REDO:
+                self.redo(message: mqttMessageFormat)
                 break
             case .some(_):
                 break
@@ -579,14 +595,6 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                     }
                     break
                 case MotionEvent.ACTION_UP.rawValue:
-                    if self.de.myUsername == username {
-                        self.de.drawingView!.addPoint(component: dComponent!, point: message.point!)
-                        self.de.drawingView?.doInDrawActionUp(component: dComponent!, canvasWidth: myCanvasWidth!, canvasHeight: myCanvasHeight!)
-                        if(self.de.isIntercept) {
-                            self.de.drawingView!.isIntercept = true
-                            print("drawingview intercept true")
-                        }
-                    }
                     break
                 
                 case .none: break
@@ -640,12 +648,10 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                             print("drawingview intercept true")
                         }
                     } else {
-                        print("up \((dComponent!.username)!), \((dComponent!.id)!)")
-                        // de.drawingView.redrawShape(dComponent);
+                        print("up \((dComponent!.username)!), \((dComponent!.id)!)")\
                         self.de.drawingView!.addPointAndDraw(component: dComponent!, point: message.point!, view: self.de.drawingVC!.currentView)
                         self.de.drawingView!.doInDrawActionUp(component: dComponent!, canvasWidth: myCanvasWidth!, canvasHeight: myCanvasHeight!);
                         
-                        //self.de.lastDrawingImage = self.de.drawingView!.image
                         self.drawingVC.currentView.image = nil
                         self.de.drawOthersCurrentComponent(username: dComponent?.username)
                         dComponent!.drawComponent(view: self.de.drawingView!, drawingEditor: self.de)
@@ -657,13 +663,18 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                         self.de.addPostSelectedComponent(component: dComponent!)
                     }
                     
-                    if self.de.myUsername != username {
+                    if self.de.myUsername == username {
+                        self.de.drawingView!.addPoint(component: dComponent!, point: message.point!)
+                        self.de.drawingView?.doInDrawActionUp(component: dComponent!, canvasWidth: myCanvasWidth!, canvasHeight: myCanvasHeight!)
+                        if(self.de.isIntercept) {
+                            self.de.drawingView!.isIntercept = true
+                            print("drawingview intercept true")
+                        }
+                    } else {
                         print("up \((dComponent!.username)!), \((dComponent!.id)!)")
-                        // de.drawingView.redrawShape(dComponent);
                         self.de.drawingView!.addPointAndDraw(component: dComponent!, point: message.point!, view: self.de.drawingVC!.currentView)
                         self.de.drawingView!.doInDrawActionUp(component: dComponent!, canvasWidth: myCanvasWidth!, canvasHeight: myCanvasHeight!);
                         
-                        //self.de.lastDrawingImage = self.de.drawingView!.image
                         self.drawingVC.currentView.image = nil
                         self.de.drawOthersCurrentComponent(username: dComponent?.username)
                         dComponent!.drawComponent(view: self.de.drawingView!, drawingEditor: self.de)
@@ -698,7 +709,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             //DispatchQueue.main.async {
                 print("MESSAGE ARRIVED message: username=\(String(describing: message.username)), mode=\(String(describing: message.mode)), id=\(message.componentIds!)")
                 let erasedComponentIds = message.componentIds!
-                EraserTask(erasedComponentIds: erasedComponentIds).execute()
+                self.eraserTask.execute(erasedComponentIds: erasedComponentIds)
                 
                 self.de.clearUndoArray()
                 
@@ -706,6 +717,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             //}
         }
     }
+    
     
     func select(message: MqttMessageFormat) {
         let myCanvasWidth = self.de.myCanvasWidth
@@ -727,11 +739,15 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             
             switch message.action {
             case MotionEvent.ACTION_DOWN.rawValue:
+                self.totalMoveX = 0
+                self.totalMoveY = 0
                 print("other selected true")
                 break
             case MotionEvent.ACTION_MOVE.rawValue:
                 if let moveSelectPoints = message.moveSelectPoints, moveSelectPoints.count > 0 {
                     for point in moveSelectPoints {
+                        self.totalMoveX += point.x
+                        self.totalMoveY += point.y
                         self.de.moveSelectedComponent(selectedComponent: selectedComponent!, moveX: point.x, moveY: point.y)
                     }
                 }
@@ -768,6 +784,11 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                         self.de.updateSelectedComponent(newComponent: selectedComponent!)
                         self.de.clearDrawingImage()
                         self.de.drawAllDrawingComponents()
+                        
+                        if let copyComponent = selectedComponent!.clone() {
+                            self.de.addHistory(item: DrawingItem(mode: Mode.SELECT, component: self.parser.getDrawingComponentAdapter(component: copyComponent), movePoint: Point(x: self.totalMoveX, y: self.totalMoveY)))
+                            print("drawing", "history.size()=\(self.de.history.count), id=\(selectedComponent!.id!)")
+                        }
                         
                         self.de.clearUndoArray()
 
@@ -886,10 +907,10 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
 //                }
                 
                 if self.de.history.count > 0 {
-                    //drawingCV.undoBtn.setEnabled(true)
+                    self.drawingVC?.setUndoEnabled(isEnabled: true)
                 }
                 if self.de.undoArray.count > 0 {
-                    //drawingCV.redoBtn.setEnabled(true)
+                    self.drawingVC?.setRedoEnabled(isEnabled: true)
                 }
                 
                 self.de.drawAllDrawingComponentsForMid()
@@ -908,11 +929,40 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
     }
     
     func clear(message: MqttMessageFormat) {
-        print("clear")
+        if self.de.myUsername == message.username { return }
+        print("MESSAGE ARRIVED message: username=\(String(describing: message.username)), mode=\(String(describing: message.mode))")
+        
+        DispatchQueue.main.async {
+            self.de.clearDrawingComponents()
+            if self.de.drawingView!.isSelected { self.de.deselect(updateImage: true) }
+            //self.de.clearTexts()
+            self.drawingVC.setRedoEnabled(isEnabled: false)
+            self.drawingVC.setUndoEnabled(isEnabled: false)
+        }
     }
     
     func clearBackgroundImage(message: MqttMessageFormat) {
         de.backgroundImage = nil
         de.clearBackgroundImage()
+    }
+    
+    func undo(message: MqttMessageFormat) {
+        if self.de.myUsername == message.username { return }
+        print("MESSAGE ARRIVED message: username=\(String(describing: message.username)), mode=\(String(describing: message.mode))")
+        
+        DispatchQueue.main.async {
+            if self.de.drawingView!.isSelected { self.de.deselect(updateImage: true) }
+            self.de.undo()
+        }
+    }
+    
+    func redo(message: MqttMessageFormat) {
+        if self.de.myUsername == message.username { return }
+        print("MESSAGE ARRIVED message: username=\(String(describing: message.username)), mode=\(String(describing: message.mode))")
+        
+        DispatchQueue.main.async {
+            if self.de.drawingView!.isSelected { self.de.deselect(updateImage: true) }
+            self.de.redo()
+        }
     }
 }

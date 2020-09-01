@@ -22,6 +22,7 @@ class MqttMessageFormat: Codable {
 
     var username: String?
     var componentIds: [Int]?
+    var componentId: Int?
     var isSelected: Bool?
     var moveSelectPoints: [Point]?
 
@@ -87,6 +88,12 @@ class MqttMessageFormat: Codable {
         self.mode = mode
         self.componentIds = componentIds
     }
+    
+    init(username: String, mode: Mode, componentId: Int) {
+           self.username = username
+           self.mode = mode
+           self.componentId = componentId
+       }
     
     // MODE CHANGE
     init(username: String, mode: Mode) {

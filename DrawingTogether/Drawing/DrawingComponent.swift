@@ -64,6 +64,52 @@ class DrawingComponent: Codable, DrawingComponentProtocol {
         self.yRatio = myCanvasHeight / drawnCanvasHeight!
     }
     
+    func clone() -> DrawingComponent? {
+        if self.type == nil { return nil }
+        
+        var dComponent: DrawingComponent?
+        
+        switch self.type {
+        case .STROKE:
+            dComponent = Stroke()
+            break
+        case .RECT:
+            dComponent = Rect()
+            break
+        case .OVAL:
+            dComponent = Oval()
+            break
+        case .none:
+            break
+        }
+        
+        dComponent!.points = self.points
+        dComponent!.id = self.id
+        dComponent!.username = self.username
+        dComponent!.usersComponentId = self.usersComponentId
+        dComponent!.type = self.type
+        dComponent!.strokeColor = self.strokeColor
+        dComponent!.fillColor = self.fillColor
+        dComponent!.strokeAlpha = self.strokeAlpha
+        dComponent!.fillAlpha = self.fillAlpha
+        dComponent!.strokeWidth = self.strokeWidth
+        dComponent!.preSize = self.preSize
+        dComponent!.drawnCanvasWidth = self.drawnCanvasWidth
+        dComponent!.drawnCanvasHeight = self.drawnCanvasHeight
+        dComponent!.xRatio = self.xRatio
+        dComponent!.yRatio = self.yRatio
+        dComponent!.beginPoint = self.beginPoint
+        dComponent!.endPoint = self.endPoint
+        dComponent!.datumPoint = self.datumPoint
+        dComponent!.width = self.width
+        dComponent!.height = self.height
+        dComponent!.isErased = self.isErased
+        dComponent!.isSelected = self.isSelected
+        dComponent!.penMode = self.penMode
+        
+        return dComponent!
+    }
+    
     func draw(view: UIImageView, drawingEditor: DrawingEditor) {
         
     }

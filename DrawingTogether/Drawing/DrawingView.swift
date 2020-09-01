@@ -25,6 +25,7 @@ class DrawingView: UIImageView {
     var selectCommand: Command = SelectCommand()
     var isExit = false
     var isIntercept = false
+    var isMovable = false
     
     var isSelected = false
     var selectMsgChunkSize = 10
@@ -48,6 +49,12 @@ class DrawingView: UIImageView {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         print(#function)
+        if !de.isIntercept { self.isIntercept = false }
+        if self.isIntercept || de.isIntercept {
+            print("intercept drawing view touch")
+            return
+        }
+        
         switch de.currentMode {
         case .DRAW:
             drawTouchesBegan(touches, with: event)
@@ -70,9 +77,19 @@ class DrawingView: UIImageView {
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if !de.isIntercept { self.isIntercept = false }
+        if self.isIntercept {
+            print("intercept drawing view touch")
+            return
+        }
+        
         //print(#function)
         switch de.currentMode {
         case .DRAW:
+            if !isMovable {
+                print("intercept drawing view touch 222")
+                return
+            }
             drawTouchesMoved(touches, with: event)
             break
         case .ERASE:
@@ -94,8 +111,18 @@ class DrawingView: UIImageView {
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
         print(#function)
+        if !de.isIntercept { self.isIntercept = false }
+        if self.isIntercept {
+            print("intercept drawing view touch")
+            return
+        }
+
         switch de.currentMode {
         case .DRAW:
+            if !isMovable {
+                print("intercept drawing view touch 222")
+                return
+            }
             drawTouchesEnded(touches, with: event)
             break
         case .SELECT:
@@ -199,22 +226,23 @@ class DrawingView: UIImageView {
     }
     
     func doInDrawActionUp(component: DrawingComponent, canvasWidth: CGFloat, canvasHeight: CGFloat) {
-        //de.removeCurrentShapes(dComponent.getUsersComponentId());
         de.splitPoints(component: component, canvasWidth: canvasWidth, canvasHeight: canvasHeight)
         de.addDrawingComponents(component: component)
-        de.addHistory(item: DrawingItem(mode: de.currentMode!, component: parser.getDrawingComponentAdapter(component: component))) // 드로잉 컴포넌트가 생성되면 History 에 저장
-        //print("history.size()=\(de.history.count), id=\(String(describing: dComponent!.id))")
         
+        if let copyComponent = component.clone() {
+            de.addHistory(item: DrawingItem(mode: Mode.DRAW, component: parser.getDrawingComponentAdapter(component: copyComponent))) // 드로잉 컴포넌트가 생성되면 History 에 저장
+            print("history.size()=\(de.history.count), id=\(String(describing: component.id))")
+        }
+            
         de.removeCurrentComponents(usersComponentId: component.usersComponentId!)
         
         if de.history.count == 1 {
-            //de.drawingVC.undoBtn.setEnabled(true)
+            de.drawingVC?.setUndoEnabled(isEnabled: true)
         }
         de.clearUndoArray()
         
         //if(de.isIntercept()) this.isIntercept = true;   //**
         
-        //de.setDrawingShape(false);
         
         de.printDrawingComponentArray(name: "cc", array:de.currentComponents, status: "up")
         de.printDrawingComponentArray(name: "dc", array:de.drawingComponents, status: "up")
@@ -249,6 +277,13 @@ class DrawingView: UIImageView {
         let messageFormat = MqttMessageFormat(username: de.myUsername!, usersComponentId: dComponent!.usersComponentId!, mode: de.currentMode!, type: de.currentType!, point: point, action: MotionEvent.ACTION_UP.rawValue)
         //client.publish(topic: topicData!, message: parser.jsonWrite(object: messageFormat)!)
         sendMqttMessage.putMqttMessage(messageFormat: messageFormat)
+        
+        if de.isIntercept {
+            self.isIntercept = true
+            print("drawingView intercept true")
+        }
+        
+        isMovable = false
     }
     
     func drawTouchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -270,6 +305,8 @@ class DrawingView: UIImageView {
             let messageFormat = MqttMessageFormat(username: de.myUsername!, usersComponentId: dComponent!.usersComponentId!, mode: de.currentMode!, type: de.currentType!, component: parser.getDrawingComponentAdapter(component: dComponent!), action: MotionEvent.ACTION_DOWN.rawValue)
             //client.publish(topic: topicData!, message: parser.jsonWrite(object: messageFormat)!)
             sendMqttMessage.putMqttMessage(messageFormat: messageFormat)
+            
+            isMovable = true
         }
     }
     
@@ -307,6 +344,8 @@ class DrawingView: UIImageView {
                 sendMqttMessage.putMqttMessage(messageFormat: messageFormat)
                 points.removeAll()
             }
+            
+            isMovable = true
         }
     }
     
@@ -335,6 +374,10 @@ class DrawingView: UIImageView {
         }
     }
     
+    var totalMoveX = 0
+    var totalMoveY = 0
+    var preMoveX = 0
+    var preMoveY = 0
     func selectTappedEnded(point: Point) {
         
         //if !isSelected {
@@ -430,6 +473,10 @@ class DrawingView: UIImageView {
                 
                 print("selected true")
                 
+                totalMoveX = 0
+                totalMoveY = 0
+                preMoveX = component.beginPoint!.x
+                preMoveY = component.beginPoint!.y
                 //todo publish - selected down
                 moveSelectPoints.removeAll()
                 
@@ -458,10 +505,12 @@ class DrawingView: UIImageView {
             }
             
             print("selected move")
-            moveX = ((point.x - selectDownPoint!.x))
-            moveY = ((point.y - selectDownPoint!.y))
             
             if let component = de.selectedComponent, let usersComponentId = component.usersComponentId {
+                
+                moveX = Int(CGFloat(point.x - selectDownPoint!.x)/component.xRatio)
+                moveY = Int(CGFloat(point.y - selectDownPoint!.y)/component.yRatio)
+                
                 let datumPoint = Point(x: Int(CGFloat(component.datumPoint!.x) * (component.xRatio)), y: Int(CGFloat(component.datumPoint!.y) * (component.yRatio)))
                 let width = component.width
                 let height = component.height
@@ -476,6 +525,9 @@ class DrawingView: UIImageView {
                 if (rH > Int(de.myCanvasHeight!) && moveY > 0) || (rW > Int(de.myCanvasWidth!) && moveX > 0) {
                     return
                 }
+                
+                totalMoveX += moveX
+                totalMoveY += moveY
                 
                 selectDownPoint = point
                 
@@ -521,10 +573,12 @@ class DrawingView: UIImageView {
                 de.updateSelectedComponent(newComponent: component)
                 print("drawingComponents.size() = \(de.drawingComponents.count)")
                 
-                //de.addHistory(new DrawingItem(Mode.SELECT, de.getSelectedComponent())); //todo
-                //Log.i("drawing", "history.size()=" + de.getHistory().size() + ", id=" + de.getSelectedComponent().getId());
-                
-                de.clearUndoArray();
+                if let copyComponent = component.clone() {
+                    de.addHistory(item: DrawingItem(mode: Mode.SELECT, component: parser.getDrawingComponentAdapter(component: copyComponent), movePoint: Point(x: totalMoveX, y: totalMoveY)))
+                    print("drawing", "history.size()=\(de.history.count), preBeginPoint=(\(preMoveX),\(preMoveY)), postBeginPoint-movePoint=(\(component.beginPoint!.x - totalMoveX),\(component.beginPoint!.y - totalMoveY)), postBeginPoint=(\(component.beginPoint!.x),\(component.beginPoint!.y))")
+                }
+                    
+                de.clearUndoArray()
                 
                 //todo publish - selected up
                 if moveSelectPoints.count != 0 {
@@ -547,15 +601,16 @@ class DrawingView: UIImageView {
         let yesAction = UIAlertAction(title: "YES", style: .destructive) {
             (action) in
             
-            //        de.initSelectedBitmap();
-            //
-            //        sendModeMqttMessage(Mode.CLEAR); *****
-            //        de.clearDrawingComponents();
-            //        de.clearTexts();
-            //        de.getDrawingFragment().getBinding().redoBtn.setEnabled(false);
-            //        de.getDrawingFragment().getBinding().undoBtn.setEnabled(false);
-            //        invalidate();
+            self.de.initSelectedImage()
+            
             self.sendModeMqttMessage(mode: Mode.CLEAR)
+            self.de.clearDrawingComponents()
+            //self.de.clearTexts()
+            
+            self.setNeedsDisplay()
+            
+            self.de.drawingVC?.setRedoEnabled(isEnabled: false)
+            self.de.drawingVC?.setUndoEnabled(isEnabled: false)
         }
         alertController.addAction(yesAction)
         alertController.addAction(UIAlertAction(title: "NO", style: .cancel, handler: nil))
@@ -578,5 +633,27 @@ class DrawingView: UIImageView {
         alertController.addAction(UIAlertAction(title: "NO", style: .cancel, handler: nil))
         
         de.drawingVC?.present(alertController, animated: true)
+    }
+    
+    func undo() {
+        de.initSelectedImage()
+        sendModeMqttMessage(mode: Mode.UNDO)
+        de.undo()
+        
+        //if de.undoArray.count == 1 { self.de.drawingVC?.setRedoEnabled(isEnabled: true) }
+        //if de.history.count == 0 { self.de.drawingVC?.setUndoEnabled(isEnabled: false) }
+        
+        self.setNeedsDisplay()
+    }
+    
+    func redo() {
+        de.initSelectedImage()
+        sendModeMqttMessage(mode: Mode.REDO)
+        de.redo()
+        
+        //if de.history.count == 1 { self.de.drawingVC?.setUndoEnabled(isEnabled: true) }
+        //if de.undoArray.count == 0 { self.de.drawingVC?.setRedoEnabled(isEnabled: false) }
+        
+        self.setNeedsDisplay()
     }
 }
