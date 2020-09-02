@@ -40,6 +40,8 @@ class MqttMessageFormat: Codable {
 //
 //    var audioMessage: AudioMessage?
     var warpingMessage: WarpingMessage?
+    
+    var autoDrawMessage: AutoDrawMessage?
 //
     var drawingComponents: [DrawingComponentAdapter]?
     var texts: [TextAdapter]?
@@ -162,6 +164,13 @@ class MqttMessageFormat: Codable {
            self.type = type
            self.warpingMessage = warpingMessage
        }
+    
+    init(username: String, mode: Mode, type: ComponentType, autoDrawMessage: AutoDrawMessage) {
+        self.username = username
+        self.mode = mode
+        self.type = type
+        self.autoDrawMessage = autoDrawMessage
+    }
 
     
 /*

@@ -90,6 +90,7 @@
 		BDBEA32624C93248009693D0 /* SendMqttMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBEA32524C93248009693D0 /* SendMqttMessage.swift */; };
 		CE59F5FA24D8FA72008A6CCC /* WarpingMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE59F5F924D8FA72008A6CCC /* WarpingMessage.swift */; };
 		CE59F60724D900EF008A6CCC /* OpenCVWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE59F60624D900EF008A6CCC /* OpenCVWrapper.mm */; };
+		CE683EC224FE23E7000222C8 /* AutoDrawMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE683EC124FE23E7000222C8 /* AutoDrawMessage.swift */; };
 		CEDE687024765A780057E9D2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDE686F24765A780057E9D2 /* AppDelegate.swift */; };
 		CEDE687224765A780057E9D2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDE687124765A780057E9D2 /* SceneDelegate.swift */; };
 		CEDE687424765A780057E9D2 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDE687324765A780057E9D2 /* MainViewController.swift */; };
@@ -204,6 +205,7 @@
 		CE59F60524D900EF008A6CCC /* OpenCVWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenCVWrapper.h; sourceTree = "<group>"; };
 		CE59F60624D900EF008A6CCC /* OpenCVWrapper.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = OpenCVWrapper.mm; sourceTree = "<group>"; };
 		CE59F60824D9013D008A6CCC /* DrawingTogether-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DrawingTogether-Bridging-Header.h"; sourceTree = "<group>"; };
+		CE683EC124FE23E7000222C8 /* AutoDrawMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoDrawMessage.swift; sourceTree = "<group>"; };
 		CEDE686C24765A780057E9D2 /* 시시콜콜.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "시시콜콜.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEDE686F24765A780057E9D2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CEDE687124765A780057E9D2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -279,6 +281,7 @@
 				8450CC59248E1BA8003286A4 /* ExitMessage.swift */,
 				84404A0424E6659A004B8290 /* JoinAckMessage.swift */,
 				8450CC51248E1A49003286A4 /* JoinMessage.swift */,
+				CE683EC124FE23E7000222C8 /* AutoDrawMessage.swift */,
 				8450CC55248E1A55003286A4 /* JSONParser.swift */,
 				113E8EDF247F912400F33359 /* MQTTClient.swift */,
 				8450CC54248E1A55003286A4 /* MqttMessageFormat.swift */,
@@ -548,6 +551,7 @@
 				BDBEA31C24C92E88009693D0 /* CircularQueue.swift in Sources */,
 				11C5BCA524965BFB0066517B /* SplashViewController.swift in Sources */,
 				844049AF24BD64F7004B8290 /* AliveMessage.swift in Sources */,
+				CE683EC224FE23E7000222C8 /* AutoDrawMessage.swift in Sources */,
 				BDBEA32024C931CC009693D0 /* Oval.swift in Sources */,
 				953A67C92490EDB9008AC2BA /* TextEditingView.swift in Sources */,
 				115122BC24F8D43D00D11A9E /* EraserViewController.swift in Sources */,
