@@ -13,6 +13,7 @@ class EraserViewController: UIViewController {
     let de = DrawingEditor.INSTANCE
     let client = MQTTClient.client
     
+    @IBOutlet weak var clearBtn: UIButton!
     @IBOutlet weak var backgroundClearBtn: UIButton!
     @IBOutlet weak var drawingViewClearBtn: UIButton!
     
@@ -21,6 +22,8 @@ class EraserViewController: UIViewController {
 
         // Do any additional setup after loading the view.
         if (!client.master) {
+            clearBtn.isEnabled = false
+            clearBtn.setTitleColor(UIColor.gray, for: .normal)
             backgroundClearBtn.isEnabled = false
             backgroundClearBtn.setTitleColor(UIColor.gray, for: .normal)
             drawingViewClearBtn.isEnabled = false
@@ -28,12 +31,16 @@ class EraserViewController: UIViewController {
         }
     }
     
+    @IBAction func clickClearBtn(_ sender: UIButton) {
+        de.drawingView!.clear()
+    }
+    
     @IBAction func clickBackgroundClearBtn(_ sender: UIButton) {
         de.drawingView!.clearBackgroundImage()
     }
     
     @IBAction func clickDrawingViewClearBtn(_ sender: UIButton) {
-        de.drawingView!.clear()
+        de.drawingView!.clearDrawingView()
     }
     
     

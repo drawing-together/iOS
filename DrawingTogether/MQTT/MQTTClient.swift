@@ -452,7 +452,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             case .WARP:
                 self.warp(message: mqttMessageFormat)
                 break
-            case .AUTO:
+            case .AUTODRAW:
                 self.autoDraw(message: mqttMessageFormat)
                 break
             case .CLEAR:

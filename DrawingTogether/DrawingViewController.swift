@@ -64,6 +64,7 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     
     var shapeVC: ShapeViewController!
     var eraserVC: EraserViewController!
+    var penVC: PenViewController!
     
     let src_triangle = UnsafeMutablePointer<Int32>.allocate(capacity: 2)
     let dst_triangle = UnsafeMutablePointer<Int32>.allocate(capacity: 2)
@@ -83,6 +84,7 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         userVC = storyboard?.instantiateViewController(withIdentifier: "UserViewController") as? UserViewController
         shapeVC = storyboard?.instantiateViewController(withIdentifier: "ShapeViewController") as? ShapeViewController
         eraserVC = storyboard?.instantiateViewController(withIdentifier: "EraserViewController") as? EraserViewController
+        penVC = storyboard?.instantiateViewController(withIdentifier: "PenViewController") as? PenViewController
         
         client.initialize(ip, port, topic, name, master, masterName, self)
         closeFlag = false
@@ -354,8 +356,19 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         penModeView.isHidden = false
         changeClickedButtonBackground(sender)
         
-        print(sender.accessibilityIdentifier!) // 각 버튼의 Accessibility의 identifier 속성을 10, 20, 30으로 설정
-        de.strokeWidth = CGFloat(NSString(string: sender.accessibilityIdentifier!).floatValue)
+        if de.currentMode == Mode.DRAW && de.currentType == ComponentType.STROKE {
+            penVC.modalPresentationStyle = .popover
+            penVC.preferredContentSize = CGSize(width: 110, height: 120)
+            if let popoverController = penVC.popoverPresentationController {
+                popoverController.sourceView = sender
+                popoverController.sourceRect = CGRect(x: -23, y: -5, width: 100, height: 35)
+                popoverController.permittedArrowDirections = .any
+                popoverController.delegate = self
+                penVC.popoverPresentationController?.delegate = self
+            }
+            
+            present(penVC, animated: true, completion: nil)
+        }
         
         de.currentMode = Mode.DRAW
         de.currentType = ComponentType.STROKE
@@ -392,10 +405,10 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         changeClickedButtonBackground(sender)
 
         shapeVC.modalPresentationStyle = .popover
-        shapeVC.preferredContentSize = CGSize(width: 100, height: 110)
+        shapeVC.preferredContentSize = CGSize(width: 110, height: 120)
         if let popoverController = shapeVC.popoverPresentationController {
             popoverController.sourceView = sender
-            popoverController.sourceRect =  CGRect(x: -35, y: -5, width: 100, height: 35)
+            popoverController.sourceRect = CGRect(x: -32, y: -5, width: 100, height: 35)
             popoverController.permittedArrowDirections = .any
             popoverController.delegate = self
             shapeVC.popoverPresentationController?.delegate = self
@@ -431,10 +444,10 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         
         if de.currentMode == Mode.ERASE {
             eraserVC.modalPresentationStyle = .popover
-            eraserVC.preferredContentSize = CGSize(width: 100, height: 110)
+            eraserVC.preferredContentSize = CGSize(width: 110, height: 120)
             if let popoverController = eraserVC.popoverPresentationController {
                 popoverController.sourceView = sender
-                popoverController.sourceRect =  CGRect(x: -35, y: -5, width: 100, height: 35)
+                popoverController.sourceRect = CGRect(x: -32, y: -5, width: 100, height: 35)
                 popoverController.permittedArrowDirections = .any
                 popoverController.delegate = self
                 eraserVC.popoverPresentationController?.delegate = self
@@ -467,7 +480,7 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         userVC.preferredContentSize = CGSize(width: 100, height: 150)
         if let popoverController = userVC.popoverPresentationController {
             popoverController.sourceView = sender
-            popoverController.sourceRect =  CGRect(x: 0, y: 0, width: 100, height: 35)
+            popoverController.sourceRect = CGRect(x: 5, y: 0, width: 100, height: 35)
             popoverController.permittedArrowDirections = .any
             popoverController.delegate = self
             userVC.popoverPresentationController?.delegate = self
