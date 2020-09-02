@@ -32,7 +32,7 @@ class EraserTask  {
                     if let component = self.de.findDrawingComponentById(id: erasedComponentIds[i]) {
                         if component.isSelected, let usersComponentId = component.usersComponentId {
                             self.de.setDrawingComponentSelected(usersComponentId, isSelected: false)
-                            self.de.clearMyCurrentImage()
+                            //self.de.clearMyCurrentImage()
                             self.de.drawingVC!.drawingView.isSelected = false
                         }
                         component.isSelected = false

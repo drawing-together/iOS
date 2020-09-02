@@ -25,7 +25,6 @@ class DrawingComponent: Codable, DrawingComponentProtocol {
     var strokeAlpha: Int?
     var fillAlpha: Int?
     var strokeWidth: CGFloat?
-    var preSize: Int = 0
     var drawnCanvasWidth: CGFloat?
     var drawnCanvasHeight: CGFloat?
     var xRatio: CGFloat = 1.0
@@ -39,22 +38,12 @@ class DrawingComponent: Codable, DrawingComponentProtocol {
     var isSelected: Bool = false
     var penMode: PenMode?
     
-    
-    //    init() {
-    //        self.points = []
-    //        self.preSize = 0
-    //        self.xRatio = 1.0
-    //        self.yRatio = 1.0
-    //        self.isErased = false
-    //    }
-    
     func addPoint(_ point: Point) {
         self.points.append(point)
     }
     
     func clearPoints() {
         self.points = []
-        self.preSize = 0
     }
     
     func getPointSize() -> Int { return self.points.count }
@@ -93,7 +82,6 @@ class DrawingComponent: Codable, DrawingComponentProtocol {
         dComponent!.strokeAlpha = self.strokeAlpha
         dComponent!.fillAlpha = self.fillAlpha
         dComponent!.strokeWidth = self.strokeWidth
-        dComponent!.preSize = self.preSize
         dComponent!.drawnCanvasWidth = self.drawnCanvasWidth
         dComponent!.drawnCanvasHeight = self.drawnCanvasHeight
         dComponent!.xRatio = self.xRatio

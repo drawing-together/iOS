@@ -207,14 +207,12 @@ class DrawingView: UIImageView {
     }
     
     func addPoint(component: DrawingComponent, point: Point) {
-        component.preSize = component.points.count
         component.addPoint(point)
         component.beginPoint = component.points[0]
         component.endPoint = point
     }
     
     func addPointAndDraw(component: DrawingComponent, point: Point, view: UIImageView) {
-        component.preSize = component.points.count
         component.addPoint(point)
         component.beginPoint = component.points[0]
         component.endPoint = point
