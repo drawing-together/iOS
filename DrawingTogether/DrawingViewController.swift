@@ -524,10 +524,14 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         var yList: [Int] = []
         src = []
         dst = []
+        let size = CGSize(width:  self.backgroundImageView.frame.width  , height: self.backgroundImageView.frame.height )
         for touch in touches {
             let startPoint = touch.location(in: self.backgroundImageView)
             let x = Int32(startPoint.x)
             let y = Int32(startPoint.y)
+            if x > Int(size.width) || y > Int(size.height) {
+                return
+            }
             xList.append(Int(x))
             yList.append(Int(y))
             src.append(x)
@@ -539,7 +543,7 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         }
         src_triangle.initialize(from: &src, count: 4)
         print(src_triangle)
-        let size = CGSize(width:  self.backgroundImageView.frame.width  , height: self.backgroundImageView.frame.height )
+        
         let message = MqttMessageFormat(username: de.myUsername!, mode: .WARP, type: de.currentType!, action: 0, warpingMessage: WarpingMessage(action: 0, pointerCount: touches.count/2, x: xList, y: yList, width: Int(size.width), height: Int(size.height)))
         client.publish(topic: client.topic_data, message: parser.jsonWrite(object: message)!)
         
@@ -563,10 +567,14 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         var xList: [Int] = []
         var yList: [Int] = []
         dst = []
+        let size = CGSize(width:  self.backgroundImageView.frame.width  , height: self.backgroundImageView.frame.height )
         for touch in touches {
             let movePoint = touch.location(in: self.backgroundImageView)
             let x = Int32(movePoint.x)
             let y = Int32(movePoint.y)
+            if x > Int(size.width) || y > Int(size.height) {
+                return
+            }
             xList.append(Int(x))
             yList.append(Int(y))
             dst.append(x)
@@ -574,7 +582,7 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
             print(dst)
         }
         dst_triangle.initialize(from: &dst, count: 4)
-        let size = CGSize(width:  self.backgroundImageView.frame.width  , height: self.backgroundImageView.frame.height )
+        
         let message = MqttMessageFormat(username: de.myUsername!, mode: .WARP, type: de.currentType!, action: 0, warpingMessage: WarpingMessage(action: 2, pointerCount: xList.count, x: xList, y: yList, width: Int(size.width), height: Int(size.height)))
        client.publish(topic: client.topic_data, message: parser.jsonWrite(object: message)!)
         
