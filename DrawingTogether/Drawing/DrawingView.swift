@@ -219,9 +219,7 @@ class DrawingView: UIImageView {
         component.beginPoint = component.points[0]
         component.endPoint = point
         component.draw(view: view, drawingEditor: de)
-        if component.type == ComponentType.STROKE {
-            de.lastDrawingImage = self.image
-        }
+        
         //print("drawingview width=\(Int(de.myCanvasWidth!)), height=\(Int(de.myCanvasHeight!))")
     }
     

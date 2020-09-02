@@ -430,7 +430,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         
         if (topic == topic_data) {
             if de.isMidEntered, let action = mqttMessageFormat.action, action != MotionEvent.ACTION_UP.rawValue {
-                if let usersComponentId = mqttMessageFormat.usersComponentId, de.isIntercept, de.getCurrentComponent(usersComponentId: usersComponentId) != nil {
+                if let usersComponentId = mqttMessageFormat.usersComponentId, (de.isIntercept && action == MotionEvent.ACTION_DOWN.rawValue), de.getCurrentComponent(usersComponentId: usersComponentId) != nil {
                     return
                 }
             }
@@ -706,15 +706,14 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         self.queue.async {
             if self.de.myUsername == message.username { return }
             
-            //DispatchQueue.main.async {
-                print("MESSAGE ARRIVED message: username=\(String(describing: message.username)), mode=\(String(describing: message.mode)), id=\(message.componentIds!)")
-                let erasedComponentIds = message.componentIds!
-                self.eraserTask.execute(erasedComponentIds: erasedComponentIds)
-                
+            print("MESSAGE ARRIVED message: username=\(String(describing: message.username)), mode=\(String(describing: message.mode)), id=\(message.componentIds!)")
+            let erasedComponentIds = message.componentIds!
+            self.eraserTask.execute(erasedComponentIds: erasedComponentIds)
+            
+            DispatchQueue.main.async {
                 self.de.clearUndoArray()
-                
-                //self.de.drawingView!.setNeedsDisplay()
-            //}
+            }
+            
         }
     }
     
@@ -915,7 +914,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                 
                 self.de.drawAllDrawingComponentsForMid()
                 
-                self.de.lastDrawingImage = self.drawingVC.drawingView.image
+                //self.de.lastDrawingImage = self.drawingVC.drawingView.image
                 
                 self.de.addAllTextLabelToDrawingContainer()
                 

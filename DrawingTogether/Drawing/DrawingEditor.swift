@@ -21,7 +21,7 @@ class DrawingEditor {
     
     var currentImage: UIImage?
     var myCurrentImage: UIImage?
-    var lastDrawingImage: UIImage?
+    var frameSize: CGSize?
     
     //    var backgroundImage: CGImage?
     
@@ -96,6 +96,7 @@ class DrawingEditor {
         myCanvasHeight = drawingView!.bounds.size.height
         
         unselectedComponentsView.frame = drawingView!.frame
+        frameSize = CGSize(width: myCanvasWidth!, height: myCanvasHeight!)
         
         if(drawingBoardArray == nil) {
             print("drawingview width=\(Int(myCanvasWidth!)), height=\(Int(myCanvasHeight!))")
@@ -176,7 +177,7 @@ class DrawingEditor {
         }
         
         print("drawingBoardArray[][] w=\(drawingBoardArray![0].count), h=\(drawingBoardArray!.count)")
-        print("dba[0][0] = \(drawingBoardArray![0][0][0])")
+        //print("dba[0][0] = \(drawingBoardArray![0][0][0])")
     }
     
     func printDrawingComponentArray(name: String, array: [DrawingComponent], status: String) {
@@ -299,22 +300,22 @@ class DrawingEditor {
         drawingBoardArray = Array(repeating: Array(repeating: [Int](), count: width), count: height)  // out of memory error
         print("initDrawingBoardArray() height=\(drawingBoardArray!.count) width=\(drawingBoardArray![0].count)")
         
-        for i in 0..<height {
+        /*for i in 0..<height {
             for j in 0..<width {
                 autoreleasepool {
-                drawingBoardArray![i][j].append(-1)
+                //drawingBoardArray![i][j].append(-1)
                 }
             }
-        }
+        }*/
     }
     
     func clearDrawingBoardArray() {
         for i in 0..<drawingBoardArray!.count {
             for j in 0..<drawingBoardArray![i].count {
                 autoreleasepool {
-                if drawingBoardArray![i][j].count != 1 {
+                if drawingBoardArray![i][j].count != 0 {
                     drawingBoardArray![i][j].removeAll()
-                    drawingBoardArray![i][j].append(-1)
+                    //drawingBoardArray![i][j].append(-1)
                 }
                 }
             }
@@ -466,7 +467,7 @@ class DrawingEditor {
     
     func clearUndoArray() { //redo 방지
         undoArray.removeAll()
-        //drawingVC.redoBtn.setEnabled(false)
+        drawingVC!.setRedoEnabled(isEnabled: false)
     }
     
     var itemIds = [Int]()
@@ -487,7 +488,6 @@ class DrawingEditor {
                 addRemovedComponentIds(ids: itemIds)
                 removeAllDrawingComponents(ids: itemIds)
                 drawAllDrawingComponents()
-                //drawAllCurrentStrokes();
                 eraseDrawingBoardArray(erasedComponentIds: itemIds)
             } else {
                 print("update draw")
@@ -608,7 +608,7 @@ class DrawingEditor {
     func findEnclosingDrawingComponents(point: Point) -> [Int] {
         
         erasedComponentIds.removeAll()
-        erasedComponentIds.append(-1)
+        //erasedComponentIds.append(-1)
         
         for component in drawingComponents {
         
@@ -666,7 +666,8 @@ class DrawingEditor {
     
     func isContainsRemovedComponentIds(ids: [Int]) -> Bool {
         var flag = true
-        for i in 1..<ids.count {
+        //for i in 1..<ids.count {
+        for i in 0..<ids.count {
             autoreleasepool {
             if !removedComponentId.contains(ids[i]) {
                 flag = false
@@ -677,7 +678,8 @@ class DrawingEditor {
     }
     
     func eraseDrawingBoardArray(erasedComponentIds: [Int]) {
-        for i in 1..<erasedComponentIds.count {
+        //for i in 1..<erasedComponentIds.count {
+        for i in 0..<erasedComponentIds.count {
             autoreleasepool {
             let id = erasedComponentIds[i]
             
@@ -899,7 +901,7 @@ class DrawingEditor {
         if component.type == nil { return }
         
         var id = [Int]()
-        id.append(-1)
+        //id.append(-1)
         id.append(component.id!)
         eraseDrawingBoardArray(erasedComponentIds: id)
         

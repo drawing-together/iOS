@@ -26,7 +26,7 @@ class Eraser {
     
     func findComponentsToErase(eraserPoint: Point) {
         erasedComponentIds.removeAll()
-        erasedComponentIds.append(-1)
+        //erasedComponentIds.append(-1)
         shapeIds.removeAll()
         
         x = eraserPoint.x
@@ -36,7 +36,7 @@ class Eraser {
         
         let dbArray = de.drawingBoardArray
         
-        if(y-squareScope<0 || x-squareScope<0 || y+squareScope>Int(de.myCanvasHeight!) || x+squareScope>Int(de.myCanvasWidth!)) {
+        if(y-squareScope-1<0 || x-squareScope-1<0 || y+squareScope+1>Int(de.myCanvasHeight!) || x+squareScope+1>Int(de.myCanvasWidth!)) {
             print("eraser exit")
             return
         }
@@ -48,7 +48,8 @@ class Eraser {
             for j in stride(from: (x-squareScope), through: (x+squareScope), by: 1) {
                 autoreleasepool {
                 shapeIds = de.findEnclosingDrawingComponents(point: eraserPoint)
-                if shapeIds.count != 1 && !de.isContainsRemovedComponentIds(ids: shapeIds) {
+                //if shapeIds.count != 1 && !de.isContainsRemovedComponentIds(ids: shapeIds) {
+                if shapeIds.count != 0 && !de.isContainsRemovedComponentIds(ids: shapeIds) {
                     erasedComponentIds.append(contentsOf: shapeIds)
                     //erase(erasedComponentIds: shapeIds)
                     de.addRemovedComponentIds(ids: shapeIds)
@@ -62,7 +63,9 @@ class Eraser {
                  }
                  print(str)*/
                 
-                if(dbArray![i][j].count != 1 && !de.isContainsRemovedComponentIds(ids: dbArray![i][j])) { //-1만 가지고 있으면 size() == 1
+                
+                //if(dbArray![i][j].count != 1 && !de.isContainsRemovedComponentIds(ids: dbArray![i][j])) { //-1만 가지고 있으면 size() == 1
+                if(dbArray![i][j].count != 0 && !de.isContainsRemovedComponentIds(ids: dbArray![i][j])) {
                     
                     erasedComponentIds.append(contentsOf: de.getNotRemovedComponentIds(ids: dbArray![i][j]))
                     //erase(erasedComponentIds: de.getNotRemovedComponentIds(ids: dbArray![i][j]))
@@ -74,7 +77,8 @@ class Eraser {
             }
         }
         
-        if erasedComponentIds.count != 1 {
+        //if erasedComponentIds.count != 1 {
+        if erasedComponentIds.count != 0 {
             erasedComponentIds.sort()
             erase(erasedComponentIds: erasedComponentIds)
         }
