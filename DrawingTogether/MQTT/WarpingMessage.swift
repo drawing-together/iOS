@@ -12,12 +12,15 @@ class WarpingMessage: Codable {
     var action: Int
     var pointerCount: Int
     var x, y: [Int]
+    var width, height: Int
     
-    init(action: Int, pointerCount: Int, x: [Int], y: [Int]) {
+    init(action: Int, pointerCount: Int, x: [Int], y: [Int], width: Int, height: Int) {
         self.action = action
         self.pointerCount = pointerCount
         self.x = x
         self.y = y
+        self.width = width
+        self.height = height
     }
     
     func getWarpData() -> WarpData {

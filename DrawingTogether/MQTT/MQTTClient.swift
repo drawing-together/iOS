@@ -9,6 +9,7 @@
 import UIKit
 import MQTTClient
 import SVProgressHUD
+import SDWebImageSVGCoder
 
 class MQTTClient: NSObject {
     public static let client = MQTTClient() // singleton
@@ -451,6 +452,9 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             case .WARP:
                 self.warp(message: mqttMessageFormat)
                 break
+            case .AUTO:
+                self.autoDraw(message: mqttMessageFormat)
+                break
             case .CLEAR:
                 self.clear(message: mqttMessageFormat)
                 break
@@ -884,7 +888,20 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         if self.de.myUsername == message.username { return }
         
         if let warpingMessage = message.warpingMessage {
-            drawingVC.warp(warpData: warpingMessage.getWarpData())
+            drawingVC.warp(warpData: warpingMessage.getWarpData(), width: warpingMessage.width, height: warpingMessage.height)
+        }
+    }
+    
+    func autoDraw(message: MqttMessageFormat) {
+        if self.de.myUsername == message.username { return }
+        
+        if let autoDrawMessage = message.autoDrawMessage {
+            let SVGCoder = SDImageSVGCoder.shared
+            SDImageCodersManager.shared.addCoder(SVGCoder)
+            let imgView = UIImageView()
+            imgView.frame = CGRect(x: Int(autoDrawMessage.x)/2, y: Int(autoDrawMessage.y)/2, width: 100, height: 100)
+            imgView.sd_setImage(with: URL(string: autoDrawMessage.url))
+            drawingVC.drawingContainer.addSubview(imgView)
         }
     }
     

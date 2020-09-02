@@ -539,7 +539,8 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         }
         src_triangle.initialize(from: &src, count: 4)
         print(src_triangle)
-        let message = MqttMessageFormat(username: de.myUsername!, mode: .WARP, type: de.currentType!, action: 0, warpingMessage: WarpingMessage(action: 0, pointerCount: touches.count/2, x: xList, y: yList))
+        let size = CGSize(width:  self.backgroundImageView.frame.width  , height: self.backgroundImageView.frame.height )
+        let message = MqttMessageFormat(username: de.myUsername!, mode: .WARP, type: de.currentType!, action: 0, warpingMessage: WarpingMessage(action: 0, pointerCount: touches.count/2, x: xList, y: yList, width: Int(size.width), height: Int(size.height)))
         client.publish(topic: client.topic_data, message: parser.jsonWrite(object: message)!)
         
 //        if let theTouch = touches.first {
@@ -573,7 +574,8 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
             print(dst)
         }
         dst_triangle.initialize(from: &dst, count: 4)
-        let message = MqttMessageFormat(username: de.myUsername!, mode: .WARP, type: de.currentType!, action: 0, warpingMessage: WarpingMessage(action: 2, pointerCount: xList.count, x: xList, y: yList))
+        let size = CGSize(width:  self.backgroundImageView.frame.width  , height: self.backgroundImageView.frame.height )
+        let message = MqttMessageFormat(username: de.myUsername!, mode: .WARP, type: de.currentType!, action: 0, warpingMessage: WarpingMessage(action: 2, pointerCount: xList.count, x: xList, y: yList, width: Int(size.width), height: Int(size.height)))
        client.publish(topic: client.topic_data, message: parser.jsonWrite(object: message)!)
         
 //        if let theTouch = touches.first {
@@ -588,7 +590,6 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
 //            let message = MqttMessageFormat(username: de.myUsername!, mode: .WARP, type: de.currentType!, action: 0, warpingMessage: WarpingMessage(action: 2, pointerCount: 1, x: [Int(x)], y: [Int(y)]))
 //            client.publish(topic: client.topic_data, message: parser.jsonWrite(object: message)!)
 //        }
-        let size = CGSize(width:  self.backgroundImageView.frame.width  , height: self.backgroundImageView.frame.height )
         let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
         if let image = warpImg {
             self.backgroundImageView.image = OpenCVWrapper.cvWarp(image, w:  Int32(rect.width)  , h: Int32(rect.height), src: self.src_triangle, dst: self.dst_triangle)
@@ -597,29 +598,32 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         
     }
     
-    func warp(warpData: WarpData) {
+    func warp(warpData: WarpData, width: Int, height: Int) {
         DispatchQueue.main.async {
             if warpData.action == 0 {
                 self.src = []
                 self.dst = []
+                let size = CGSize(width:  self.backgroundImageView.frame.width  , height: self.backgroundImageView.frame.height )
                 for point in warpData.points {
-                    self.src.append(Int32(point.x))
-                    self.src.append(Int32(point.y))
+                    self.src.append(Int32(point.x * Int(size.width) / width))
+                    self.src.append(Int32(point.y * Int(size.height) / height))
                 }
                 if let image = self.backgroundImageView.image {
                     self.warpImg = image
                 }
-                self.src_triangle.initialize(from: &self.src, count: 2)
+                self.src_triangle.initialize(from: &self.src, count: 4)
+                
             }
             else if warpData.action == 2 {
                 self.dst = []
-                for point in warpData.points {
-                    self.dst.append(Int32(point.x))
-                    self.dst.append(Int32(point.y))
-                }
-                self.dst_triangle.initialize(from: &self.dst, count: 2)
                 let size = CGSize(width:  self.backgroundImageView.frame.width  , height: self.backgroundImageView.frame.height )
                 let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+                for point in warpData.points {
+                    self.dst.append(Int32(point.x * Int(size.width) / width))
+                    self.dst.append(Int32(point.y * Int(size.height) / height))
+                }
+                print(self.dst)
+                self.dst_triangle.initialize(from: &self.dst, count: 4)
                 if let image = self.warpImg {
                     self.backgroundImageView.image = OpenCVWrapper.cvWarp(image, w:  Int32(rect.width)  , h: Int32(rect.height), src: self.src_triangle, dst: self.dst_triangle)
                 }
