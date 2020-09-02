@@ -17,6 +17,7 @@ enum Mode: String, Codable {
     case WARP
     case CLEAR
     case CLEAR_BACKGROUND_IMAGE
+    case AUTO
     case UNDO
     case REDO
 }
