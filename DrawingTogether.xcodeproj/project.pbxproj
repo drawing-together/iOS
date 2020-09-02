@@ -15,6 +15,9 @@
 		1119FDCA24FA706F007261D8 /* neon_1.png in Resources */ = {isa = PBXBuildFile; fileRef = 1119FDC924FA706F007261D8 /* neon_1.png */; };
 		1119FDCC24FA7076007261D8 /* pencil_0.png in Resources */ = {isa = PBXBuildFile; fileRef = 1119FDCB24FA7076007261D8 /* pencil_0.png */; };
 		1119FDCE24FA707C007261D8 /* pencil_1.png in Resources */ = {isa = PBXBuildFile; fileRef = 1119FDCD24FA707C007261D8 /* pencil_1.png */; };
+		1119FDD024FF8993007261D8 /* pen.png in Resources */ = {isa = PBXBuildFile; fileRef = 1119FDCF24FF8993007261D8 /* pen.png */; };
+		1119FDD324FF89C6007261D8 /* auto_drawing.png in Resources */ = {isa = PBXBuildFile; fileRef = 1119FDD124FF89C6007261D8 /* auto_drawing.png */; };
+		1119FDD624FF8D49007261D8 /* PenViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1119FDD524FF8D49007261D8 /* PenViewController.swift */; };
 		111D1578247B88BA00095A31 /* DrawingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 111D1577247B88BA00095A31 /* DrawingViewController.swift */; };
 		113E8EE0247F912400F33359 /* MQTTClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 113E8EDF247F912400F33359 /* MQTTClient.swift */; };
 		115122BA24F8CEA000D11A9E /* ShapeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 115122B924F8CEA000D11A9E /* ShapeViewController.swift */; };
@@ -123,6 +126,10 @@
 		1119FDC924FA706F007261D8 /* neon_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = neon_1.png; sourceTree = "<group>"; };
 		1119FDCB24FA7076007261D8 /* pencil_0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pencil_0.png; sourceTree = "<group>"; };
 		1119FDCD24FA707C007261D8 /* pencil_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pencil_1.png; sourceTree = "<group>"; };
+		1119FDCF24FF8993007261D8 /* pen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = pen.png; sourceTree = "<group>"; };
+		1119FDD124FF89C6007261D8 /* auto_drawing.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = auto_drawing.png; sourceTree = "<group>"; };
+		1119FDD224FF89C6007261D8 /* pen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = pen.png; path = "../../../Desktop/2020 서울시 프로젝트/UI/pen.png"; sourceTree = "<group>"; };
+		1119FDD524FF8D49007261D8 /* PenViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenViewController.swift; sourceTree = "<group>"; };
 		111D1577247B88BA00095A31 /* DrawingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingViewController.swift; sourceTree = "<group>"; };
 		113E8EDF247F912400F33359 /* MQTTClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MQTTClient.swift; sourceTree = "<group>"; };
 		115122B924F8CEA000D11A9E /* ShapeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeViewController.swift; sourceTree = "<group>"; };
@@ -246,6 +253,9 @@
 		116988E22494AB21003C3E34 /* image */ = {
 			isa = PBXGroup;
 			children = (
+				1119FDCF24FF8993007261D8 /* pen.png */,
+				1119FDD124FF89C6007261D8 /* auto_drawing.png */,
+				1119FDD224FF89C6007261D8 /* pen.png */,
 				BD5ABFD024FD7E63004503E2 /* redo_circle_black.png */,
 				BD5ABFD224FD7E71004503E2 /* undo_circle_black.png */,
 				844049A424BD5A27004B8290 /* color picker bar.png */,
@@ -401,6 +411,7 @@
 				84404A0824E6695E004B8290 /* DatabaseTransaction.swift */,
 				115122B924F8CEA000D11A9E /* ShapeViewController.swift */,
 				115122BB24F8D43D00D11A9E /* EraserViewController.swift */,
+				1119FDD524FF8D49007261D8 /* PenViewController.swift */,
 			);
 			path = DrawingTogether;
 			sourceTree = "<group>";
@@ -498,9 +509,11 @@
 				116988F92494AB3D003C3E34 /* undo.png in Resources */,
 				CEDE687724765A780057E9D2 /* Main.storyboard in Resources */,
 				116988F02494AB3D003C3E34 /* pen3.png in Resources */,
+				1119FDD024FF8993007261D8 /* pen.png in Resources */,
 				1160A6832498B7F200BC79C8 /* new_logo.png in Resources */,
 				1119FDCA24FA706F007261D8 /* neon_1.png in Resources */,
 				1119FDC624FA7062007261D8 /* highlight_1.png in Resources */,
+				1119FDD324FF89C6007261D8 /* auto_drawing.png in Resources */,
 				115402232497132800B53F96 /* pen33.png in Resources */,
 				BD5ABFD324FD7E71004503E2 /* undo_circle_black.png in Resources */,
 			);
@@ -605,6 +618,7 @@
 				BD5D2AC624969A6900B6D811 /* EraseCommand.swift in Sources */,
 				BDBEA31E24C93141009693D0 /* DrawingTool.swift in Sources */,
 				BDBEA32624C93248009693D0 /* SendMqttMessage.swift in Sources */,
+				1119FDD624FF8D49007261D8 /* PenViewController.swift in Sources */,
 				BD5D2ACA24969A8F00B6D811 /* Eraser.swift in Sources */,
 				953A67D22490EDB9008AC2BA /* DrawingComponent.swift in Sources */,
 				CEDE687224765A780057E9D2 /* SceneDelegate.swift in Sources */,
@@ -756,7 +770,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = GYJHR3KXF9;
+				DEVELOPMENT_TEAM = 725GFJMUCZ;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/KakaoOpenSDK-1.23.3",
@@ -836,7 +850,7 @@
 					"\"opencv2\"",
 					"-all_load",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = hansung.seeseecallcall2;
+				PRODUCT_BUNDLE_IDENTIFIER = hansung.seeseecallcall;
 				PRODUCT_NAME = "시시콜콜";
 				SWIFT_OBJC_BRIDGING_HEADER = "DrawingTogether/Drawing/DrawingTogether-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -852,7 +866,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = GYJHR3KXF9;
+				DEVELOPMENT_TEAM = 725GFJMUCZ;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/KakaoOpenSDK-1.23.3",
@@ -932,7 +946,7 @@
 					"\"opencv2\"",
 					"-all_load",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = hansung.seeseecallcall2;
+				PRODUCT_BUNDLE_IDENTIFIER = hansung.seeseecallcall;
 				PRODUCT_NAME = "시시콜콜";
 				SWIFT_OBJC_BRIDGING_HEADER = "DrawingTogether/Drawing/DrawingTogether-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;

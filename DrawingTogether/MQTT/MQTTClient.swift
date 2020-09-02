@@ -209,10 +209,10 @@ class MQTTClient: NSObject {
         isMid = true
         
         // 오디오 처리 - 수정 필요
-        if drawingVC.speakerFlag {
-            unsubscribe(topic_audio)
-            audioPlaying = false
-        }
+//        if drawingVC.speakerFlag {
+//            unsubscribe(topic_audio)
+//            audioPlaying = false
+//        } nj
         //
         print("exit task end")
     }
@@ -301,7 +301,20 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             return
         }
         
+        if (topic == topic_audio) {
+            return
+            //            if (!audioPlaying && drawingVC.speakerFlag) { // Audio Start
+            //                audioPlaying = true
+            //                // 오디오 처리
+            //            } else if (audioPlaying && !drawingVC.speakerFlag) { // Audio Stop
+            //                // 오디오 처리
+            //                audioPlaying = false
+            //                unsubscribe(topic_audio)
+            //            }
+                    }
+        
         let message = String(data: data, encoding: .utf8)!
+        print(message)
         
         if parser.jsonReader(msg: message) == nil { return }
         let mqttMessageFormat = parser.jsonReader(msg: message)!
@@ -438,6 +451,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             
             switch mqttMessageFormat.mode {
             case .DRAW:
+                
                 self.draw(message: mqttMessageFormat)
                 break
             case .ERASE:
@@ -452,7 +466,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             case .WARP:
                 self.warp(message: mqttMessageFormat)
                 break
-            case .AUTO:
+            case .AUTODRAW:
                 self.autoDraw(message: mqttMessageFormat)
                 break
             case .CLEAR:
@@ -487,19 +501,6 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             // 모든 사용자가 topic_mid로 메시지 전송 받음
             // 이 시점 중간자에게는 모든 데이터 저장 완료 후
             de.isMidEntered = false
-        }
-        
-        if (topic == topic_audio) {
-            print("TOPIC_AUDIO : \(message)")
-            
-            if (!audioPlaying && drawingVC.speakerFlag) { // Audio Start
-                audioPlaying = true
-                // 오디오 처리
-            } else if (audioPlaying && !drawingVC.speakerFlag) { // Audio Stop
-                // 오디오 처리
-                audioPlaying = false
-                unsubscribe(topic_audio)
-            }
         }
         
         if (topic == topic_alive) {

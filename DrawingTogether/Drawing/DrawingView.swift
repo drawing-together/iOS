@@ -593,7 +593,7 @@ class DrawingView: UIImageView {
     func clear() {
         de.drawingVC!.eraserVC.dismiss(animated: true, completion: nil)
         
-        let alertController = UIAlertController(title: "화면 초기화", message: "모든 그리기 내용이 삭제됩니다.\n그래도 지우시겠습니까?", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "배경 초기화", message: "배경 이미지가 삭제됩니다.\n그래도 지우시겠습니까?", preferredStyle: .alert)
         let yesAction = UIAlertAction(title: "YES", style: .destructive) {
             (action) in
             
@@ -607,6 +607,10 @@ class DrawingView: UIImageView {
             
             self.de.drawingVC?.setRedoEnabled(isEnabled: false)
             self.de.drawingVC?.setUndoEnabled(isEnabled: false)
+            
+            self.sendModeMqttMessage(mode: Mode.CLEAR_BACKGROUND_IMAGE)
+            self.de.backgroundImage = nil
+            self.de.clearBackgroundImage()
         }
         alertController.addAction(yesAction)
         alertController.addAction(UIAlertAction(title: "NO", style: .cancel, handler: nil))
@@ -624,6 +628,30 @@ class DrawingView: UIImageView {
             self.sendModeMqttMessage(mode: Mode.CLEAR_BACKGROUND_IMAGE)
             self.de.backgroundImage = nil
             self.de.clearBackgroundImage()
+        }
+        alertController.addAction(yesAction)
+        alertController.addAction(UIAlertAction(title: "NO", style: .cancel, handler: nil))
+        
+        de.drawingVC?.present(alertController, animated: true)
+    }
+    
+    func clearDrawingView() {
+        de.drawingVC!.eraserVC.dismiss(animated: true, completion: nil)
+        
+        let alertController = UIAlertController(title: "화면 초기화", message: "모든 그리기 내용이 삭제됩니다.\n그래도 지우시겠습니까?", preferredStyle: .alert)
+        let yesAction = UIAlertAction(title: "YES", style: .destructive) {
+            (action) in
+            
+            self.de.initSelectedImage()
+            
+            self.sendModeMqttMessage(mode: Mode.CLEAR)
+            self.de.clearDrawingComponents()
+            //self.de.clearTexts()
+            
+            self.setNeedsDisplay()
+            
+            self.de.drawingVC?.setRedoEnabled(isEnabled: false)
+            self.de.drawingVC?.setUndoEnabled(isEnabled: false)
         }
         alertController.addAction(yesAction)
         alertController.addAction(UIAlertAction(title: "NO", style: .cancel, handler: nil))
