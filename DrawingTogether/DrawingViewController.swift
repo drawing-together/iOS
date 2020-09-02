@@ -33,6 +33,9 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     @IBOutlet weak var highlightBtn: UIButton!
     @IBOutlet weak var neonBtn: UIButton!
     
+    @IBOutlet weak var undoBtn: UIButton!
+    @IBOutlet weak var redoBtn: UIButton!
+    
     var textEditingView: TextEditingView!
     
     var ip: String = "54.180.154.63"
@@ -93,6 +96,9 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         //drawingView.addGestureRecognizer(tapGestureRecognizer)
         drawingView.isUserInteractionEnabled = true
         de.initialize(drawingVC: self, master: master)
+        
+        if de.history.count == 0 { self.setUndoEnabled(isEnabled: false) }
+        if de.undoArray.count == 0 { self.setRedoEnabled(isEnabled: false) }
         
         // Text Editing View Setup
         print("drawing container size = \(drawingContainer.frame.width), \(drawingContainer.frame.height)")
@@ -335,10 +341,12 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
 
     @IBAction func clickUndo(_ sender: UIButton) {
         print("undo")
+        drawingView!.undo()
     }
     
     @IBAction func clickRedo(_ sender: UIButton) {
         print("redo")
+        drawingView!.redo()
     }
     
     @IBAction func clickPen(_ sender: UIButton) {
@@ -622,6 +630,16 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
                 self.src = self.dst
             }
         }
+    }
+    
+    func setRedoEnabled(isEnabled: Bool) {
+        //set image
+        redoBtn.isEnabled = isEnabled
+    }
+    
+    func setUndoEnabled(isEnabled: Bool) {
+        //set image
+        undoBtn.isEnabled = isEnabled
     }
     
     /*@objc func drawingTapped(_ tapGesture: UITapGestureRecognizer) {

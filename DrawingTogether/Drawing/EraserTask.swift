@@ -11,79 +11,70 @@ import Foundation
 class EraserTask  {
     let de = DrawingEditor.INSTANCE
     let parser = JSONParser.parser
-    let erasedComponentIds: [Int]!
-    var components: [DrawingComponent]!
+    var erasedComponentIds: [Int]!
+    var components = [DrawingComponent]()
     let queue = DispatchQueue(label: "eraseQueue")
     
-    init(erasedComponentIds: [Int]) {
-        //de.setDrawingView(((MainActivity) de.getContext()).getDrawingView());
-        self.erasedComponentIds = erasedComponentIds
-        self.components = [DrawingComponent]()
+    init() {
+        
     }
     
-    func execute() {
-        
-        queue.async {
-            for i in 1..<self.erasedComponentIds.count {
-                if let component = self.de.findDrawingComponentById(id: self.erasedComponentIds[i]) {
-                    self.components.append(component)
+    func execute(erasedComponentIds: [Int]) {
+            self.erasedComponentIds = erasedComponentIds
+            self.components.removeAll()
+            
+            queue.async {
+                for i in 1..<self.erasedComponentIds.count {
+                    autoreleasepool {
+                        if let component = self.de.findDrawingComponentById(id: self.erasedComponentIds[i]) {
+                            if component.isSelected, let usersComponentId = component.usersComponentId {
+                                self.de.setDrawingComponentSelected(usersComponentId, isSelected: false)
+                                self.de.clearMyCurrentImage()
+                                self.de.drawingVC!.drawingView.isSelected = false
+                            }
+                            component.isSelected = false
+                            self.components.append(component)
+                        }
+                    }
                 }
+                
+                for i in 1..<self.erasedComponentIds.count {
+                    autoreleasepool {
+                    let id = self.erasedComponentIds[i]
+                    self.de.removeDrawingComponents(id: id)
+                    }
+                }
+                
+                self.de.eraseDrawingBoardArray(erasedComponentIds: self.erasedComponentIds)
+                
+                
+                self.de.addHistory(item: DrawingItem(mode: Mode.ERASE, components: self.parser.getDrawingComponentAdapters(components: self.components)))    //fixme
+                print("history.size()=\(self.de.history.count)")
+                
+                //self.de.printDrawingComponentArray(name: "cc", array: self.de.currentComponents, status: "erase")
+                //self.de.printDrawingComponentArray(name: "dc", array: self.de.drawingComponents, status: "erase")
+                
+                DispatchQueue.main.async {
+                    self.de.clearDrawingImage()
+                    self.de.drawAllDrawingComponents()
+                    
+                    if self.de.currentMode == Mode.SELECT, self.de.drawingView!.isSelected, let component = self.de.selectedComponent {
+                        if let id = component.id, let comp = self.de.findDrawingComponentById(id: id), comp.isSelected {
+                            self.de.setPreSelectedComponents(id: id)
+                            self.de.setPostSelectedComponents(id: id)
+
+                            self.de.clearMyCurrentImage()
+
+                            self.de.setPreAndPostSelectedComponentsImage()
+
+                            component.drawComponent(view: self.de.drawingVC!.myCurrentView, drawingEditor: self.de)
+                            self.de.drawUnselectedComponents()
+                            self.de.drawSelectedComponentBorder(component: component, color: self.de.mySelectedBorderColor.cgColor)
+                        }
+                    }
+                }
+                
             }
-            
-            for i in 1..<self.erasedComponentIds.count {
-                let id = self.erasedComponentIds[i]
-                self.de.removeDrawingComponents(id: id)
-            }
-            
-            self.de.eraseDrawingBoardArray(erasedComponentIds: self.erasedComponentIds)
-            
-            
-            self.de.addHistory(item: DrawingItem(mode: Mode.ERASE, components: self.parser.getDrawingComponentAdapters(components: self.components)))    //fixme
-            print("history.size()=\(self.de.history.count)")
-            
-            //self.de.printDrawingComponentArray(name: "cc", array: self.de.currentComponents, status: "erase")
-            //self.de.printDrawingComponentArray(name: "dc", array: self.de.drawingComponents, status: "erase")
-            
-            DispatchQueue.main.async {
-                self.de.clearDrawingImage()
-                self.de.drawAllDrawingComponents()
-            }
-            
-        }
-        
-    }
-    
-    func erase() {
-        self.de.clearDrawingImage()
-        
-        for i in 1..<self.erasedComponentIds.count {
-            if let component = self.de.findDrawingComponentById(id: self.erasedComponentIds[i]) {
-                self.components.append(component)
-            }
-        }
-        
-        for i in 1..<self.erasedComponentIds.count {
-            let id = self.erasedComponentIds[i]
-            self.de.removeDrawingComponents(id: id)
-        }
-        
-        self.de.drawAllDrawingComponents()
-        
-        
-        self.de.eraseDrawingBoardArray(erasedComponentIds: self.erasedComponentIds)
-        
-        
-        self.de.addHistory(item: DrawingItem(mode: Mode.ERASE, components: self.parser.getDrawingComponentAdapters(components: self.components)))    //fixme
-        print("history.size()=\(self.de.history.count)")
-        
-        //self.de.lastDrawingImage = self.de.drawingView?.image
-        
-        //self.de.clearUndoArray()
-        
-        self.de.drawingView!.setNeedsDisplay()
-        
-        self.de.printDrawingComponentArray(name: "cc", array: self.de.currentComponents, status: "erase")
-        self.de.printDrawingComponentArray(name: "dc", array: self.de.drawingComponents, status: "erase")
         
     }
 }

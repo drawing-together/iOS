@@ -53,7 +53,7 @@ class Stroke: DrawingComponent {
         //UIGraphicsBeginImageContext(drawingView.frame.size)
         UIGraphicsBeginImageContextWithOptions(CGSize(width: drawingEditor.myCanvasWidth!, height: drawingEditor.myCanvasHeight!), false, 0)
         guard let context = UIGraphicsGetCurrentContext() else { return }
-        guard let context2 = UIGraphicsGetCurrentContext() else { return }
+        //guard let context2 = UIGraphicsGetCurrentContext() else { return }
         view.image?.draw(in: view.bounds)
         
         //      context.setBlendMode(.normal)
@@ -64,84 +64,55 @@ class Stroke: DrawingComponent {
         context.setLineCap(.round)
         context.setLineJoin(.round)
         
+        
         if(self.penMode == PenMode.NEON) {
-            context.setLineWidth(self.strokeWidth! + 4 / 2)
-            context.setShadow(offset: CGSize.zero, blur: 15.0, color: self.hexStringToUIColor(hex: self.strokeColor!).cgColor)
+            context.setLineWidth(self.strokeWidth! / 2)
+            context.setShadow(offset: CGSize.zero, blur: CGFloat((self.strokeWidth! + 10) / 2), color: self.hexStringToUIColor(hex: self.strokeColor!).cgColor)
             context.setBlendMode(.normal)//.multiply)
-            
-            context2.setLineCap(.round)
-            context2.setLineJoin(.round)
-            context2.setLineWidth((self.strokeWidth! - 4) / 2)
-            context2.setStrokeColor(UIColor.white.cgColor)
-            
-            var mX, mY, x, y: CGFloat
-            if self.points.count == 1 {
-                context.move(to: CGPoint(x: CGFloat(self.points[0].x) * xRatio, y: CGFloat(self.points[0].y) * yRatio))
-                context.move(to: CGPoint(x: CGFloat(self.points[0].x) * xRatio, y: CGFloat(self.points[0].y) * yRatio))
-                context2.addLine(to: CGPoint(x: CGFloat(self.points[0].x) * xRatio, y: CGFloat(self.points[0].y) * yRatio))
-                context2.addLine(to: CGPoint(x: CGFloat(self.points[0].x) * xRatio, y: CGFloat(self.points[0].y) * yRatio))
-            } else {
-                mX = CGFloat(self.points[0].x) * xRatio
-                mY = CGFloat(self.points[0].y) * yRatio
-                context.move(to: CGPoint(x: mX, y: mY))
-                context2.move(to: CGPoint(x: mX, y: mY))
-                
-                for i in 0..<self.points.count-1 {
-                    x = CGFloat(self.points[i+1].x) * xRatio
-                    y = CGFloat(self.points[i+1].y) * yRatio
-                    context.addQuadCurve(to: CGPoint(x: (x + mX)/2, y: (y + mY)/2), control: CGPoint(x: mX, y:mY))
-                    context2.addQuadCurve(to: CGPoint(x: (x + mX)/2, y: (y + mY)/2), control: CGPoint(x: mX, y:mY))
-                    mX = x
-                    mY = y
-                }
-                context.addLine(to: CGPoint(x: mX, y: mY))
-                context2.addLine(to: CGPoint(x: mX, y: mY))
-                
-            }
-            context.strokePath()
-            context2.strokePath()
+            context.setStrokeColor(UIColor.white.cgColor)
             
         } else {
             if self.penMode == PenMode.HIGHLIGHT {
+                context.setLineWidth(self.strokeWidth!)
                 context.setAlpha(Alpha.getIOSAlpha(alpha: drawingEditor.highlightAlpha/*self.strokeAlpha!*/))
             } else if self.penMode == PenMode.NORMAL {
+                context.setLineWidth(self.strokeWidth! / 2)
                 context.setAlpha(Alpha.getIOSAlpha(alpha: drawingEditor.normalAlpha/*self.strokeAlpha!*/))
             }
-            
-            context.setLineWidth(self.strokeWidth! / 2)     // **
             context.setStrokeColor(self.hexStringToUIColor(hex: self.strokeColor!).cgColor)
-            
-            //print("drawComponent xRatio=\(xRatio), yRatio=\(yRatio)")
-            
-            /*context.move(to: CGPoint(x: CGFloat(self.points[0].x) * xRatio, y: CGFloat(self.points[0].y) * yRatio))
-            for i in 1..<self.points.count {
-                context.addLine(to: CGPoint(x: CGFloat(self.points[i].x) * (xRatio), y: CGFloat(self.points[i].y) * (yRatio)))
-                //print("(\(self.points[i].x), \(self.points[i].y))")
-            }*/
-            
-            var mX, mY, x, y: CGFloat
-            
-            if self.points.count == 1 {
-                context.move(to: CGPoint(x: CGFloat(self.points[0].x) * xRatio, y: CGFloat(self.points[0].y) * yRatio))
-                context.addLine(to: CGPoint(x: CGFloat(self.points[0].x) * xRatio, y: CGFloat(self.points[0].y) * yRatio))
-            } else {
-                mX = CGFloat(self.points[0].x) * xRatio
-                mY = CGFloat(self.points[0].y) * yRatio
-                context.move(to: CGPoint(x: mX, y: mY))
-                
-                for i in 0..<self.points.count-1 {
-                    x = CGFloat(self.points[i+1].x) * xRatio
-                    y = CGFloat(self.points[i+1].y) * yRatio
-                    context.addQuadCurve(to: CGPoint(x: (x + mX)/2, y: (y + mY)/2), control: CGPoint(x: mX, y:mY))
-                    mX = x
-                    mY = y
-                }
-                context.addLine(to: CGPoint(x: mX, y: mY))
-                
-            }
-            
-            context.strokePath()
         }
+        
+        //print("drawComponent xRatio=\(xRatio), yRatio=\(yRatio)")
+        
+        /*context.move(to: CGPoint(x: CGFloat(self.points[0].x) * xRatio, y: CGFloat(self.points[0].y) * yRatio))
+        for i in 1..<self.points.count {
+            context.addLine(to: CGPoint(x: CGFloat(self.points[i].x) * (xRatio), y: CGFloat(self.points[i].y) * (yRatio)))
+            //print("(\(self.points[i].x), \(self.points[i].y))")
+        }*/
+        
+        var mX, mY, x, y: CGFloat
+        
+        if self.points.count == 1 {
+            context.move(to: CGPoint(x: CGFloat(self.points[0].x) * xRatio, y: CGFloat(self.points[0].y) * yRatio))
+            context.addLine(to: CGPoint(x: CGFloat(self.points[0].x) * xRatio, y: CGFloat(self.points[0].y) * yRatio))
+        } else {
+            mX = CGFloat(self.points[0].x) * xRatio
+            mY = CGFloat(self.points[0].y) * yRatio
+            context.move(to: CGPoint(x: mX, y: mY))
+            
+            for i in 0..<self.points.count-1 {
+                x = CGFloat(self.points[i+1].x) * xRatio
+                y = CGFloat(self.points[i+1].y) * yRatio
+                context.addQuadCurve(to: CGPoint(x: (x + mX)/2, y: (y + mY)/2), control: CGPoint(x: mX, y:mY))
+                mX = x
+                mY = y
+            }
+            context.addLine(to: CGPoint(x: mX, y: mY))
+            
+        }
+        
+        context.strokePath()
+        
         view.image = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
     }
