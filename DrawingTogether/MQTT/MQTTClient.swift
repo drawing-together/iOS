@@ -128,6 +128,12 @@ class MQTTClient: NSObject {
         print(UInt32(port)!)
         session?.transport = transport
         
+        // MARK: SET MQTT CLINET NAME
+        // client일 경우 client id를 지정함으로써 브로커 로그에 사용자가 메인 화면에서 입력한 이름이 출력되도록 설정 (clientInCallback의 경우 해당 X)
+        if let clientName = self.myName, let topic = self.topic {
+            self.session!.clientId = "*\(clientName)_\(topic)_iOS"
+        }
+        
         session?.connect() {
             error in
             if error != nil {

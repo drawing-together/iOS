@@ -19,8 +19,8 @@ class DrawingEditor {
     var drawingView: DrawingView?
     var drawingVC: DrawingViewController?
     
+    var receiveImage: UIImage?
     var currentImage: UIImage?
-    var myCurrentImage: UIImage?
     var frameSize: CGSize?
     
     //    var backgroundImage: CGImage?
@@ -300,13 +300,6 @@ class DrawingEditor {
         drawingBoardArray = Array(repeating: Array(repeating: [Int](), count: width), count: height)  // out of memory error
         print("initDrawingBoardArray() height=\(drawingBoardArray!.count) width=\(drawingBoardArray![0].count)")
         
-        /*for i in 0..<height {
-            for j in 0..<width {
-                autoreleasepool {
-                //drawingBoardArray![i][j].append(-1)
-                }
-            }
-        }*/
     }
     
     func clearDrawingBoardArray() {
@@ -315,7 +308,6 @@ class DrawingEditor {
                 autoreleasepool {
                 if drawingBoardArray![i][j].count != 0 {
                     drawingBoardArray![i][j].removeAll()
-                    //drawingBoardArray![i][j].append(-1)
                 }
                 }
             }
