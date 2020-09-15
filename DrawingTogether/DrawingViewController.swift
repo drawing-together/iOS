@@ -135,12 +135,13 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
             client.exitTask()
             client.unsubscribeAllTopics()
         }
-        client.session?.disconnect()
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(true)
         print("DrawingViewController : viewDidDisappear")
+        
+        client.session?.disconnect()
     }
     
     // MARK: FUNCTION
