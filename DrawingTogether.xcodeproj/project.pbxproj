@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0A7E9DA10627382D01D7095A /* Pods_DrawingTogether.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BFA4C93A455D3A8A4BACA03 /* Pods_DrawingTogether.framework */; };
 		1119FDC224FA4064007261D8 /* back.png in Resources */ = {isa = PBXBuildFile; fileRef = 1119FDC124FA4064007261D8 /* back.png */; };
 		1119FDC424FA705A007261D8 /* highlight_0.png in Resources */ = {isa = PBXBuildFile; fileRef = 1119FDC324FA705A007261D8 /* highlight_0.png */; };
 		1119FDC624FA7062007261D8 /* highlight_1.png in Resources */ = {isa = PBXBuildFile; fileRef = 1119FDC524FA7062007261D8 /* highlight_1.png */; };
@@ -93,6 +92,7 @@
 		BDBEA32224C9322C009693D0 /* Selector.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBEA32124C9322C009693D0 /* Selector.swift */; };
 		BDBEA32424C93237009693D0 /* SelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBEA32324C93237009693D0 /* SelectorCommand.swift */; };
 		BDBEA32624C93248009693D0 /* SendMqttMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBEA32524C93248009693D0 /* SendMqttMessage.swift */; };
+		C2042BA369570A3273BFEDB0 /* Pods_DrawingTogether.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 609442141B495E82B6EA2C20 /* Pods_DrawingTogether.framework */; };
 		CE59F5FA24D8FA72008A6CCC /* WarpingMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE59F5F924D8FA72008A6CCC /* WarpingMessage.swift */; };
 		CE59F60724D900EF008A6CCC /* OpenCVWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE59F60624D900EF008A6CCC /* OpenCVWrapper.mm */; };
 		CE683EC224FE23E7000222C8 /* AutoDrawMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE683EC124FE23E7000222C8 /* AutoDrawMessage.swift */; };
@@ -154,9 +154,8 @@
 		1169890B2495DB89003C3E34 /* selector.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = selector.png; sourceTree = "<group>"; };
 		1169890D249604F3003C3E34 /* color_bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = color_bar.png; sourceTree = "<group>"; };
 		11C5BCA424965BFB0066517B /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
-		2BFA4C93A455D3A8A4BACA03 /* Pods_DrawingTogether.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DrawingTogether.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		43EABC13362160988CC86CDD /* Pods-DrawingTogether.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DrawingTogether.debug.xcconfig"; path = "Target Support Files/Pods-DrawingTogether/Pods-DrawingTogether.debug.xcconfig"; sourceTree = "<group>"; };
-		779D315CC4191BA29F528277 /* Pods-DrawingTogether.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DrawingTogether.release.xcconfig"; path = "Target Support Files/Pods-DrawingTogether/Pods-DrawingTogether.release.xcconfig"; sourceTree = "<group>"; };
+		5CDA820F9A9AC4878DE03B07 /* Pods-DrawingTogether.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DrawingTogether.release.xcconfig"; path = "Target Support Files/Pods-DrawingTogether/Pods-DrawingTogether.release.xcconfig"; sourceTree = "<group>"; };
+		609442141B495E82B6EA2C20 /* Pods_DrawingTogether.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DrawingTogether.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		844049A224BD5689004B8290 /* master_login.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = master_login.png; sourceTree = "<group>"; };
 		844049A424BD5A27004B8290 /* color picker bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "color picker bar.png"; sourceTree = "<group>"; };
 		844049A624BD5A37004B8290 /* join.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = join.png; sourceTree = "<group>"; };
@@ -175,6 +174,7 @@
 		8450CC55248E1A55003286A4 /* JSONParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONParser.swift; sourceTree = "<group>"; };
 		8450CC59248E1BA8003286A4 /* ExitMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExitMessage.swift; sourceTree = "<group>"; };
 		8450CC5B248E1C55003286A4 /* CloseMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloseMessage.swift; sourceTree = "<group>"; };
+		917BA74D6BA39B61BE6D7DA3 /* Pods-DrawingTogether.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DrawingTogether.debug.xcconfig"; path = "Target Support Files/Pods-DrawingTogether/Pods-DrawingTogether.debug.xcconfig"; sourceTree = "<group>"; };
 		952F4EB124910C4E00B665F4 /* DrawingItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingItem.swift; sourceTree = "<group>"; };
 		953A67B52490E8A7008AC2BA /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		953A67B72490EDB8008AC2BA /* Text.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Text.swift; sourceTree = "<group>"; };
@@ -233,7 +233,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				84404A0D24E66D52004B8290 /* KakaoLink.framework in Frameworks */,
-				0A7E9DA10627382D01D7095A /* Pods_DrawingTogether.framework in Frameworks */,
+				C2042BA369570A3273BFEDB0 /* Pods_DrawingTogether.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -353,7 +353,7 @@
 			children = (
 				84404A0A24E66D2A004B8290 /* KakaoOpenSDK-1.23.3 */,
 				84404A0C24E66D52004B8290 /* KakaoLink.framework */,
-				2BFA4C93A455D3A8A4BACA03 /* Pods_DrawingTogether.framework */,
+				609442141B495E82B6EA2C20 /* Pods_DrawingTogether.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -361,8 +361,8 @@
 		B588619159CC547280219286 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				43EABC13362160988CC86CDD /* Pods-DrawingTogether.debug.xcconfig */,
-				779D315CC4191BA29F528277 /* Pods-DrawingTogether.release.xcconfig */,
+				917BA74D6BA39B61BE6D7DA3 /* Pods-DrawingTogether.debug.xcconfig */,
+				5CDA820F9A9AC4878DE03B07 /* Pods-DrawingTogether.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -423,12 +423,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CEDE688024765A7C0057E9D2 /* Build configuration list for PBXNativeTarget "DrawingTogether" */;
 			buildPhases = (
-				48435F7552652DF333F4FA6E /* [CP] Check Pods Manifest.lock */,
+				3B4240DE4EC277E5A0CD8078 /* [CP] Check Pods Manifest.lock */,
 				CEDE686824765A780057E9D2 /* Sources */,
 				CEDE686924765A780057E9D2 /* Frameworks */,
 				CEDE686A24765A780057E9D2 /* Resources */,
-				51C828340C80696FB4593B13 /* [CP] Embed Pods Frameworks */,
 				84404A0F24E66D52004B8290 /* Embed Frameworks */,
+				6A922DC57A4E1FD52699AE5E /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -522,7 +522,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		48435F7552652DF333F4FA6E /* [CP] Check Pods Manifest.lock */ = {
+		3B4240DE4EC277E5A0CD8078 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -544,7 +544,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		51C828340C80696FB4593B13 /* [CP] Embed Pods Frameworks */ = {
+		6A922DC57A4E1FD52699AE5E /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -765,7 +765,7 @@
 		};
 		CEDE688124765A7C0057E9D2 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 43EABC13362160988CC86CDD /* Pods-DrawingTogether.debug.xcconfig */;
+			baseConfigurationReference = 917BA74D6BA39B61BE6D7DA3 /* Pods-DrawingTogether.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -861,7 +861,7 @@
 		};
 		CEDE688224765A7C0057E9D2 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 779D315CC4191BA29F528277 /* Pods-DrawingTogether.release.xcconfig */;
+			baseConfigurationReference = 5CDA820F9A9AC4878DE03B07 /* Pods-DrawingTogether.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;

@@ -126,7 +126,7 @@ class JSONParser {
         for idx in 0..<textAdapters.count {
             
             let text = Text()
-            text.create(textAttribute: textAdapters[idx].textAttribute!, drawingVC: drawingVC)
+            text.create(textAttribute: textAdapters[idx].textAttr!, drawingVC: drawingVC)
             
             texts.append(text)
         }
@@ -139,7 +139,7 @@ class JSONParser {
         
         for idx in 0..<texts.count {
             textAdapters.append(TextAdapter())
-            textAdapters[idx].textAttribute = texts[idx].textAttribute
+            textAdapters[idx].textAttr = texts[idx].textAttribute
         }
         
         return textAdapters
