@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina5_9" orientation="portrait" appearance="light"/>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
@@ -16,18 +16,21 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view autoresizesSubviews="NO" contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Pv6-uS-Cgt">
-                    <rect key="frame" x="40" y="294" width="295" height="134"/>
+                    <rect key="frame" x="40" y="194" width="334" height="100"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="100" id="If4-Fi-9qa"/>
+                    </constraints>
                     <color key="textColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
                     <fontDescription key="fontDescription" type="system" pointSize="20"/>
                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                 </textView>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bOy-Ne-DBb">
-                    <rect key="frame" x="285" y="59" width="70" height="30"/>
+                    <rect key="frame" x="324" y="59" width="70" height="30"/>
                     <color key="backgroundColor" red="0.08235294118" green="0.62745098040000002" blue="0.90980392160000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="70" id="JhC-uq-KoA"/>
@@ -47,7 +50,10 @@
                     </connections>
                 </button>
                 <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="20" minValue="0.0" maxValue="50" translatesAutoresizingMaskIntoConstraints="NO" id="KqB-h6-1iq">
-                    <rect key="frame" x="78" y="428" width="219" height="31"/>
+                    <rect key="frame" x="38" y="294" width="338" height="31"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="30" id="ikM-i6-pp5"/>
+                    </constraints>
                     <connections>
                         <action selector="sliderValueChanged:" destination="-1" eventType="valueChanged" id="7XB-39-L8v"/>
                     </connections>
@@ -55,18 +61,17 @@
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
-                <constraint firstItem="Pv6-uS-Cgt" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="250" id="33t-eh-RSj"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="Pv6-uS-Cgt" secondAttribute="trailing" constant="40" id="7wJ-RK-Tra"/>
+                <constraint firstItem="Pv6-uS-Cgt" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="150" id="33t-eh-RSj"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="bOy-Ne-DBb" secondAttribute="trailing" constant="20" id="8L0-7G-ZBn"/>
                 <constraint firstItem="KqB-h6-1iq" firstAttribute="top" secondItem="Pv6-uS-Cgt" secondAttribute="bottom" id="Hvc-hb-CaG"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="Pv6-uS-Cgt" secondAttribute="bottom" constant="350" id="YDe-4U-A9O"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="KqB-h6-1iq" secondAttribute="trailing" constant="80" id="i8w-R3-LC5"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="KqB-h6-1iq" secondAttribute="trailing" constant="40" id="IU2-UW-Qgp"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="Pv6-uS-Cgt" secondAttribute="trailing" constant="40" id="c5V-km-JUL"/>
                 <constraint firstItem="bOy-Ne-DBb" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="15" id="nep-L8-TG1"/>
-                <constraint firstItem="KqB-h6-1iq" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="80" id="nlf-GE-ClD"/>
+                <constraint firstItem="KqB-h6-1iq" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="40" id="nlf-GE-ClD"/>
                 <constraint firstItem="Pv6-uS-Cgt" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="40" id="ofR-D3-KXE"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
-            <point key="canvasLocation" x="138.40000000000001" y="126.38680659670166"/>
+            <point key="canvasLocation" x="137.68115942028987" y="125.89285714285714"/>
         </view>
     </objects>
 </document>

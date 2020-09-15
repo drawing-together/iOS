@@ -9,7 +9,7 @@
 import Foundation
 
 class TextAdapter: Codable {
-    var textAttribute: TextAttribute?
+    var textAttr: TextAttribute?
     
     
 }

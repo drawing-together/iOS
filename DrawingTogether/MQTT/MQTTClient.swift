@@ -281,6 +281,19 @@ class MQTTClient: NSObject {
         return true
     }
     
+    public func isTextInUse() -> Bool {
+        print("text: in isTextInUse func")
+        
+        for text in de.texts {
+            if text.textAttribute.username != nil {
+                return true
+            }
+        }
+        return false
+    }
+    
+    
+    
     // GETTER
     public func getTopic() -> String { return self.topic }
     
@@ -349,7 +362,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                         
                     }
                     if master {
-                         if isUsersActionUp(username: joinName) /*&& isTextInUse()*/ { // fixme nayeon
+                         if isUsersActionUp(username: joinName) && !isTextInUse() { // fixme nayeon
                             let joinAckMsg = JoinAckMessage(name: myName, target: joinName)
                             
 //                            var messageFormat: MqttMessageFormat?
@@ -407,7 +420,9 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
 //                             de.bitmapByteArray = mqttMessageFormat.bitmapByteArray!
 //                         }
                          
-                         MQTTClient.client2.publish(topic: topic_mid, message: parser.jsonWrite(object: MqttMessageFormat(username: myName, mode: Mode.MID))!)                    }
+                         MQTTClient.client2.publish(topic: topic_mid, message: parser.jsonWrite(object: MqttMessageFormat(username: myName, mode: Mode.MID))!)
+                        
+                    }
                     
                     else if !isContainsUserList(name: joinAckName) {
                         
