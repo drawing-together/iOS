@@ -15,8 +15,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="I5q-Ki-9yv">
-                                <rect key="frame" x="70" y="54" width="180" height="460.5"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="I5q-Ki-9yv">
+                                <rect key="frame" x="70" y="50.5" width="180" height="467.5"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="new_logo.png" translatesAutoresizingMaskIntoConstraints="NO" id="NAp-b2-M3r" userLabel="Logo Image View">
                                         <rect key="frame" x="25" y="0.0" width="130" height="110"/>
@@ -24,11 +24,51 @@
                                             <constraint firstAttribute="height" constant="110" id="av6-Zd-DNY"/>
                                         </constraints>
                                     </imageView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="xv6-IU-qlM">
-                                        <rect key="frame" x="20" y="140" width="140" height="320.5"/>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="xv6-IU-qlM">
+                                        <rect key="frame" x="20" y="110" width="140" height="357.5"/>
                                         <subviews>
-                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="43r-tC-3Be">
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="uah-eN-Ane">
                                                 <rect key="frame" x="0.0" y="0.0" width="140" height="53.5"/>
+                                                <subviews>
+                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="브로커 아이피 주소" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="k9j-ys-PrT">
+                                                        <rect key="frame" x="0.0" y="0.0" width="140" height="34"/>
+                                                        <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                        <textInputTraits key="textInputTraits"/>
+                                                    </textField>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gLl-YH-vjZ">
+                                                        <rect key="frame" x="0.0" y="39" width="140" height="14.5"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="14.5" id="HMk-EF-muV"/>
+                                                        </constraints>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                        <color key="textColor" red="0.08235294118" green="0.62745098040000002" blue="0.90980392160000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                </subviews>
+                                            </stackView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="FY1-r1-p1n">
+                                                <rect key="frame" x="0.0" y="53.5" width="140" height="53.5"/>
+                                                <subviews>
+                                                    <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="포트번호" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="cFK-ud-ZJg">
+                                                        <rect key="frame" x="0.0" y="0.0" width="140" height="34"/>
+                                                        <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                        <textInputTraits key="textInputTraits"/>
+                                                    </textField>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y3A-Tt-p9D">
+                                                        <rect key="frame" x="0.0" y="39" width="140" height="14.5"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="14.5" id="j8n-ZZ-l8F"/>
+                                                        </constraints>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                        <color key="textColor" red="0.08235294118" green="0.62745098040000002" blue="0.90980392160000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                </subviews>
+                                            </stackView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="43r-tC-3Be">
+                                                <rect key="frame" x="0.0" y="107" width="140" height="53.5"/>
                                                 <subviews>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="회의명" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="S7F-Xd-MsN">
                                                         <rect key="frame" x="0.0" y="0.0" width="140" height="34"/>
@@ -49,7 +89,7 @@
                                                 </subviews>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="A9g-SQ-RSf">
-                                                <rect key="frame" x="0.0" y="73.5" width="140" height="53.5"/>
+                                                <rect key="frame" x="0.0" y="160.5" width="140" height="53.5"/>
                                                 <subviews>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="비밀번호" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="hX5-eq-b2g">
                                                         <rect key="frame" x="0.0" y="0.0" width="140" height="34"/>
@@ -70,7 +110,7 @@
                                                 </subviews>
                                             </stackView>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="t8G-QO-BeR">
-                                                <rect key="frame" x="0.0" y="147" width="140" height="53.5"/>
+                                                <rect key="frame" x="0.0" y="214" width="140" height="53.5"/>
                                                 <subviews>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="이름" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="pxi-vo-toI">
                                                         <rect key="frame" x="0.0" y="0.0" width="140" height="34"/>
@@ -90,33 +130,32 @@
                                                     </label>
                                                 </subviews>
                                             </stackView>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yTc-S1-LCC">
-                                                <rect key="frame" x="0.0" y="220.5" width="140" height="40"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="40" id="fpf-EE-BeF"/>
-                                                </constraints>
-                                                <state key="normal" title="MASTER LOGIN" image="new_master_login.png"/>
-                                                <connections>
-                                                    <action selector="onMasterLoginBtnClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="5b3-3x-ryu"/>
-                                                </connections>
-                                            </button>
-                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nAa-Ai-GCd">
-                                                <rect key="frame" x="0.0" y="280.5" width="140" height="40"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="40" id="Lo2-mk-uoe"/>
-                                                </constraints>
-                                                <state key="normal" title="JOIN" image="join.png"/>
-                                                <connections>
-                                                    <action selector="onJoinBtnClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="97q-So-8p3"/>
-                                                </connections>
-                                            </button>
+                                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Oyg-fc-38M">
+                                                <rect key="frame" x="0.0" y="267.5" width="140" height="90"/>
+                                                <subviews>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yTc-S1-LCC">
+                                                        <rect key="frame" x="0.0" y="0.0" width="140" height="40"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="40" id="fpf-EE-BeF"/>
+                                                        </constraints>
+                                                        <state key="normal" title="MASTER LOGIN" image="new_master_login.png"/>
+                                                        <connections>
+                                                            <action selector="onMasterLoginBtnClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="5b3-3x-ryu"/>
+                                                        </connections>
+                                                    </button>
+                                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="nAa-Ai-GCd">
+                                                        <rect key="frame" x="0.0" y="50" width="140" height="40"/>
+                                                        <constraints>
+                                                            <constraint firstAttribute="height" constant="40" id="Lo2-mk-uoe"/>
+                                                        </constraints>
+                                                        <state key="normal" title="JOIN" image="join.png"/>
+                                                        <connections>
+                                                            <action selector="onJoinBtnClick:" destination="BYZ-38-t0r" eventType="touchUpInside" id="97q-So-8p3"/>
+                                                        </connections>
+                                                    </button>
+                                                </subviews>
+                                            </stackView>
                                         </subviews>
-                                        <constraints>
-                                            <constraint firstItem="nAa-Ai-GCd" firstAttribute="leading" secondItem="xv6-IU-qlM" secondAttribute="leading" id="0RP-hJ-SoP"/>
-                                            <constraint firstAttribute="trailing" secondItem="yTc-S1-LCC" secondAttribute="trailing" id="2tR-fe-WJo"/>
-                                            <constraint firstAttribute="trailing" secondItem="nAa-Ai-GCd" secondAttribute="trailing" id="ON5-5u-GUg"/>
-                                            <constraint firstItem="yTc-S1-LCC" firstAttribute="leading" secondItem="xv6-IU-qlM" secondAttribute="leading" id="v9H-9f-zeo"/>
-                                        </constraints>
                                     </stackView>
                                 </subviews>
                                 <constraints>
@@ -138,10 +177,14 @@
                     </view>
                     <navigationItem key="navigationItem" title="Drawing Together" largeTitleDisplayMode="always" id="jyF-tI-3hU"/>
                     <connections>
+                        <outlet property="ipErrorLabel" destination="gLl-YH-vjZ" id="N0y-zb-7na"/>
+                        <outlet property="ipTextField" destination="k9j-ys-PrT" id="nzC-TF-eqq"/>
                         <outlet property="nameErrorLabel" destination="6JF-5b-Sro" id="38q-P9-HUI"/>
                         <outlet property="nameTextField" destination="pxi-vo-toI" id="TXc-V3-1k7"/>
                         <outlet property="passwordErrorLabel" destination="y2a-pw-VSW" id="xa4-IG-rVm"/>
                         <outlet property="passwordTextField" destination="hX5-eq-b2g" id="aFZ-RJ-pY6"/>
+                        <outlet property="portErrorLabel" destination="y3A-Tt-p9D" id="5UE-ac-CsY"/>
+                        <outlet property="portTextField" destination="cFK-ud-ZJg" id="JmE-5S-7bF"/>
                         <outlet property="topicErrorLabel" destination="Krp-Q9-z0T" id="nUM-hA-PiE"/>
                         <outlet property="topicTextField" destination="S7F-Xd-MsN" id="EoS-La-bbL"/>
                         <segue destination="pJa-tK-STr" kind="show" identifier="segueMasterLogin" id="h7Q-Rl-sqc"/>

@@ -11,12 +11,14 @@ import SVProgressHUD
 
 class MainViewController: UIViewController {
 
-//    @IBOutlet weak var ipTextField: UITextField!
-//    @IBOutlet weak var portTextField: UITextField!
+    @IBOutlet weak var ipTextField: UITextField!
+    @IBOutlet weak var portTextField: UITextField!
     @IBOutlet weak var topicTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var nameTextField: UITextField!
     
+    @IBOutlet weak var ipErrorLabel: UILabel!
+    @IBOutlet weak var portErrorLabel: UILabel!
     @IBOutlet weak var topicErrorLabel: UILabel!
     @IBOutlet weak var passwordErrorLabel: UILabel!
     @IBOutlet weak var nameErrorLabel: UILabel!
@@ -26,6 +28,10 @@ class MainViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        ipTextField.text = "54.180.154.63" // 클라우드
+//        ipTextField.text = "192.168.0.36" // 모니터링
+        portTextField.text = "1883"
         
         let tapGseture = UITapGestureRecognizer(target: self, action: #selector(dismissKeybord))
         view.addGestureRecognizer(tapGseture)
@@ -53,8 +59,8 @@ class MainViewController: UIViewController {
     }
     
     @objc func dismissKeybord(tapGesture: UITapGestureRecognizer) {
-//        ipTextField.resignFirstResponder()
-//        portTextField.resignFirstResponder()
+        ipTextField.resignFirstResponder()
+        portTextField.resignFirstResponder()
         topicTextField.resignFirstResponder()
         passwordTextField.resignFirstResponder()
         nameTextField.resignFirstResponder()
@@ -76,6 +82,16 @@ class MainViewController: UIViewController {
     
     func hasSpecialCharacterAndBlank() {
         specialCharacterAndBlank = false
+        
+        if ipTextField.text!.isEmpty {
+            ipErrorLabel.text = "아이피 주소를 입력해주세요."
+            specialCharacterAndBlank = true
+        }
+        
+        if portTextField.text!.isEmpty {
+            portErrorLabel.text = "포트 번호를 입력해주세요."
+            specialCharacterAndBlank = true
+        }
         
         if topicTextField.text!.isEmpty {
             topicErrorLabel.text = "빈칸을 채워주세요."
@@ -244,8 +260,8 @@ class MainViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // DrawingViewController의 ip, port, topic, name 값 세팅
         let drawingViewController = segue.destination as! DrawingViewController
-//        drawingViewController.ip = ipTextField.text!
-//        drawingViewController.port = portTextField.text!
+        drawingViewController.ip = ipTextField.text!
+        drawingViewController.port = portTextField.text!
         drawingViewController.topic = topicTextField.text!
         drawingViewController.password = passwordTextField.text!
         drawingViewController.name = nameTextField.text!
