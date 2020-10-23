@@ -9,7 +9,7 @@
 import UIKit
 import SVProgressHUD
 
-class MainViewController: UIViewController {
+class MainViewController: UIViewController, UIPopoverPresentationControllerDelegate {
 
 //    @IBOutlet weak var ipTextField: UITextField!
 //    @IBOutlet weak var portTextField: UITextField!
@@ -24,8 +24,12 @@ class MainViewController: UIViewController {
     var masterName: String!
     var specialCharacterAndBlank: Bool!
     
+    var infoVC: InfoViewController!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        infoVC = storyboard?.instantiateViewController(withIdentifier: "InfoViewController") as? InfoViewController
         
         let tapGseture = UITapGestureRecognizer(target: self, action: #selector(dismissKeybord))
         view.addGestureRecognizer(tapGseture)
@@ -125,6 +129,11 @@ class MainViewController: UIViewController {
             }
         }
         
+    }
+    
+    // popover 띄우기 위한 함수
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return UIModalPresentationStyle.none
     }
 
     // 마스터 로그인 버튼
@@ -233,6 +242,17 @@ class MainViewController: UIViewController {
                 }
             }
         }
+    }
+    
+    @IBAction func onInfoClick(_ sender: UIButton) {
+        infoVC.modalPresentationStyle = .overCurrentContext
+        if let popoverController = infoVC.popoverPresentationController {
+            popoverController.sourceView = self.view
+            popoverController.delegate = self
+            infoVC.popoverPresentationController?.delegate = self
+        }
+        
+        present(infoVC, animated: true, completion: nil)
     }
     
     func showDatabaseErrorAlert(title: String, message: String) {
