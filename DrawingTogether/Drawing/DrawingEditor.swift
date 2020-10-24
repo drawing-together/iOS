@@ -78,10 +78,8 @@ class DrawingEditor {
     var isMidEntered = false
     
     // MARK: 텍스트 속성
-    var textSize = UIFont.systemFont(ofSize: 20)
-    var textColor = UIColor.black
-    var textBackgroundColor: UIColor?
-    // var fontStyle
+    var textSize = 15
+    var textColor = "#000000"
     
     // MARK: 이미지
     var backgroundImage: [Int8]?
@@ -969,7 +967,7 @@ class DrawingEditor {
         return nil
     }
     
-    func removeText(text: Text) {
+    func removeTexts(text: Text) {
         for idx in 0..<texts.count {
             if texts[idx] == text {
                 texts.remove(at: idx)
@@ -994,9 +992,9 @@ class DrawingEditor {
             //            t.setTextViewInitialPlace(t.getTextAttribute());
             //            t.setTextViewProperties();
             
-            
+            text.sizeToFit() // fixme nayeon - (1) set view properties (2) set initial place 순서 중요 !!
             drawingVC?.drawingContainer.addSubview(text)
-            text.sizeToFit()
+            
         }
     }
     

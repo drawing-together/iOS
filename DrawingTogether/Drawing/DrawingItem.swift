@@ -32,11 +32,11 @@ class DrawingItem: Codable {
         self.movePoint = movePoint
     }
 
-    init(textMode: TextMode, textAttribute: TextAttribute) {
-        self.textMode = textMode;
-        self.textAttribute = TextAttribute(textAttr: textAttribute)
-        print("preText=\(textAttribute.preText!), text=\(textAttribute.text!)")
-    }
+//    init(textMode: TextMode, textAttribute: TextAttribute) {
+//        self.textMode = textMode;
+//        self.textAttribute = TextAttribute(textAttr: textAttribute)
+//        print("preText=\(textAttribute.preText!), text=\(textAttribute.text!)")
+//    }
     
     func getComponents() -> [DrawingComponent] {
         var dcs: [DrawingComponent] = []

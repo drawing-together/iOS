@@ -72,6 +72,8 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     var src2: [Int32] = [], dst2: [Int32] = []
     var warpImg: UIImage?
     
+    var preMenuButton: UIButton? // 드로잉 메뉴 버튼 (펜, 도형) 저장, 텍스트에서 기본 드로잉모드로 돌아가기 위해 -
+    
     // MARK: LIFE CYCLE
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -221,6 +223,7 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     }
     
     func changeClickedButtonBackground(_ button: UIButton) {
+        
         for view in drawingTools.arrangedSubviews {
             view.backgroundColor = UIColor.clear
         }
@@ -374,6 +377,8 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         de.currentMode = Mode.DRAW
         de.currentType = ComponentType.STROKE
         //de.penMode = PenMode.NORMAL
+        
+        preMenuButton = sender // 텍스트 편집 후 기본 모드인 드로잉 메뉴 배경색 변경을 위해
     }
     
     @IBAction func clickPencil(_ sender: UIButton) {
@@ -416,6 +421,9 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         }
         
         present(shapeVC, animated: true, completion: nil)
+        
+        preMenuButton = sender // 텍스트 편집 후 기본 모드인 드로잉으로 돌아가기 위해 (텍스트 편집 전에 선택했던 드로잉 모드로)
+
     }
     
     @IBAction func clickText(_ sender: UIButton) {
@@ -423,18 +431,26 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         penModeView.isHidden = true
         changeClickedButtonBackground(sender)
         
+        /* 사용자가 처음 텍스트 편집창에서 텍스트 생성중인 경우 */
+        /* 텍스트 정보들을 모든 사용자가 갖고 있지 않음 ( 편집중인 사람만 갖고 있음 ) */
+        /* 따라서 중간자가 들어오고 난 후에 텍스트 생성을 할 수 있도록 막아두기 */
+        
+        if de.isMidEntered {
+            showToast(message: "다른 사용자가 접속 중 입니다 잠시만 기다려주세요")
+            return
+        }
+        
         de.currentMode = .TEXT
         
         let text = Text()
-        let textAttr = TextAttribute(id: de.setTextStringId(), username: de.myUsername!, text: "", textSize: 15, textColor: "#000000", textBackgroundColor: nil, textGravity: nil, style: nil, generatedLayoutWidth: Int(drawingContainer.frame.width), generatedLayoutHeight: Int(drawingContainer.frame.height))
+        let textAttr = TextAttribute(id: de.setTextStringId(), username: de.myUsername!, textSize: de.textSize, textColor: de.textColor, generatedLayoutWidth: Int(drawingContainer.frame.width), generatedLayoutHeight: Int(drawingContainer.frame.height))
         
         text.create(textAttribute: textAttr, drawingVC: self)
-        
         text.changeLabelToTextView()
         
-        self.view.addSubview(textEditingView)
+//        self.view.addSubview(textEditingView)
         
-        print("\(textEditingView.center.x), \(textEditingView.center.y), \(textEditingView.frame.width), \(textEditingView.frame.height)")
+//        print("\(textEditingView.center.x), \(textEditingView.center.y), \(textEditingView.frame.width), \(textEditingView.frame.height)")
 
     }
     
@@ -520,16 +536,7 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     
     @IBAction func clickTextColorChange(_ btn: UIButton) {
         if let text = de.currentText {
-            text.textAttribute.username = nil
-            text.textAttribute.isTextChangedColor = false
-            
-            text.sendMqttMessage(textMode: .FINISH_COLOR_CHANGE)
-            
-            text.setLabelBorder(color: .clear)
-            
-            colorChangeBtnView.isHidden = true
-            
-            de.currentMode = .DRAW
+            text.finishTextColorChange()
         }
     }
     
