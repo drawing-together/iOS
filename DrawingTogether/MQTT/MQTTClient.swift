@@ -218,7 +218,7 @@ class MQTTClient: NSObject {
 //        if drawingVC.speakerFlag {
 //            unsubscribe(topic_audio)
 //            audioPlaying = false
-//        } nj
+//        }
         //
         print("exit task end")
     }

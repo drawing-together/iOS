@@ -10,7 +10,7 @@
         <!--Drawing Together-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="MainViewController" customModule="시시콜콜" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="BYZ-38-t0r" customClass="MainViewController" customModule="드로잉투게더" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="wPb-au-WMB">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -168,7 +168,7 @@
         <!--Drawing View Controller-->
         <scene sceneID="e72-X1-iRO">
             <objects>
-                <viewController id="pJa-tK-STr" customClass="DrawingViewController" customModule="시시콜콜" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="pJa-tK-STr" customClass="DrawingViewController" customModule="드로잉투게더" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" multipleTouchEnabled="YES" contentMode="scaleToFill" id="fvu-b9-GHb">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -719,7 +719,7 @@
         <!--Info View Controller-->
         <scene sceneID="Uv2-Gw-6U7">
             <objects>
-                <viewController storyboardIdentifier="InfoViewController" id="qc0-UI-dca" customClass="InfoViewController" customModule="시시콜콜" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="InfoViewController" id="qc0-UI-dca" customClass="InfoViewController" customModule="드로잉투게더" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="czt-It-fL3">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -733,7 +733,7 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fpi-Kd-mE8">
                                 <rect key="frame" x="354" y="802" width="30" height="30"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                <state key="normal" title="OK">
+                                <state key="normal" title="확인">
                                     <color key="titleColor" red="0.08235294118" green="0.62745098040000002" blue="0.90980392160000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 </state>
                                 <connections>
@@ -764,7 +764,7 @@
         <!--User View Controller-->
         <scene sceneID="Lqi-PF-UdC">
             <objects>
-                <viewController storyboardIdentifier="UserViewController" id="6YP-tC-jj8" customClass="UserViewController" customModule="시시콜콜" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="UserViewController" id="6YP-tC-jj8" customClass="UserViewController" customModule="드로잉투게더" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="bYL-SM-gDa">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -799,7 +799,7 @@
         <!--Shape View Controller-->
         <scene sceneID="AaS-G1-K8J">
             <objects>
-                <viewController storyboardIdentifier="ShapeViewController" id="Kbm-d6-e11" customClass="ShapeViewController" customModule="시시콜콜" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ShapeViewController" id="Kbm-d6-e11" customClass="ShapeViewController" customModule="드로잉투게더" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="h6R-Sf-PHO">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -810,7 +810,7 @@
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AKz-fe-01u">
                                         <rect key="frame" x="0.0" y="0.0" width="90" height="35"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="12"/>
-                                        <state key="normal" title="RECT">
+                                        <state key="normal" title="사각형">
                                             <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
                                         <connections>
@@ -820,7 +820,7 @@
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7MZ-jl-d5Q">
                                         <rect key="frame" x="0.0" y="35" width="90" height="35"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="12"/>
-                                        <state key="normal" title="OVAL">
+                                        <state key="normal" title="타원">
                                             <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </state>
                                         <connections>
@@ -850,7 +850,7 @@
         <!--Eraser View Controller-->
         <scene sceneID="13e-pk-SE2">
             <objects>
-                <viewController storyboardIdentifier="EraserViewController" id="BcX-xg-TRl" customClass="EraserViewController" customModule="시시콜콜" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="EraserViewController" id="BcX-xg-TRl" customClass="EraserViewController" customModule="드로잉투게더" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="hGd-wm-WCZ">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -916,7 +916,7 @@
         <!--Pen View Controller-->
         <scene sceneID="jrg-fm-eIV">
             <objects>
-                <viewController storyboardIdentifier="PenViewController" id="klG-2a-5K1" customClass="PenViewController" customModule="시시콜콜" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PenViewController" id="klG-2a-5K1" customClass="PenViewController" customModule="드로잉투게더" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="M3u-if-jbA">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -1024,7 +1024,7 @@
         <!--Splash View Controller-->
         <scene sceneID="kLJ-J4-6Rg">
             <objects>
-                <viewController id="uyC-9v-awH" customClass="SplashViewController" customModule="시시콜콜" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="uyC-9v-awH" customClass="SplashViewController" customModule="드로잉투게더" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Bkv-s3-Bwx">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
