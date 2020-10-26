@@ -147,12 +147,12 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
         if !specialCharacterAndBlank {
             
             let alertController = UIAlertController(title: "마스터 체크", message: "마스터가 맞습니까?", preferredStyle: .alert)
-            let yesAction = UIAlertAction(title: "YES", style: .destructive) {
+            let yesAction = UIAlertAction(title: "확인", style: .destructive) {
                 (action) in
                 self.afterMasterCheck(sender);
             }
             alertController.addAction(yesAction)
-            alertController.addAction(UIAlertAction(title: "NO", style: .cancel))
+            alertController.addAction(UIAlertAction(title: "취소", style: .cancel))
             present(alertController, animated: true)
             
         }
@@ -257,7 +257,7 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
     
     func showDatabaseErrorAlert(title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: "YES", style: .destructive))
+        alertController.addAction(UIAlertAction(title: "확인", style: .destructive))
         present(alertController, animated: true)
     }
     

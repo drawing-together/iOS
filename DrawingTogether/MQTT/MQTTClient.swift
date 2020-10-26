@@ -291,7 +291,7 @@ class MQTTClient: NSObject {
         print("text: in isTextInUse func")
         
         for text in de.texts {
-            if text.textAttribute.username != nil {
+            if text.textAttribute.isDragging { // 다른 참가자들이 텍스트를 드래그 중일 때 드래그가 완료될 때 까지 기다림
                 return true
             }
         }
@@ -333,7 +333,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                     }
         
         let message = String(data: data, encoding: .utf8)!
-        print(message)
+//        print(message)
         
         if parser.jsonReader(msg: message) == nil { return }
         let mqttMessageFormat = parser.jsonReader(msg: message)!
@@ -368,7 +368,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                         
                     }
                     if master {
-                         if isUsersActionUp(username: joinName) && !isTextInUse() { // fixme nayeon
+                         if isUsersActionUp(username: joinName) && !isTextInUse() {
                             let joinAckMsg = JoinAckMessage(name: myName, target: joinName)
                             
 //                            var messageFormat: MqttMessageFormat?
@@ -464,6 +464,8 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         }
         
         if (topic == topic_data) {
+            
+            // 중간 참여자가 입장했을 때 처리
             if de.isMidEntered, let action = mqttMessageFormat.action, action != MotionEvent.ACTION_UP.rawValue {
                 if let usersComponentId = mqttMessageFormat.usersComponentId, (de.isIntercept && action == MotionEvent.ACTION_DOWN.rawValue), de.getCurrentComponent(usersComponentId: usersComponentId) != nil {
                     return
@@ -852,7 +854,6 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         // 텍스트 객체가 처음 생성되는 경우, 텍스트 배열에 저장된 정보 없음
         // 그 이후에 일어나는 텍스트에 대한 모든 행위들은 텏트ㅡ 배열로부터 텍스트 객체를 찾아서 작업 가능
         if !(textMode == .CREATE) {
-            print("*** check create")
             text = de.findTextById(id: textAttr.id!)
             if text == nil { return }
             text!.textAttribute = textAttr
@@ -898,7 +899,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             text!.setLabelBorder(color: .clear)
         case .DRAG_ENDED: break
         case .ERASE:
-            de.removeText(text: text!)
+            de.removeTexts(text: text!)
             text!.removeFromSuperview()
             break
             
