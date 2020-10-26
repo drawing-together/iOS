@@ -78,7 +78,7 @@ class DrawingEditor {
     var isMidEntered = false
     
     // MARK: 텍스트 속성
-    var textSize = 15
+    var textSize = 20
     var textColor = "#000000"
     
     // MARK: 이미지

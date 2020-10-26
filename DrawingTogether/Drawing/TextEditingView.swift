@@ -39,6 +39,10 @@ class TextEditingView: UIView {
         
         print("text editing view is drawn")
         
+        if let text = de.currentText {
+            sizeBar.value = (Float)(text.textAttribute.textSize!)
+        }
+        
         textView.becomeFirstResponder()
     }
     
@@ -86,12 +90,18 @@ class TextEditingView: UIView {
     
     @IBAction func sliderValueChanged(_ slider: UISlider) {
     
-        let value = slider.value / 10 * 10
         
-        if let text = de.currentText {
-            text.textAttribute.textSize = Int(value)
-            text.setTextViewAttribute()
+//        let value: Int = (Int)(slider.value) / 10 * 10
+        
+        // text size only 10, 20, 30
+        if (Int)(slider.value) % 10 == 0 {
+            if let text = de.currentText {
+                text.textAttribute.textSize = Int(slider.value)
+                text.setTextViewAttribute()
+            }
         }
+        
+        
     }
     
     
@@ -120,7 +130,7 @@ extension DrawingViewController: UITextViewDelegate {
     }
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        let MAX_LENGTH: Int = 40
+        let MAX_LENGTH: Int = 30
         
         if let text = de.currentText {
             textView.textColor = UIColor(hexString: text.textAttribute.textColor!)

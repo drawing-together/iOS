@@ -594,7 +594,7 @@ class DrawingView: UIImageView {
         de.drawingVC!.eraserVC.dismiss(animated: true, completion: nil)
         
         let alertController = UIAlertController(title: "배경 초기화", message: "배경 이미지가 삭제됩니다.\n그래도 지우시겠습니까?", preferredStyle: .alert)
-        let yesAction = UIAlertAction(title: "YES", style: .destructive) {
+        let yesAction = UIAlertAction(title: "확인", style: .destructive) {
             (action) in
             
             self.de.initSelectedImage()
@@ -613,7 +613,7 @@ class DrawingView: UIImageView {
             self.de.clearBackgroundImage()
         }
         alertController.addAction(yesAction)
-        alertController.addAction(UIAlertAction(title: "NO", style: .cancel, handler: nil))
+        alertController.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
         
         de.drawingVC?.present(alertController, animated: true)
     }
@@ -622,7 +622,7 @@ class DrawingView: UIImageView {
         de.drawingVC!.eraserVC.dismiss(animated: true, completion: nil)
         
         let alertController = UIAlertController(title: "배경 초기화", message: "배경 이미지가 삭제됩니다.\n그래도 지우시겠습니까?", preferredStyle: .alert)
-        let yesAction = UIAlertAction(title: "YES", style: .destructive) {
+        let yesAction = UIAlertAction(title: "확인", style: .destructive) {
             (action) in
             
             self.sendModeMqttMessage(mode: Mode.CLEAR_BACKGROUND_IMAGE)
@@ -630,7 +630,7 @@ class DrawingView: UIImageView {
             self.de.clearBackgroundImage()
         }
         alertController.addAction(yesAction)
-        alertController.addAction(UIAlertAction(title: "NO", style: .cancel, handler: nil))
+        alertController.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
         
         de.drawingVC?.present(alertController, animated: true)
     }
@@ -639,7 +639,7 @@ class DrawingView: UIImageView {
         de.drawingVC!.eraserVC.dismiss(animated: true, completion: nil)
         
         let alertController = UIAlertController(title: "화면 초기화", message: "모든 그리기 내용이 삭제됩니다.\n그래도 지우시겠습니까?", preferredStyle: .alert)
-        let yesAction = UIAlertAction(title: "YES", style: .destructive) {
+        let yesAction = UIAlertAction(title: "확인", style: .destructive) {
             (action) in
             
             self.de.initSelectedImage()
@@ -654,7 +654,7 @@ class DrawingView: UIImageView {
             self.de.drawingVC?.setUndoEnabled(isEnabled: false)
         }
         alertController.addAction(yesAction)
-        alertController.addAction(UIAlertAction(title: "NO", style: .cancel, handler: nil))
+        alertController.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
         
         de.drawingVC?.present(alertController, animated: true)
     }

@@ -31,6 +31,8 @@ class Text: UILabel {
     let MAX_MOVE: Int = 5
     var moveCounter: Int = -1
     
+    let padding = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+    
     
     func create(textAttribute: TextAttribute, drawingVC: DrawingViewController) {
         
@@ -39,10 +41,12 @@ class Text: UILabel {
         self.drawingContainer = drawingVC.drawingContainer
         self.textEditingView = drawingVC.textEditingView
         self.textAttribute = textAttribute
-                
+        
+        
         setLabelAttribute()
         setLabelInitialLocation(textAttr: self.textAttribute)
         
+                
         // MARK: set gesture recognizers
         // 텍스트 이동
         panGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(panAction))
@@ -72,12 +76,15 @@ class Text: UILabel {
     
     // TextView Properties -> Label Properties
     func setLabelAttribute() {
+        self.frame.size.width = drawingContainer.frame.width/3
+        
         self.text = textAttribute.text ?? ""
         self.backgroundColor = UIColor.clear
         self.textColor = UIColor(hexString: textAttribute.textColor!)
         self.font = UIFont.boldSystemFont(ofSize: (CGFloat)(textAttribute.textSize!))
         self.textAlignment = .center
         
+        self.lineBreakMode = .byWordWrapping
         self.numberOfLines = 0
     }
     
@@ -99,7 +106,7 @@ class Text: UILabel {
             setMovedLabelLocation()
         }
             
-        else {
+        else if textAttr.isTextInited && !textAttr.isTextMoved {
             print("set label initial place not moved")
             setNotMovedLabelLocation()
         }
@@ -110,17 +117,24 @@ class Text: UILabel {
     func setNotMovedLabelLocation() {
         // Label의 가로 크기는 고정 (세로 크기는 내용에 맞게 정해짐)
         
+        print("1. text label        = \(self.frame.width), \(self.frame.height)")
+        
         self.sizeToFit()
         
+        print("2. text label        = \(self.frame.width), \(self.frame.height)")
+        
         // 드로잉 뷰 크기를 계산하여 레이블을 중앙에 위치시킴
-        let w = drawingContainer.frame.width/3
+        let w = self.frame.width
         let h = self.frame.height // after sizeToFit
 
         let x = drawingContainer.frame.maxX/2 - (w/2)
         let y = drawingContainer.frame.maxY/2 - (h/2)
         
+        
+        
         print("[* set not moved label location]")
         print("drawing container = \(drawingContainer.frame.width), \(drawingContainer.frame.height)")
+        print("3. text label        = \(self.frame.width), \(self.frame.height)")
 
         self.frame = CGRect(x: x, y: y, width: w, height: h)
         
@@ -146,7 +160,22 @@ class Text: UILabel {
 
         self.frame = CGRect(x: x, y: y, width: w, height: h)
         
+        print("[* set moved label location]")
+        print("drawing container = \(drawingContainer.frame.width), \(drawingContainer.frame.height)")
+        print("text label        = \(self.frame.width), \(self.frame.height)")
+        
     }
+    
+//    func heightForLabel(text:String, font:UIFont, width:CGFloat) -> CGFloat{
+//       let label:UILabel = UILabel(frame: CGRect(0, 0, width, CGFloat.greatestFiniteMagnitude))
+//       self.numberOfLines = 0
+//       self.lineBreakMode = NSLineBreakMode.byWordWrapping
+//       self.font = font
+//       self.text = text
+//
+//       label.sizeToFit()
+//       return label.frame.height
+//   }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         print("text touches began")
@@ -535,7 +564,24 @@ class Text: UILabel {
         
     }
     
+    /* 레이블 패딩 설정 */
+//    override func drawText(in rect: CGRect) {
+//        super.drawText(in: rect.inset(by: padding))
+//
+//        print("call drawText func.")
+//    }
+//
+//    override var intrinsicContentSize : CGSize {
+//        print("call intrinsisContentSize func.")
+//
+//
+//        let superContentSize = super.intrinsicContentSize
+//        let width = superContentSize.width + padding.left + padding.right
+//        let heigth = superContentSize.height + padding.top + padding.bottom
+//        return CGSize(width: width, height: heigth)
+//    }
     
+    /* 레이블 테두리 설정 */
     func setLabelBorder(color: UIColor) {
         self.layer.borderWidth = 1
         self.layer.borderColor = color.cgColor

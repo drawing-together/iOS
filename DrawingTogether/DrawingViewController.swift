@@ -149,7 +149,8 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     // MARK: FUNCTION
     func showAlert(title: String, message: String, selectable: Bool) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let yesAction = UIAlertAction(title: "YES", style: .destructive) {
+        
+        let yesAction = UIAlertAction(title: "확인", style: .destructive) {
             (action) in
             
             let offset = UIOffset(horizontal: self.view.frame.width/2, vertical: self.view.frame.height/2)
@@ -182,8 +183,49 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
             }
         }
         alertController.addAction(yesAction)
+        
+        
+        let saveAction = UIAlertAction(title: "저장 후 종료", style: .default) {
+            (action) in
+            
+            let offset = UIOffset(horizontal: self.view.frame.width/2, vertical: self.view.frame.height/2)
+            SVProgressHUD.setOffsetFromCenter(offset)
+            SVProgressHUD.show()
+
+            
+            UIImageWriteToSavedPhotosAlbum(self.drawingContainer.capture().image!, self, #selector(self.image(_:didFinishSavingWithError:contextInfo:)), nil)
+            
+            // database delete
+            let dt = DatabaseTransaction()
+            dt.connect()
+            dt.runTranscationExit(topic: self.topic!, name: self.name!, masterMode: self.master!) {
+                (errorMsg) in
+                SVProgressHUD.dismiss()
+                if !errorMsg.isEmpty {
+                    self.showDatabaseErrorAlert(title: "데이터베이스 오류 발생", message: errorMsg)
+                    return
+                }
+                // mqtt connection check ...
+                
+                // exit task
+                self.client.exitTask()
+                self.client.unsubscribeAllTopics()
+                self.closeFlag = true
+                
+                // move to home
+                if let topViewController = self.navigationController?.viewControllers.first {
+                    self.navigationController?.popToViewController(topViewController, animated: true)
+                }
+            }
+            
+            
+
+        }
+        alertController.addAction(saveAction)
+        
+        
         if selectable {
-            alertController.addAction(UIAlertAction(title: "NO", style: .cancel))
+            alertController.addAction(UIAlertAction(title: "취소", style: .cancel))
 
         }
         present(alertController, animated: true)
@@ -191,7 +233,7 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     
     func showDatabaseErrorAlert(title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alertController.addAction(UIAlertAction(title: "YES", style: .destructive))
+        alertController.addAction(UIAlertAction(title: "확인", style: .destructive))
         present(alertController, animated: true)
     }
     
@@ -302,6 +344,8 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         let saveImageAction = UIAlertAction(title: "저장하기", style: .default) {
             action in
             print("저장하기")
+            
+            UIImageWriteToSavedPhotosAlbum(self.drawingContainer.capture().image!, self, #selector(self.image(_:didFinishSavingWithError:contextInfo:)), nil)
         }
         // Plus Person
         let plusPersonAction = UIAlertAction(title: "친구 초대", style: .default) {
@@ -343,6 +387,22 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         setLocationAlert(sender: sender, alertController: alert)
         //        present(alert, animated: true, completion: nil)
             
+    }
+    
+    //MARK: - Add image to Library
+    @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
+        if error != nil {
+            // we got back an error!
+//            let ac = UIAlertController(title: "Save error", message: error.localizedDescription, preferredStyle: .alert)
+//            ac.addAction(UIAlertAction(title: "OK", style: .default))
+//            present(ac, animated: true)
+            showToast(message: "이미지 저장 오류")
+        } else {
+//            let ac = UIAlertController(title: "Saved!", message: "Your altered image has been saved to your photos.", preferredStyle: .alert)
+//            ac.addAction(UIAlertAction(title: "OK", style: .default))
+//            present(ac, animated: true)
+            showToast(message: "갤러리에 대화 이미지를 저장 완료했습니다")
+        }
     }
 
     @IBAction func clickUndo(_ sender: UIButton) {
@@ -448,10 +508,24 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         text.create(textAttribute: textAttr, drawingVC: self)
         text.changeLabelToTextView()
         
-//        self.view.addSubview(textEditingView)
         
-//        print("\(textEditingView.center.x), \(textEditingView.center.y), \(textEditingView.frame.width), \(textEditingView.frame.height)")
-
+//        let text: UILabel = UILabel()
+//        text.frame.size.width = drawingContainer.frame.width/3
+//
+//        text.text = "aaaaaaaaaabbbbbbbbbbccccccccccddddddddddeeeeeeeeee"
+//        text.backgroundColor = UIColor.clear
+//        text.textColor = UIColor(hexString: "#000000")
+//        text.font = UIFont.boldSystemFont(ofSize: (CGFloat)(20))
+//        text.textAlignment = .center
+//
+//        text.lineBreakMode = .byWordWrapping
+//        text.numberOfLines = 0
+//
+//        text.sizeToFit()
+//
+//        text.frame = CGRect(x: 100, y: 100, width: text.frame.width, height: text.frame.height)
+//
+//        drawingContainer.addSubview(text)
     }
     
     @IBAction func clickEraser(_ sender: UIButton) {
@@ -796,3 +870,28 @@ extension UIColor {
         }
     }
 }
+
+extension UIView {
+    
+    func capture(_ shadow: Bool = false) -> UIImageView {
+        
+        UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, 0)
+        self.layer.render(in: UIGraphicsGetCurrentContext()!)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        let snapshotImageView = UIImageView(image: image)
+        if shadow {
+            snapshotImageView.layer.masksToBounds = false
+            snapshotImageView.layer.cornerRadius = 0.0
+            snapshotImageView.layer.shadowOffset = CGSize(width: -0.5, height: 0.0)
+            snapshotImageView.layer.shadowRadius = 5.0
+            snapshotImageView.layer.shadowOpacity = 0.4
+        }
+        
+        return snapshotImageView
+        
+    }
+    
+}
+
