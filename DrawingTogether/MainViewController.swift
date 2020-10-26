@@ -10,7 +10,6 @@ import UIKit
 import SVProgressHUD
 
 class MainViewController: UIViewController, UIPopoverPresentationControllerDelegate {
-    
     @IBOutlet weak var topicTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var nameTextField: UITextField!
@@ -24,7 +23,6 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
     
     var ip: String!
     var port: String!
-    
     var infoVC: InfoViewController!
     
     override func viewDidLoad() {

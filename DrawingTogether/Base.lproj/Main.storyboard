@@ -1020,7 +1020,7 @@
         <!--Navigation Controller-->
         <scene sceneID="XeI-Gw-ObY">
             <objects>
-                <navigationController storyboardIdentifier="main" automaticallyAdjustsScrollViewInsets="NO" id="Qxz-Gy-yEu" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="NavigationController" automaticallyAdjustsScrollViewInsets="NO" id="Qxz-Gy-yEu" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="kgF-co-ILe">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
@@ -1046,7 +1046,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="HOU-0g-Fso" customClass="AnimationView" customModule="Lottie">
+                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HOU-0g-Fso" customClass="AnimationView" customModule="Lottie">
                                 <rect key="frame" x="39.5" y="398" width="335" height="100"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
@@ -1057,14 +1057,11 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstItem="HOU-0g-Fso" firstAttribute="centerY" secondItem="Bkv-s3-Bwx" secondAttribute="centerY" id="9lA-mp-Y89"/>
-                            <constraint firstItem="HOU-0g-Fso" firstAttribute="centerX" secondItem="Bkv-s3-Bwx" secondAttribute="centerX" id="osX-He-0GV"/>
+                            <constraint firstAttribute="top" secondItem="SLR-Ot-pU5" secondAttribute="top" id="51f-fj-oc6"/>
+                            <constraint firstAttribute="leading" secondItem="SLR-Ot-pU5" secondAttribute="leading" id="X01-wg-Apw"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="SLR-Ot-pU5"/>
                     </view>
-                    <connections>
-                        <outlet property="animation" destination="HOU-0g-Fso" id="4TR-Dp-6Q5"/>
-                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NbE-LR-tGR" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>

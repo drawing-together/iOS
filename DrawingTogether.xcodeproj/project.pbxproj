@@ -24,7 +24,6 @@
 		1154C0AF2546A38500123620 /* join_meeting.png in Resources */ = {isa = PBXBuildFile; fileRef = 1154C0AB2546A38400123620 /* join_meeting.png */; };
 		1154C0B02546A38500123620 /* help.png in Resources */ = {isa = PBXBuildFile; fileRef = 1154C0AC2546A38400123620 /* help.png */; };
 		1154C0B12546A38500123620 /* drawingtogether_logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 1154C0AD2546A38400123620 /* drawingtogether_logo.png */; };
-		1154C0B22546A38500123620 /* start_meeting.png in Resources */ = {isa = PBXBuildFile; fileRef = 1154C0AE2546A38500123620 /* start_meeting.png */; };
 		1154C0B42546A5AA00123620 /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1154C0B32546A5AA00123620 /* InfoViewController.swift */; };
 		1154C0B62546A63A00123620 /* drawingtogether_splash.png in Resources */ = {isa = PBXBuildFile; fileRef = 1154C0B52546A63A00123620 /* drawingtogether_splash.png */; };
 		1154C0B92546AB2A00123620 /* oval.png in Resources */ = {isa = PBXBuildFile; fileRef = 1154C0B72546AB2A00123620 /* oval.png */; };
@@ -40,7 +39,7 @@
 		116988FA2494AB3D003C3E34 /* warping.png in Resources */ = {isa = PBXBuildFile; fileRef = 116988EE2494AB3D003C3E34 /* warping.png */; };
 		116989082494C19B003C3E34 /* UserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116989072494C19B003C3E34 /* UserViewController.swift */; };
 		1169890C2495DB89003C3E34 /* selector.png in Resources */ = {isa = PBXBuildFile; fileRef = 1169890B2495DB89003C3E34 /* selector.png */; };
-		1169890E249604F3003C3E34 /* color_bar.png in Resources */ = {isa = PBXBuildFile; fileRef = 1169890D249604F3003C3E34 /* color_bar.png */; };
+		11720CF52546B5EA00272CC5 /* start_meeting.png in Resources */ = {isa = PBXBuildFile; fileRef = 11720CF42546B5EA00272CC5 /* start_meeting.png */; };
 		11C5BCA524965BFB0066517B /* SplashViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11C5BCA424965BFB0066517B /* SplashViewController.swift */; };
 		844049AD24BD64E9004B8290 /* AliveThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844049AC24BD64E9004B8290 /* AliveThread.swift */; };
 		844049AF24BD64F7004B8290 /* AliveMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844049AE24BD64F7004B8290 /* AliveMessage.swift */; };
@@ -133,7 +132,6 @@
 		1154C0AB2546A38400123620 /* join_meeting.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = join_meeting.png; sourceTree = "<group>"; };
 		1154C0AC2546A38400123620 /* help.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = help.png; sourceTree = "<group>"; };
 		1154C0AD2546A38400123620 /* drawingtogether_logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = drawingtogether_logo.png; sourceTree = "<group>"; };
-		1154C0AE2546A38500123620 /* start_meeting.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = start_meeting.png; sourceTree = "<group>"; };
 		1154C0B32546A5AA00123620 /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
 		1154C0B52546A63A00123620 /* drawingtogether_splash.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = drawingtogether_splash.png; sourceTree = "<group>"; };
 		1154C0B72546AB2A00123620 /* oval.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = oval.png; sourceTree = "<group>"; };
@@ -149,7 +147,8 @@
 		116988EE2494AB3D003C3E34 /* warping.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = warping.png; sourceTree = "<group>"; };
 		116989072494C19B003C3E34 /* UserViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserViewController.swift; sourceTree = "<group>"; };
 		1169890B2495DB89003C3E34 /* selector.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = selector.png; sourceTree = "<group>"; };
-		1169890D249604F3003C3E34 /* color_bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = color_bar.png; sourceTree = "<group>"; };
+		11720CF42546B5EA00272CC5 /* start_meeting.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = start_meeting.png; sourceTree = "<group>"; };
+		119D68702542DFA70086005B /* start_meeting.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = start_meeting.png; sourceTree = "<group>"; };
 		11C5BCA424965BFB0066517B /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
 		5CDA820F9A9AC4878DE03B07 /* Pods-DrawingTogether.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DrawingTogether.release.xcconfig"; path = "Target Support Files/Pods-DrawingTogether/Pods-DrawingTogether.release.xcconfig"; sourceTree = "<group>"; };
 		609442141B495E82B6EA2C20 /* Pods_DrawingTogether.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DrawingTogether.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -238,6 +237,7 @@
 				84404A1224FA27EF004B8290 /* back.png */,
 				CE59F5FF24D8FC0C008A6CCC /* WarpData.swift */,
 				BD5ABFBF24FCE890004503E2 /* PenMode.swift */,
+				119D68702542DFA70086005B /* start_meeting.png */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -251,14 +251,13 @@
 				1154C0AD2546A38400123620 /* drawingtogether_logo.png */,
 				1154C0AC2546A38400123620 /* help.png */,
 				1154C0AB2546A38400123620 /* join_meeting.png */,
-				1154C0AE2546A38500123620 /* start_meeting.png */,
+				11720CF42546B5EA00272CC5 /* start_meeting.png */,
 				1119FDCF24FF8993007261D8 /* pen.png */,
 				1119FDD124FF89C6007261D8 /* auto_drawing.png */,
 				BD5ABFD024FD7E63004503E2 /* redo_circle_black.png */,
 				BD5ABFD224FD7E71004503E2 /* undo_circle_black.png */,
 				1119FDC124FA4064007261D8 /* back.png */,
 				1169890B2495DB89003C3E34 /* selector.png */,
-				1169890D249604F3003C3E34 /* color_bar.png */,
 				116988E82494AB3C003C3E34 /* pen1.png */,
 				116988E92494AB3C003C3E34 /* pen2.png */,
 				116988E42494AB3C003C3E34 /* pen3.png */,
@@ -384,13 +383,13 @@
 				CEDE687824765A7C0057E9D2 /* Assets.xcassets */,
 				CEDE687324765A780057E9D2 /* MainViewController.swift */,
 				111D1577247B88BA00095A31 /* DrawingViewController.swift */,
+				11C5BCA424965BFB0066517B /* SplashViewController.swift */,
 				8450CC4324879561003286A4 /* GoogleService-Info.plist */,
 				CEDE687D24765A7C0057E9D2 /* Info.plist */,
 				BDBEA31724C92E1C009693D0 /* intro.json */,
 				CEDE687A24765A7C0057E9D2 /* LaunchScreen.storyboard */,
 				CEDE687524765A780057E9D2 /* Main.storyboard */,
 				CEDE687124765A780057E9D2 /* SceneDelegate.swift */,
-				11C5BCA424965BFB0066517B /* SplashViewController.swift */,
 				953A67B52490E8A7008AC2BA /* User.swift */,
 				116989072494C19B003C3E34 /* UserViewController.swift */,
 				84404A0624E667A5004B8290 /* ObserveThread.swift */,
@@ -467,16 +466,15 @@
 			files = (
 				116988F42494AB3D003C3E34 /* pen1.png in Resources */,
 				CEDE687C24765A7C0057E9D2 /* LaunchScreen.storyboard in Resources */,
+				11720CF52546B5EA00272CC5 /* start_meeting.png in Resources */,
 				1119FDC824FA706A007261D8 /* neon_0.png in Resources */,
 				1154C0AF2546A38500123620 /* join_meeting.png in Resources */,
 				1119FDC224FA4064007261D8 /* back.png in Resources */,
 				1154C0B92546AB2A00123620 /* oval.png in Resources */,
 				1154C0B62546A63A00123620 /* drawingtogether_splash.png in Resources */,
-				1154C0B22546A38500123620 /* start_meeting.png in Resources */,
 				BDBEA31824C92E1C009693D0 /* intro.json in Resources */,
 				116988F52494AB3D003C3E34 /* pen2.png in Resources */,
 				116988F72494AB3D003C3E34 /* shape.png in Resources */,
-				1169890E249604F3003C3E34 /* color_bar.png in Resources */,
 				116988FA2494AB3D003C3E34 /* warping.png in Resources */,
 				BD5ABFD124FD7E63004503E2 /* redo_circle_black.png in Resources */,
 				1119FDCE24FA707C007261D8 /* pencil_1.png in Resources */,
