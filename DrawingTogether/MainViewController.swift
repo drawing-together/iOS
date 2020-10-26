@@ -9,10 +9,8 @@
 import UIKit
 import SVProgressHUD
 
-class MainViewController: UIViewController {
-
-//    @IBOutlet weak var ipTextField: UITextField!
-//    @IBOutlet weak var portTextField: UITextField!
+class MainViewController: UIViewController, UIPopoverPresentationControllerDelegate {
+    
     @IBOutlet weak var topicTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var nameTextField: UITextField!
@@ -24,8 +22,16 @@ class MainViewController: UIViewController {
     var masterName: String!
     var specialCharacterAndBlank: Bool!
     
+    var ip: String!
+    var port: String!
+    
+    var infoVC: InfoViewController!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        ip = "54.180.154.63" // 주농
+        port = "1883"
         
         let tapGseture = UITapGestureRecognizer(target: self, action: #selector(dismissKeybord))
         view.addGestureRecognizer(tapGseture)
@@ -44,6 +50,8 @@ class MainViewController: UIViewController {
             setKakaoTopic(topic: kakaoTopic)
             setKakaoPassword(password: kakaoPassword)
         }
+        
+        infoVC = storyboard?.instantiateViewController(withIdentifier: "InfoViewController") as? InfoViewController
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -125,6 +133,11 @@ class MainViewController: UIViewController {
             }
         }
         
+    }
+    
+    // popover 띄우기 위한 함수
+    func adaptivePresentationStyle(for controller: UIPresentationController) -> UIModalPresentationStyle {
+        return UIModalPresentationStyle.none
     }
 
     // 마스터 로그인 버튼
@@ -235,6 +248,17 @@ class MainViewController: UIViewController {
         }
     }
     
+    @IBAction func onInfoClick(_ sender: UIButton) {
+        infoVC.modalPresentationStyle = .overCurrentContext
+        if let popoverController = infoVC.popoverPresentationController {
+            popoverController.sourceView = self.view
+            popoverController.delegate = self
+            infoVC.popoverPresentationController?.delegate = self
+        }
+        
+        present(infoVC, animated: true, completion: nil)
+    }
+    
     func showDatabaseErrorAlert(title: String, message: String) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alertController.addAction(UIAlertAction(title: "확인", style: .destructive))
@@ -244,8 +268,8 @@ class MainViewController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // DrawingViewController의 ip, port, topic, name 값 세팅
         let drawingViewController = segue.destination as! DrawingViewController
-//        drawingViewController.ip = ipTextField.text!
-//        drawingViewController.port = portTextField.text!
+        drawingViewController.ip = ip!
+        drawingViewController.port = port!
         drawingViewController.topic = topicTextField.text!
         drawingViewController.password = passwordTextField.text!
         drawingViewController.name = nameTextField.text!

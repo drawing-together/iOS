@@ -31,19 +31,16 @@ class PenViewController: UIViewController {
     }
     
     @objc func clickPen1() {
-        print("pen1")
         de.strokeWidth = 10
         dismiss(animated: true, completion: nil)
     }
     
     @objc func clickPen2() {
-        print("pen2")
         de.strokeWidth = 20
         dismiss(animated: true, completion: nil)
     }
     
     @objc func clickPen3() {
-        print("pen3")
         de.strokeWidth = 30
         dismiss(animated: true, completion: nil)
     }
