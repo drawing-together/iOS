@@ -428,7 +428,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
 //                                messageFormat = MqttMessageFormat(joinAckMessage: joinAckMsg, drawingComponents: parser.getDrawingComponentAdapters(components: de.drawingComponents), texts: parser.getTextAdapters(texts: de.texts), history: de.history, undoArray: de.undoArray, removedComponentId: de.removedComponentId, maxComponentId: de.maxComponentId, maxTextId: de.maxTextId, bitmapByteArray: de.bitmapByteArray!);
 //                            }
                             
-                            let messageFormat = MqttMessageFormat(joinAckMessage: joinAckMsg, drawingComponents:parser.getDrawingComponentAdapters(components: de.drawingComponents), texts:parser.getTextAdapters(texts: de.texts), history: de.history, undoArray: de.undoArray,removedComponentId: de.removedComponentId, maxComponentId: de.maxComponentId, maxTextId: de.maxTextId);
+                            let messageFormat = MqttMessageFormat(joinAckMessage: joinAckMsg, drawingComponents:parser.getDrawingComponentAdapters(components: de.drawingComponents), texts:parser.getTextAdapters(texts: de.texts), history: de.history, undoArray: de.undoArray,removedComponentId: de.removedComponentId, maxComponentId: de.maxComponentId, maxTextId: de.maxTextId, autoDrawList: de.autoDrawList);
                             let json = parser.jsonWrite(object: messageFormat);
                             MQTTClient.client2.publish(topic: topic_join, message: json!)
                             print("login data publish complete -> \(joinName)")
@@ -465,6 +465,8 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                          
                          // 아이디 세팅
                          de.maxComponentId = mqttMessageFormat.maxComponentId!
+                        
+                        de.autoDrawList = mqttMessageFormat.autoDrawList!
                          
 //                         // 배경 이미지 세팅
 //                         if mqttMessageFormat.bitmapByteArray != nil {
@@ -980,9 +982,17 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             let SVGCoder = SDImageSVGCoder.shared
             SDImageCodersManager.shared.addCoder(SVGCoder)
             let imgView = UIImageView()
-            imgView.frame = CGRect(x: Int(autoDrawMessage.x)/2, y: Int(autoDrawMessage.y)/2, width: 100, height: 100)
+            
+            var width = self.drawingVC.drawingView.bounds.size.width
+            var height = self.drawingVC.drawingView.bounds.size.height
+            var x = Int(autoDrawMessage.x) * Int(width) / Int(autoDrawMessage.width)
+            var y = Int(autoDrawMessage.y) * Int(height) / Int(autoDrawMessage.height)
+            imgView.frame = CGRect(x: x, y: y, width: 100, height: 100)
             imgView.sd_setImage(with: URL(string: autoDrawMessage.url))
             drawingVC.drawingContainer.addSubview(imgView)
+            var autoDraw = AutoDraw(width: Float(width), height: Float(height), point: Point(x: x, y: y), url: autoDrawMessage.url)
+            self.de.addAutoDraw(autoDraw: autoDraw)
+            
         }
     }
     
@@ -1018,6 +1028,21 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                 self.de.addAllTextLabelToDrawingContainer()
                 
                 self.de.drawingView!.setNeedsDisplay()
+                
+                for i in 0 ... self.de.autoDrawList.count - 1 {
+                    var autoDraw = self.de.autoDrawList[i]
+                    let SVGCoder = SDImageSVGCoder.shared
+                    SDImageCodersManager.shared.addCoder(SVGCoder)
+                    let imgView = UIImageView()
+                    
+                    var width = self.drawingVC.drawingView.bounds.size.width ?? 0
+                    var height = self.drawingVC.drawingView.bounds.size.height ?? 0
+                    var x = autoDraw.point.x * Int(width) / Int(autoDraw.width)
+                    var y = autoDraw.point.y * Int(height) / Int(autoDraw.height)
+                    imgView.frame = CGRect(x: x, y: y, width: 100, height: 100)
+                    imgView.sd_setImage(with: URL(string: autoDraw.url))
+                    self.drawingVC?.drawingContainer?.addSubview(imgView)
+                }
                 
                 print("mid progressdialog dismiss")
                 SVProgressHUD.dismiss()
