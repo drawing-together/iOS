@@ -70,6 +70,8 @@
 		953A67D02490EDB9008AC2BA /* ComponentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67C22490EDB9008AC2BA /* ComponentType.swift */; };
 		953A67D12490EDB9008AC2BA /* Mode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67C32490EDB9008AC2BA /* Mode.swift */; };
 		953A67D22490EDB9008AC2BA /* DrawingComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67C42490EDB9008AC2BA /* DrawingComponent.swift */; };
+		957FCB25254820EE005475D2 /* MonitoringThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = 957FCB24254820EE005475D2 /* MonitoringThread.swift */; };
+		957FCB27254820FF005475D2 /* ComponentCount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 957FCB26254820FF005475D2 /* ComponentCount.swift */; };
 		BD5ABFCE24FD1E6C004503E2 /* PenMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5ABFCD24FD1E6C004503E2 /* PenMode.swift */; };
 		BD5ABFCF24FD1F5C004503E2 /* WarpData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5ABFCB24FD1E58004503E2 /* WarpData.swift */; };
 		BD5ABFD124FD7E63004503E2 /* redo_circle_black.png in Resources */ = {isa = PBXBuildFile; fileRef = BD5ABFD024FD7E63004503E2 /* redo_circle_black.png */; };
@@ -88,6 +90,8 @@
 		BDBEA32224C9322C009693D0 /* Selector.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBEA32124C9322C009693D0 /* Selector.swift */; };
 		BDBEA32424C93237009693D0 /* SelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBEA32324C93237009693D0 /* SelectorCommand.swift */; };
 		BDBEA32624C93248009693D0 /* SendMqttMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBEA32524C93248009693D0 /* SendMqttMessage.swift */; };
+		BDDD1B622548546F003A2BCE /* AutoDraw.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDDD1B612548546F003A2BCE /* AutoDraw.swift */; };
+		C2042BA369570A3273BFEDB0 /* Pods_DrawingTogether.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 609442141B495E82B6EA2C20 /* Pods_DrawingTogether.framework */; };
 		CE59F5FA24D8FA72008A6CCC /* WarpingMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE59F5F924D8FA72008A6CCC /* WarpingMessage.swift */; };
 		CE59F60724D900EF008A6CCC /* OpenCVWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE59F60624D900EF008A6CCC /* OpenCVWrapper.mm */; };
 		CE683EC224FE23E7000222C8 /* AutoDrawMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE683EC124FE23E7000222C8 /* AutoDrawMessage.swift */; };
@@ -181,6 +185,8 @@
 		953A67C22490EDB9008AC2BA /* ComponentType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComponentType.swift; sourceTree = "<group>"; };
 		953A67C32490EDB9008AC2BA /* Mode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mode.swift; sourceTree = "<group>"; };
 		953A67C42490EDB9008AC2BA /* DrawingComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingComponent.swift; sourceTree = "<group>"; };
+		957FCB24254820EE005475D2 /* MonitoringThread.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitoringThread.swift; sourceTree = "<group>"; };
+		957FCB26254820FF005475D2 /* ComponentCount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentCount.swift; sourceTree = "<group>"; };
 		BD5ABFBF24FCE890004503E2 /* PenMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenMode.swift; sourceTree = "<group>"; };
 		BD5ABFCB24FD1E58004503E2 /* WarpData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WarpData.swift; sourceTree = "<group>"; };
 		BD5ABFCD24FD1E6C004503E2 /* PenMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenMode.swift; sourceTree = "<group>"; };
@@ -200,6 +206,7 @@
 		BDBEA32124C9322C009693D0 /* Selector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Selector.swift; sourceTree = "<group>"; };
 		BDBEA32324C93237009693D0 /* SelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectorCommand.swift; sourceTree = "<group>"; };
 		BDBEA32524C93248009693D0 /* SendMqttMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendMqttMessage.swift; sourceTree = "<group>"; };
+		BDDD1B612548546F003A2BCE /* AutoDraw.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoDraw.swift; sourceTree = "<group>"; };
 		CE59F5F924D8FA72008A6CCC /* WarpingMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WarpingMessage.swift; sourceTree = "<group>"; };
 		CE59F5FF24D8FC0C008A6CCC /* WarpData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = WarpData.swift; path = "../../../DrawingTogether-iOS/DrawingTogether/Drawing/WarpData.swift"; sourceTree = "<group>"; };
 		CE59F60524D900EF008A6CCC /* OpenCVWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenCVWrapper.h; sourceTree = "<group>"; };
@@ -296,6 +303,7 @@
 				BD5D2AC724969A7900B6D811 /* Command.swift */,
 				953A67C22490EDB9008AC2BA /* ComponentType.swift */,
 				953A67C42490EDB9008AC2BA /* DrawingComponent.swift */,
+				BDDD1B612548546F003A2BCE /* AutoDraw.swift */,
 				953A67BE2490EDB8008AC2BA /* DrawingComponentAdapter.swift */,
 				BD5D2AC124969A4100B6D811 /* DrawingComponentProtocol.swift */,
 				953A67BC2490EDB8008AC2BA /* DrawingEditor.swift */,
@@ -339,6 +347,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		957FCB23254820C3005475D2 /* Monitoring */ = {
+			isa = PBXGroup;
+			children = (
+				957FCB24254820EE005475D2 /* MonitoringThread.swift */,
+				957FCB26254820FF005475D2 /* ComponentCount.swift */,
+			);
+			path = Monitoring;
+			sourceTree = "<group>";
+		};
 		B588619159CC547280219286 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -373,6 +390,7 @@
 				116988E22494AB21003C3E34 /* image */,
 				116988FC2494B2BF003C3E34 /* Drawing */,
 				116988FB2494B2B7003C3E34 /* MQTT */,
+				957FCB23254820C3005475D2 /* Monitoring */,
 				844049AE24BD64F7004B8290 /* AliveMessage.swift */,
 				844049AC24BD64E9004B8290 /* AliveThread.swift */,
 				CEDE686F24765A780057E9D2 /* AppDelegate.swift */,
@@ -571,6 +589,7 @@
 				8450CC52248E1A49003286A4 /* JoinMessage.swift in Sources */,
 				113E8EE0247F912400F33359 /* MQTTClient.swift in Sources */,
 				BD5D2ACC24969A9F00B6D811 /* EraserTask.swift in Sources */,
+				BDDD1B622548546F003A2BCE /* AutoDraw.swift in Sources */,
 				952F4EB224910C4E00B665F4 /* DrawingItem.swift in Sources */,
 				111D1578247B88BA00095A31 /* DrawingViewController.swift in Sources */,
 				BDBEA31A24C92E6E009693D0 /* Alpha.swift in Sources */,
@@ -584,6 +603,7 @@
 				953A67CD2490EDB9008AC2BA /* Rect.swift in Sources */,
 				84404A0724E667A5004B8290 /* ObserveThread.swift in Sources */,
 				BD5D2AC824969A7900B6D811 /* Command.swift in Sources */,
+				957FCB27254820FF005475D2 /* ComponentCount.swift in Sources */,
 				953A67C82490EDB9008AC2BA /* Stroke.swift in Sources */,
 				CEDE687024765A780057E9D2 /* AppDelegate.swift in Sources */,
 				953A67C52490EDB9008AC2BA /* Text.swift in Sources */,
@@ -600,6 +620,7 @@
 				BD5D2ACA24969A8F00B6D811 /* Eraser.swift in Sources */,
 				953A67D22490EDB9008AC2BA /* DrawingComponent.swift in Sources */,
 				CEDE687224765A780057E9D2 /* SceneDelegate.swift in Sources */,
+				957FCB25254820EE005475D2 /* MonitoringThread.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

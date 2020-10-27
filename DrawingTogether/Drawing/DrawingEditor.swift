@@ -19,8 +19,8 @@ class DrawingEditor {
     var drawingView: DrawingView?
     var drawingVC: DrawingViewController?
     
+    var receiveImage: UIImage?
     var currentImage: UIImage?
-    var myCurrentImage: UIImage?
     var frameSize: CGSize?
     
     //    var backgroundImage: CGImage?
@@ -84,6 +84,9 @@ class DrawingEditor {
     // MARK: 이미지
     var backgroundImage: [Int8]?
     
+    var autoDrawList: [AutoDraw] = []
+    var autoDrawImageList: [UIImageView] = []
+    
     func initialize(drawingVC: DrawingViewController, master: Bool) {
         self.drawingVC = drawingVC
         self.drawingView = drawingVC.drawingView
@@ -121,8 +124,8 @@ class DrawingEditor {
         drawingComponents.removeAll()
         currentComponents.removeAll()
         
-        //        removeAllTextLabelToDrawingContainer()
-        texts.removeAll()
+        removeAllTextLabelToDrawingContainer() // 텍스트 제거
+        texts.removeAll() // 텍스트 자료구조 삭제
         currentText = nil
         
         history.removeAll()
@@ -135,6 +138,9 @@ class DrawingEditor {
         strokeWidth = 10
         
         isIntercept = false
+        
+        backgroundImage = nil
+        drawingVC!.backgroundImageView.image = nil
     }
     
     
@@ -298,13 +304,6 @@ class DrawingEditor {
         drawingBoardArray = Array(repeating: Array(repeating: [Int](), count: width), count: height)  // out of memory error
         print("initDrawingBoardArray() height=\(drawingBoardArray!.count) width=\(drawingBoardArray![0].count)")
         
-        /*for i in 0..<height {
-            for j in 0..<width {
-                autoreleasepool {
-                //drawingBoardArray![i][j].append(-1)
-                }
-            }
-        }*/
     }
     
     func clearDrawingBoardArray() {
@@ -313,7 +312,6 @@ class DrawingEditor {
                 autoreleasepool {
                 if drawingBoardArray![i][j].count != 0 {
                     drawingBoardArray![i][j].removeAll()
-                    //drawingBoardArray![i][j].append(-1)
                 }
                 }
             }
@@ -513,7 +511,7 @@ class DrawingEditor {
                     print("undo history (\(comp.beginPoint!.x),\(comp.beginPoint!.y))")
                 } else {
                     print("redo history (\(comp.beginPoint!.x),\(comp.beginPoint!.y)), (\(lastItem.movePoint!.x),\(lastItem.movePoint!.y))")
-                    moveSelectedComponent(selectedComponent: comp, moveX: 0, moveY: 0)
+                    moveSelectedComponent(selectedComponent: comp, moveX: (lastItem.movePoint!.x), moveY: (lastItem.movePoint!.y))
                      print("redo history (\(comp.beginPoint!.x),\(comp.beginPoint!.y))")
                     
                 }
@@ -589,7 +587,15 @@ class DrawingEditor {
     
     func clearDrawingComponents() {
         autoreleasepool {
+        selectedComponent = nil
+        preSelectedComponents.removeAll()
+        postSelectedComponents.removeAll()
+            
         drawingView!.image = nil
+        receiveImage = nil
+        currentImage = nil
+        unselectedComponentsView.image = nil
+        
         undoArray.removeAll()
         history.removeAll()
         drawingComponents.removeAll()
@@ -606,7 +612,6 @@ class DrawingEditor {
     func findEnclosingDrawingComponents(point: Point) -> [Int] {
         
         erasedComponentIds.removeAll()
-        //erasedComponentIds.append(-1)
         
         for component in drawingComponents {
         
@@ -1021,6 +1026,14 @@ class DrawingEditor {
         let image: UIImage = UIImage(data: imageData as Data)!
         
         return image
+    }
+    
+    func addAutoDraw(autoDraw: AutoDraw) {
+        self.autoDrawList.append(autoDraw)
+    }
+    
+    func setAutoDrawList(autoDrawList: [AutoDraw]) {
+        self.autoDrawList = autoDrawList
     }
     
     func clearBackgroundImage() {

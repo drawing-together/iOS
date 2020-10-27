@@ -12,11 +12,14 @@ class AutoDrawMessage: Codable {
     var name: String
     var url: String
     var x, y: Float
+    var width, height: Float
     
-    init(name: String, url: String, x: Float, y: Float) {
+    init(name: String, url: String, x: Float, y: Float, width: Float, height: Float) {
         self.name = name
         self.url = url
         self.x = x
         self.y = y
+        self.width = width
+        self.height = height
     }
 }

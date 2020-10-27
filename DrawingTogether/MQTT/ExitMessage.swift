@@ -9,7 +9,7 @@
 import Foundation
 
 class ExitMessage: Codable {
-    
+
     var name: String?
     
     init(name: String) {

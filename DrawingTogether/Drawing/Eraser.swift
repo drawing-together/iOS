@@ -26,7 +26,6 @@ class Eraser {
     
     func findComponentsToErase(eraserPoint: Point) {
         erasedComponentIds.removeAll()
-        //erasedComponentIds.append(-1)
         shapeIds.removeAll()
         
         x = eraserPoint.x
@@ -48,7 +47,7 @@ class Eraser {
             for j in stride(from: (x-squareScope), through: (x+squareScope), by: 1) {
                 autoreleasepool {
                 shapeIds = de.findEnclosingDrawingComponents(point: eraserPoint)
-                //if shapeIds.count != 1 && !de.isContainsRemovedComponentIds(ids: shapeIds) {
+                
                 if shapeIds.count != 0 && !de.isContainsRemovedComponentIds(ids: shapeIds) {
                     erasedComponentIds.append(contentsOf: shapeIds)
                     //erase(erasedComponentIds: shapeIds)
@@ -64,7 +63,6 @@ class Eraser {
                  print(str)*/
                 
                 
-                //if(dbArray![i][j].count != 1 && !de.isContainsRemovedComponentIds(ids: dbArray![i][j])) { //-1만 가지고 있으면 size() == 1
                 if(dbArray![i][j].count != 0 && !de.isContainsRemovedComponentIds(ids: dbArray![i][j])) {
                     
                     erasedComponentIds.append(contentsOf: de.getNotRemovedComponentIds(ids: dbArray![i][j]))
@@ -77,7 +75,6 @@ class Eraser {
             }
         }
         
-        //if erasedComponentIds.count != 1 {
         if erasedComponentIds.count != 0 {
             erasedComponentIds.sort()
             erase(erasedComponentIds: erasedComponentIds)
@@ -97,16 +94,4 @@ class Eraser {
         self.erasedComponentIds.removeAll()
         de.clearUndoArray()
     }
-    
-    /*func erase(erasedComponentIds: [Int]) {
-     print("erasedIds = \(erasedComponentIds)")
-     
-     //publish
-     sendMqttMessage.putMqttMessage(messageFormat: MqttMessageFormat(username: de.myUsername!, mode: Mode.ERASE, componentIds: NSArray(array: erasedComponentIds, copyItems: true) as! [Int]))
-     //client.publish(topic: client.topic_data, message: parser.jsonWrite(object: messageFormat)!)
-     
-     eraserTask.execute(erasedComponentIds: self.erasedComponentIds)
-     self.erasedComponentIds.removeAll()
-     de.clearUndoArray()
-     }*/
 }
