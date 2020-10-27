@@ -13,6 +13,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     var sceneTopic: String?
     var scenePassword: String?
+    
+    var scene: UIScene?
+    var openURLContexts: Set<UIOpenURLContext>?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -20,7 +23,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
         guard let _ = (scene as? UIWindowScene) else { return }
         
-        self.scene(scene, openURLContexts: connectionOptions.urlContexts)
+        self.scene = scene
+        openURLContexts = connectionOptions.urlContexts
+//        self.scene(scene, openURLContexts: connectionOptions.urlContexts)
     }
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
@@ -28,6 +33,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         if let urlContext = URLContexts.first {
             if KLKTalkLinkCenter.shared().isTalkLinkCallback(urlContext.url) {
+                
+                let navigationController = window?.rootViewController as! UINavigationController
+                let mainViewController = navigationController.viewControllers.first as! MainViewController
                 
                 let urlComponents = URLComponents(url: urlContext.url, resolvingAgainstBaseURL: false)
                 if let items = urlComponents?.queryItems {
@@ -37,22 +45,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         else if item.name == "password" { scenePassword = item.value }
                     }
                     
-                    let splashViewController = window?.rootViewController as! SplashViewController
-                    if let mainVC = splashViewController.mainVC {  // not nil (in running)
-                        print("runnging ......")
-                        (mainVC as! MainViewController).setKakaoTopic(topic: sceneTopic!)
-                        (mainVC as! MainViewController).setKakaoPassword(password: scenePassword!)
-                    }
+                    mainViewController.setKakaoTopic(topic: sceneTopic!)
+                    mainViewController.setKakaoPassword(password: scenePassword!)
                     
-                }
-                else {
-                    let splashViewController = window?.rootViewController as! SplashViewController
-                    if let mainVC = splashViewController.mainVC {  // not nil (in running)
-                        print("runnging ......")
-                        (mainVC as! MainViewController).setKakaoTopic(topic: "")
-                        (mainVC as! MainViewController).setKakaoPassword(password: "")
-                    }
-                
                 }
             }
 

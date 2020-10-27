@@ -88,7 +88,6 @@
 		BDBEA32224C9322C009693D0 /* Selector.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBEA32124C9322C009693D0 /* Selector.swift */; };
 		BDBEA32424C93237009693D0 /* SelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBEA32324C93237009693D0 /* SelectorCommand.swift */; };
 		BDBEA32624C93248009693D0 /* SendMqttMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDBEA32524C93248009693D0 /* SendMqttMessage.swift */; };
-		C2042BA369570A3273BFEDB0 /* Pods_DrawingTogether.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 609442141B495E82B6EA2C20 /* Pods_DrawingTogether.framework */; };
 		CE59F5FA24D8FA72008A6CCC /* WarpingMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE59F5F924D8FA72008A6CCC /* WarpingMessage.swift */; };
 		CE59F60724D900EF008A6CCC /* OpenCVWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = CE59F60624D900EF008A6CCC /* OpenCVWrapper.mm */; };
 		CE683EC224FE23E7000222C8 /* AutoDrawMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE683EC124FE23E7000222C8 /* AutoDrawMessage.swift */; };
@@ -151,7 +150,6 @@
 		119D68702542DFA70086005B /* start_meeting.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = start_meeting.png; sourceTree = "<group>"; };
 		11C5BCA424965BFB0066517B /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
 		5CDA820F9A9AC4878DE03B07 /* Pods-DrawingTogether.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DrawingTogether.release.xcconfig"; path = "Target Support Files/Pods-DrawingTogether/Pods-DrawingTogether.release.xcconfig"; sourceTree = "<group>"; };
-		609442141B495E82B6EA2C20 /* Pods_DrawingTogether.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DrawingTogether.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		844049AC24BD64E9004B8290 /* AliveThread.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AliveThread.swift; sourceTree = "<group>"; };
 		844049AE24BD64F7004B8290 /* AliveMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AliveMessage.swift; sourceTree = "<group>"; };
 		84404A0424E6659A004B8290 /* JoinAckMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinAckMessage.swift; sourceTree = "<group>"; };
@@ -224,7 +222,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				84404A0D24E66D52004B8290 /* KakaoLink.framework in Frameworks */,
-				C2042BA369570A3273BFEDB0 /* Pods_DrawingTogether.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -338,7 +335,6 @@
 			children = (
 				84404A0A24E66D2A004B8290 /* KakaoOpenSDK-1.23.3 */,
 				84404A0C24E66D52004B8290 /* KakaoLink.framework */,
-				609442141B495E82B6EA2C20 /* Pods_DrawingTogether.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -752,7 +748,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 33HRWDDX9A;
+				DEVELOPMENT_TEAM = 725GFJMUCZ;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/KakaoOpenSDK-1.23.3",
@@ -832,7 +828,7 @@
 					"\"opencv2\"",
 					"-all_load",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = hansung.drawingtogether;
+				PRODUCT_BUNDLE_IDENTIFIER = hansung.drawingtogether3;
 				PRODUCT_NAME = "드로잉투게더";
 				SWIFT_OBJC_BRIDGING_HEADER = "DrawingTogether/Drawing/DrawingTogether-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -848,7 +844,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 33HRWDDX9A;
+				DEVELOPMENT_TEAM = 725GFJMUCZ;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/KakaoOpenSDK-1.23.3",
@@ -928,7 +924,7 @@
 					"\"opencv2\"",
 					"-all_load",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = hansung.drawingtogether;
+				PRODUCT_BUNDLE_IDENTIFIER = hansung.drawingtogether3;
 				PRODUCT_NAME = "드로잉투게더";
 				SWIFT_OBJC_BRIDGING_HEADER = "DrawingTogether/Drawing/DrawingTogether-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;

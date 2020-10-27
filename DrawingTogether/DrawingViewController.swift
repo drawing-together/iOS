@@ -351,28 +351,71 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
             
             UIImageWriteToSavedPhotosAlbum(self.drawingContainer.capture().image!, self, #selector(self.image(_:didFinishSavingWithError:contextInfo:)), nil)
         }
+        
         // Plus Person
+        // Send KakaoLink
         let plusPersonAction = UIAlertAction(title: "친구 초대", style: .default) {
             action in
             print("친구 초대")
             
-            // 카카오톡 링크 보내기
-            let template = KMTTextTemplate { (textTemplateBuilder) in
+            /* 카카오링크에 회의명, 비밀번호 전달 - 피드 메시지 보내기 */
+            let feedTemplate = KMTFeedTemplate {
+                (feedTemplateBuilder) in
                 
-                // text
-                textTemplateBuilder.text = "시시콜콜! 들어와!"
-                // link
-                textTemplateBuilder.link = KMTLinkObject(builderBlock: { (linkBuilder) in
+                // content
+                feedTemplateBuilder.content = KMTContentObject(builderBlock: {
+                    (contentBuilder) in
                     
-                    linkBuilder.iosExecutionParams = "topic=\(self.topic!)&password=\(self.password!)"
-                    linkBuilder.androidExecutionParams = "topic=\(self.topic!)&password=\(self.password!)"
+                    contentBuilder.title = "♥︎드로잉투게더♥︎ - 회의명 [\(self.topic!)]"
+                    contentBuilder.imageURL = URL(string: "http://k.kakaocdn.net/dn/bftFB6/bl2J1T0qwdk/RxMA99bZEhHkQIUxQDBkgk/kakaolink40_original.png")!
+                    contentBuilder.desc = "#공유 #드로잉 #실시간 #회의"
                     
+                    // link
+                    contentBuilder.link = KMTLinkObject(builderBlock: {
+                        (linkBuilder) in
+                        
+                        linkBuilder.iosExecutionParams = "topic=\(self.topic!)&password=\(self.password!)"
+                        linkBuilder.androidExecutionParams = "topic=\(self.topic!)&password=\(self.password!)"
+                    })
                 })
+                feedTemplateBuilder.social = KMTSocialObject(builderBlock: {
+                    (socialBuilder) in
+                    
+                    socialBuilder.likeCount = 286
+                    socialBuilder.commnentCount = 45
+                    socialBuilder.sharedCount = 845
+                })
+                
                 // button
-                textTemplateBuilder.buttonTitle = "앱으로 이동!"
+                feedTemplateBuilder.addButton(
+                    KMTButtonObject(title: "앱으로 이동",
+                                    link: KMTLinkObject(builderBlock: { (linkBuilder) in
+                                        linkBuilder.iosExecutionParams = "topic=\(self.topic!)&password=\(self.password!)"
+                                        linkBuilder.androidExecutionParams = "topic=\(self.topic!)&password=\(self.password!)"
+                                        })))
             }
             
-            KLKTalkLinkCenter.shared().sendDefault(with: template, success: { (warningMsg, argumentMsg) in
+            
+            
+            /* 카카오링크에 회의명, 비밀번호 전달 - 텍스트 메시지 보내기 */
+//            let textTemplate = KMTTextTemplate { (textTemplateBuilder) in
+//
+//                // text
+//                textTemplateBuilder.text = "시시콜콜! 들어와!"
+//                // link
+//                textTemplateBuilder.link = KMTLinkObject(builderBlock: { (linkBuilder) in
+//
+//                    linkBuilder.iosExecutionParams = "topic=\(self.topic!)&password=\(self.password!)"
+//                    linkBuilder.androidExecutionParams = "topic=\(self.topic!)&password=\(self.password!)"
+//
+//                })
+//                // button
+//                textTemplateBuilder.buttonTitle = "앱으로 이동!"
+//            }
+            
+            
+            /* 카카오톡 API로 메시지 보내기 */
+            KLKTalkLinkCenter.shared().sendDefault(with: feedTemplate, success: { (warningMsg, argumentMsg) in
                             
                 // success
                 print("warning message: \(String(describing: warningMsg))")
