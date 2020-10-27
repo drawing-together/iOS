@@ -51,6 +51,8 @@ class MqttMessageFormat: Codable {
     var removedComponentId: [Int]?
     var maxComponentId: Int?
     var maxTextId: Int?
+    
+    var autoDrawList: [AutoDraw]?
 
 
     // MARK: DRAWING MESSAGE
@@ -140,7 +142,7 @@ class MqttMessageFormat: Codable {
     }
 
     // MARK: MID MESSAGE
-    init(joinAckMessage: JoinAckMessage, drawingComponents: [DrawingComponentAdapter], texts: [TextAdapter], history: [DrawingItem], undoArray: [DrawingItem], removedComponentId: [Int], maxComponentId: Int, maxTextId: Int) {
+    init(joinAckMessage: JoinAckMessage, drawingComponents: [DrawingComponentAdapter], texts: [TextAdapter], history: [DrawingItem], undoArray: [DrawingItem], removedComponentId: [Int], maxComponentId: Int, maxTextId: Int, autoDrawList: [AutoDraw]) {
         self.joinAckMessage = joinAckMessage
         self.drawingComponents = drawingComponents
         self.texts = texts
@@ -149,6 +151,7 @@ class MqttMessageFormat: Codable {
         self.removedComponentId = removedComponentId
         self.maxComponentId = maxComponentId
         self.maxTextId = maxTextId
+        self.autoDrawList = autoDrawList
     }
     
     init(joinAckMessage: JoinAckMessage, drawingComponents: [DrawingComponentAdapter], texts: [TextAdapter], history: [DrawingItem], undoArray: [DrawingItem], removedComponentId: [Int], maxComponentId: Int, maxTextId: Int, bitmapByteArray: [Int8]) {

@@ -86,6 +86,9 @@ class DrawingEditor {
     // MARK: 이미지
     var backgroundImage: [Int8]?
     
+    var autoDrawList: [AutoDraw] = []
+    var autoDrawImageList: [UIImageView] = []
+    
     func initialize(drawingVC: DrawingViewController, master: Bool) {
         self.drawingVC = drawingVC
         self.drawingView = drawingVC.drawingView
@@ -1021,6 +1024,14 @@ class DrawingEditor {
         let image: UIImage = UIImage(data: imageData as Data)!
         
         return image
+    }
+    
+    func addAutoDraw(autoDraw: AutoDraw) {
+        self.autoDrawList.append(autoDraw)
+    }
+    
+    func setAutoDrawList(autoDrawList: [AutoDraw]) {
+        self.autoDrawList = autoDrawList
     }
     
     func clearBackgroundImage() {

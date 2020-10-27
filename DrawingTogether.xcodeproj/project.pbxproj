@@ -99,6 +99,7 @@
 		CEDE687724765A780057E9D2 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEDE687524765A780057E9D2 /* Main.storyboard */; };
 		CEDE687924765A7C0057E9D2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CEDE687824765A7C0057E9D2 /* Assets.xcassets */; };
 		CEDE687C24765A7C0057E9D2 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEDE687A24765A7C0057E9D2 /* LaunchScreen.storyboard */; };
+		CEE36BAE2548230600AFEE03 /* AutoDraw.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE36BAD2548230600AFEE03 /* AutoDraw.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -218,6 +219,7 @@
 		CEDE687824765A7C0057E9D2 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CEDE687B24765A7C0057E9D2 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		CEDE687D24765A7C0057E9D2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CEE36BAD2548230600AFEE03 /* AutoDraw.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoDraw.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -334,6 +336,7 @@
 				1160A67A2498761E00BC79C8 /* TextEditingView.xib */,
 				953A67B92490EDB8008AC2BA /* TextMode.swift */,
 				BD5ABFCB24FD1E58004503E2 /* WarpData.swift */,
+				CEE36BAD2548230600AFEE03 /* AutoDraw.swift */,
 			);
 			path = Drawing;
 			sourceTree = "<group>";
@@ -591,6 +594,7 @@
 				BD5D2AC224969A4100B6D811 /* DrawingComponentProtocol.swift in Sources */,
 				953A67CE2490EDB9008AC2BA /* DrawingView.swift in Sources */,
 				953A67CD2490EDB9008AC2BA /* Rect.swift in Sources */,
+				CEE36BAE2548230600AFEE03 /* AutoDraw.swift in Sources */,
 				84404A0724E667A5004B8290 /* ObserveThread.swift in Sources */,
 				BD5D2AC824969A7900B6D811 /* Command.swift in Sources */,
 				953A67C82490EDB9008AC2BA /* Stroke.swift in Sources */,
@@ -756,7 +760,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = GYJHR3KXF9;
+				DEVELOPMENT_TEAM = CPC236HLL9;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/KakaoOpenSDK-1.23.3",
@@ -852,7 +856,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = GYJHR3KXF9;
+				DEVELOPMENT_TEAM = CPC236HLL9;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/KakaoOpenSDK-1.23.3",
