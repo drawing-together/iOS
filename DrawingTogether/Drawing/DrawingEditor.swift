@@ -121,8 +121,8 @@ class DrawingEditor {
         drawingComponents.removeAll()
         currentComponents.removeAll()
         
-        //        removeAllTextLabelToDrawingContainer()
-        texts.removeAll()
+        removeAllTextLabelToDrawingContainer() // 텍스트 제거
+        texts.removeAll() // 텍스트 자료구조 삭제
         currentText = nil
         
         history.removeAll()
@@ -135,6 +135,9 @@ class DrawingEditor {
         strokeWidth = 10
         
         isIntercept = false
+        
+        backgroundImage = nil
+        drawingVC!.backgroundImageView.image = nil
     }
     
     
