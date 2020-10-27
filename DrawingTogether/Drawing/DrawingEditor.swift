@@ -78,13 +78,14 @@ class DrawingEditor {
     var isMidEntered = false
     
     // MARK: 텍스트 속성
-    var textSize = UIFont.systemFont(ofSize: 20)
-    var textColor = UIColor.black
-    var textBackgroundColor: UIColor?
-    // var fontStyle
+    var textSize = 20
+    var textColor = "#000000"
     
     // MARK: 이미지
     var backgroundImage: [Int8]?
+    
+    var autoDrawList: [AutoDraw] = []
+    var autoDrawImageList: [UIImageView] = []
     
     func initialize(drawingVC: DrawingViewController, master: Bool) {
         self.drawingVC = drawingVC
@@ -123,8 +124,8 @@ class DrawingEditor {
         drawingComponents.removeAll()
         currentComponents.removeAll()
         
-        //        removeAllTextLabelToDrawingContainer()
-        texts.removeAll()
+        removeAllTextLabelToDrawingContainer() // 텍스트 제거
+        texts.removeAll() // 텍스트 자료구조 삭제
         currentText = nil
         
         history.removeAll()
@@ -137,6 +138,9 @@ class DrawingEditor {
         strokeWidth = 10
         
         isIntercept = false
+        
+        backgroundImage = nil
+        drawingVC!.backgroundImageView.image = nil
     }
     
     
@@ -968,7 +972,7 @@ class DrawingEditor {
         return nil
     }
     
-    func removeText(text: Text) {
+    func removeTexts(text: Text) {
         for idx in 0..<texts.count {
             if texts[idx] == text {
                 texts.remove(at: idx)
@@ -993,9 +997,9 @@ class DrawingEditor {
             //            t.setTextViewInitialPlace(t.getTextAttribute());
             //            t.setTextViewProperties();
             
-            
+            text.sizeToFit() // fixme nayeon - (1) set view properties (2) set initial place 순서 중요 !!
             drawingVC?.drawingContainer.addSubview(text)
-            text.sizeToFit()
+            
         }
     }
     
@@ -1022,6 +1026,14 @@ class DrawingEditor {
         let image: UIImage = UIImage(data: imageData as Data)!
         
         return image
+    }
+    
+    func addAutoDraw(autoDraw: AutoDraw) {
+        self.autoDrawList.append(autoDraw)
+    }
+    
+    func setAutoDrawList(autoDrawList: [AutoDraw]) {
+        self.autoDrawList = autoDrawList
     }
     
     func clearBackgroundImage() {

@@ -33,6 +33,7 @@ class MQTTClient: NSObject {
     var topic_audio: String!
     var topic_image: String!
     var topic_alive: String!
+    var topic_monitoring: String!
     //
     
     var myName: String!
@@ -60,6 +61,10 @@ class MQTTClient: NSObject {
     // OBSERVE
     var observeThread: ObserveThread!
     
+    // MONITORING
+    var componentCount: ComponentCount?
+    var monitoringThread: MonitoringThread?
+    
     // 생성자
     private override init() {
         super.init()
@@ -75,6 +80,7 @@ class MQTTClient: NSObject {
         self.topic_audio = topic + "_audio"
         self.topic_image = topic + "_image"
         self.topic_alive = topic + "_alive"
+        self.topic_monitoring = "monitoring"
         
         self.myName = name
         self.master = master
@@ -209,8 +215,13 @@ class MQTTClient: NSObject {
             publish(topic: self.topic_exit, message: self.parser.jsonWrite(object: messageFormat)!)
         }
         userList.removeAll()
+        
         aliveThread.cancel()
         observeThread.cancel()
+        if master {
+            monitoringThread!.cancel()
+        }
+        
         de.removeAllDrawingData()
         isMid = true
         
@@ -218,7 +229,7 @@ class MQTTClient: NSObject {
 //        if drawingVC.speakerFlag {
 //            unsubscribe(topic_audio)
 //            audioPlaying = false
-//        } nj
+//        }
         //
         print("exit task end")
     }
@@ -291,7 +302,7 @@ class MQTTClient: NSObject {
         print("text: in isTextInUse func")
         
         for text in de.texts {
-            if text.textAttribute.username != nil {
+            if text.textAttribute.isDragging { // 다른 참가자들이 텍스트를 드래그 중일 때 드래그가 완료될 때 까지 기다림
                 return true
             }
         }
@@ -305,6 +316,37 @@ class MQTTClient: NSObject {
     
     public func getMyName() -> String { return self.myName }
     
+    // MONITORING
+    
+    func checkComponentCount(mode: Mode?, type: ComponentType?, textMode: TextMode?) {
+        // print("monitoring: " + "execute check component count func.");
+        
+        if(mode! == Mode.DRAW) {
+            // print("monitoring: " + "check component count func. mode is DRAW");
+            
+            switch (type!) {
+            case .STROKE:
+                    componentCount!.increaseStroke();
+                    break;
+            case .RECT:
+                    componentCount!.increaseRect();
+                    break;
+            case .OVAL:
+                    componentCount!.increaseOval();
+                    break;
+            }
+            return;
+        }
+
+        if(mode! == Mode.TEXT && textMode! == TextMode.CREATE) {
+            // print("monitoring:" + "check component count func. text count increase.");
+
+            componentCount!.increaseText();
+            return;
+        }
+   
+    }
+    
 }
 
 extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
@@ -316,6 +358,10 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             de.backgroundImage = imageData
             
             drawingVC.backgroundImageView.image = de.convertByteArray2UIImage(byteArray: de.backgroundImage!)
+            
+            if(master) {
+                componentCount!.increaseImage()
+            }
             
             return
         }
@@ -333,7 +379,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                     }
         
         let message = String(data: data, encoding: .utf8)!
-        print(message)
+//        print(message)
         
         if parser.jsonReader(msg: message) == nil { return }
         let mqttMessageFormat = parser.jsonReader(msg: message)!
@@ -368,7 +414,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                         
                     }
                     if master {
-                         if isUsersActionUp(username: joinName) && !isTextInUse() { // fixme nayeon
+                         if isUsersActionUp(username: joinName) && !isTextInUse() {
                             let joinAckMsg = JoinAckMessage(name: myName, target: joinName)
                             
 //                            var messageFormat: MqttMessageFormat?
@@ -382,7 +428,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
 //                                messageFormat = MqttMessageFormat(joinAckMessage: joinAckMsg, drawingComponents: parser.getDrawingComponentAdapters(components: de.drawingComponents), texts: parser.getTextAdapters(texts: de.texts), history: de.history, undoArray: de.undoArray, removedComponentId: de.removedComponentId, maxComponentId: de.maxComponentId, maxTextId: de.maxTextId, bitmapByteArray: de.bitmapByteArray!);
 //                            }
                             
-                            let messageFormat = MqttMessageFormat(joinAckMessage: joinAckMsg, drawingComponents:parser.getDrawingComponentAdapters(components: de.drawingComponents), texts:parser.getTextAdapters(texts: de.texts), history: de.history, undoArray: de.undoArray,removedComponentId: de.removedComponentId, maxComponentId: de.maxComponentId, maxTextId: de.maxTextId);
+                            let messageFormat = MqttMessageFormat(joinAckMessage: joinAckMsg, drawingComponents:parser.getDrawingComponentAdapters(components: de.drawingComponents), texts:parser.getTextAdapters(texts: de.texts), history: de.history, undoArray: de.undoArray,removedComponentId: de.removedComponentId, maxComponentId: de.maxComponentId, maxTextId: de.maxTextId, autoDrawList: de.autoDrawList);
                             let json = parser.jsonWrite(object: messageFormat);
                             MQTTClient.client2.publish(topic: topic_join, message: json!)
                             print("login data publish complete -> \(joinName)")
@@ -419,6 +465,8 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                          
                          // 아이디 세팅
                          de.maxComponentId = mqttMessageFormat.maxComponentId!
+                        
+                        de.autoDrawList = mqttMessageFormat.autoDrawList!
                          
 //                         // 배경 이미지 세팅
 //                         if mqttMessageFormat.bitmapByteArray != nil {
@@ -464,6 +512,19 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         }
         
         if (topic == topic_data) {
+            
+            if(master) { // 마스터만 컴포넌트 개수 카운트
+            // 컴포넌트 개수 저장
+                if (mqttMessageFormat.action != nil && mqttMessageFormat.action == MotionEvent.ACTION_DOWN.rawValue)
+                    || mqttMessageFormat.mode == Mode.TEXT || mqttMessageFormat.mode == Mode.ERASE
+                {
+                    // print("< monitoring: mode = \(mqttMessageFormat.mode) type = \(mqttMessageFormat.type) text mode = \(mqttMessageFormat.textMode)");
+
+                    checkComponentCount(mode: mqttMessageFormat.mode, type: mqttMessageFormat.type, textMode: mqttMessageFormat.textMode)
+                }
+            }
+            
+            // 중간 참여자가 입장했을 때 처리
             if de.isMidEntered, let action = mqttMessageFormat.action, action != MotionEvent.ACTION_UP.rawValue {
                 if let usersComponentId = mqttMessageFormat.usersComponentId, (de.isIntercept && action == MotionEvent.ACTION_DOWN.rawValue), de.getCurrentComponent(usersComponentId: usersComponentId) != nil {
                     return
@@ -740,6 +801,8 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                 self.de.clearUndoArray()
             }
             
+           
+            
         }
     }
     
@@ -852,7 +915,6 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         // 텍스트 객체가 처음 생성되는 경우, 텍스트 배열에 저장된 정보 없음
         // 그 이후에 일어나는 텍스트에 대한 모든 행위들은 텏트ㅡ 배열로부터 텍스트 객체를 찾아서 작업 가능
         if !(textMode == .CREATE) {
-            print("*** check create")
             text = de.findTextById(id: textAttr.id!)
             if text == nil { return }
             text!.textAttribute = textAttr
@@ -898,7 +960,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             text!.setLabelBorder(color: .clear)
         case .DRAG_ENDED: break
         case .ERASE:
-            de.removeText(text: text!)
+            de.removeTexts(text: text!)
             text!.removeFromSuperview()
             break
             
@@ -920,9 +982,17 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             let SVGCoder = SDImageSVGCoder.shared
             SDImageCodersManager.shared.addCoder(SVGCoder)
             let imgView = UIImageView()
-            imgView.frame = CGRect(x: Int(autoDrawMessage.x)/2, y: Int(autoDrawMessage.y)/2, width: 100, height: 100)
+            
+            var width = self.drawingVC.drawingView.bounds.size.width
+            var height = self.drawingVC.drawingView.bounds.size.height
+            var x = Int(autoDrawMessage.x) * Int(width) / Int(autoDrawMessage.width)
+            var y = Int(autoDrawMessage.y) * Int(height) / Int(autoDrawMessage.height)
+            imgView.frame = CGRect(x: x, y: y, width: 100, height: 100)
             imgView.sd_setImage(with: URL(string: autoDrawMessage.url))
             drawingVC.drawingContainer.addSubview(imgView)
+            var autoDraw = AutoDraw(width: Float(width), height: Float(height), point: Point(x: x, y: y), url: autoDrawMessage.url)
+            self.de.addAutoDraw(autoDraw: autoDraw)
+            
         }
     }
     
@@ -958,6 +1028,21 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                 self.de.addAllTextLabelToDrawingContainer()
                 
                 self.de.drawingView!.setNeedsDisplay()
+                
+                for i in 0 ... self.de.autoDrawList.count - 1 {
+                    var autoDraw = self.de.autoDrawList[i]
+                    let SVGCoder = SDImageSVGCoder.shared
+                    SDImageCodersManager.shared.addCoder(SVGCoder)
+                    let imgView = UIImageView()
+                    
+                    var width = self.drawingVC.drawingView.bounds.size.width ?? 0
+                    var height = self.drawingVC.drawingView.bounds.size.height ?? 0
+                    var x = autoDraw.point.x * Int(width) / Int(autoDraw.width)
+                    var y = autoDraw.point.y * Int(height) / Int(autoDraw.height)
+                    imgView.frame = CGRect(x: x, y: y, width: 100, height: 100)
+                    imgView.sd_setImage(with: URL(string: autoDraw.url))
+                    self.drawingVC?.drawingContainer?.addSubview(imgView)
+                }
                 
                 print("mid progressdialog dismiss")
                 SVProgressHUD.dismiss()
