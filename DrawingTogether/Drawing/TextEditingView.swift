@@ -79,10 +79,10 @@ class TextEditingView: UIView {
         }
         
 
-        drawingVC.preMenuButton = drawingVC.preMenuButton ?? drawingVC.pencilBtn
+        drawingVC.preMenuButton = drawingVC.preMenuButton ?? drawingVC.penBtn
         drawingVC.changeClickedButtonBackground(drawingVC.preMenuButton!)
         
-        if drawingVC.preMenuButton == drawingVC.pencilBtn { // 도형은 펜 종류 지원 X, pencil 버튼인 경우만 펜 종류 표시
+        if drawingVC.preMenuButton == drawingVC.penBtn { // 도형은 펜 종류 지원 X, pencil 버튼인 경우만 펜 종류 표시
             drawingVC.penModeView.isHidden = false
         }
 

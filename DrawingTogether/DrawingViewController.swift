@@ -36,6 +36,10 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     @IBOutlet weak var undoBtn: UIButton!
     @IBOutlet weak var redoBtn: UIButton!
     
+    @IBOutlet weak var penBtn: UIButton!
+    @IBOutlet weak var shapeBtn: UIButton!
+    
+    
     var textEditingView: TextEditingView!
     
     var ip: String = "54.180.154.63"
