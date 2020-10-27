@@ -507,7 +507,7 @@ class DrawingEditor {
                     print("undo history (\(comp.beginPoint!.x),\(comp.beginPoint!.y))")
                 } else {
                     print("redo history (\(comp.beginPoint!.x),\(comp.beginPoint!.y)), (\(lastItem.movePoint!.x),\(lastItem.movePoint!.y))")
-                    moveSelectedComponent(selectedComponent: comp, moveX: 0, moveY: 0)
+                    moveSelectedComponent(selectedComponent: comp, moveX: (lastItem.movePoint!.x), moveY: (lastItem.movePoint!.y))
                      print("redo history (\(comp.beginPoint!.x),\(comp.beginPoint!.y))")
                     
                 }
@@ -583,7 +583,15 @@ class DrawingEditor {
     
     func clearDrawingComponents() {
         autoreleasepool {
+        selectedComponent = nil
+        preSelectedComponents.removeAll()
+        postSelectedComponents.removeAll()
+            
         drawingView!.image = nil
+        receiveImage = nil
+        currentImage = nil
+        unselectedComponentsView.image = nil
+        
         undoArray.removeAll()
         history.removeAll()
         drawingComponents.removeAll()
@@ -600,7 +608,6 @@ class DrawingEditor {
     func findEnclosingDrawingComponents(point: Point) -> [Int] {
         
         erasedComponentIds.removeAll()
-        //erasedComponentIds.append(-1)
         
         for component in drawingComponents {
         

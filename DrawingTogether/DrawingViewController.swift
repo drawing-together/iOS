@@ -38,7 +38,7 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     
     var textEditingView: TextEditingView!
     
-    var ip: String = "192.168.0.36"//"54.180.154.63"//
+    var ip: String = "54.180.154.63"//"192.168.0.36"//
     var port: String = "1883"
     var topic: String!
     var password: String!

@@ -51,9 +51,11 @@ class EraserTask  {
             
             self.de.eraseDrawingBoardArray(erasedComponentIds: erasedComponentIds)
             
+            let copyComponents = self.components.map({ $0.clone()! })
             
-            self.de.addHistory(item: DrawingItem(mode: Mode.ERASE, components: self.parser.getDrawingComponentAdapters(components: self.components)))    //fixme
+            self.de.addHistory(item: DrawingItem(mode: Mode.ERASE, components: self.parser.getDrawingComponentAdapters(components: copyComponents)))    //fixme
             print("history.size()=\(self.de.history.count)")
+            
             
             //self.de.printDrawingComponentArray(name: "cc", array: self.de.currentComponents, status: "erase")
             //self.de.printDrawingComponentArray(name: "dc", array: self.de.drawingComponents, status: "erase")

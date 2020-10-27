@@ -10,7 +10,6 @@ import Foundation
 import CoreGraphics
 import UIKit
 
-
 class DrawingComponent: Codable, DrawingComponentProtocol {
     
     var de: String? //
