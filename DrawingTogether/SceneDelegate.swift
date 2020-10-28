@@ -11,11 +11,16 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    
     var sceneTopic: String?
     var scenePassword: String?
     
     var scene: UIScene?
     var openURLContexts: Set<UIOpenURLContext>?
+    
+    var startTime: Date?
+    var stopTime: Date?
+    var formatter: DateFormatter?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
@@ -26,6 +31,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.scene = scene
         openURLContexts = connectionOptions.urlContexts
 //        self.scene(scene, openURLContexts: connectionOptions.urlContexts)
+        
+        formatter = DateFormatter()
+        formatter?.dateFormat = "YYYY-MM-dd HH:mm:ss"
     }
     
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
@@ -63,28 +71,36 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
-        // Called when the scene has moved from an inactive state to an active state.
-        // Use this method to restart any tasks that were paused (or not yet started) when the scene was inactive.
         print("sceneDidBecomeActive")
+        
+        startTime = formatter!.date(from: formatter!.string(from: Date()))
+        
+        let navigationController = window?.rootViewController as! UINavigationController
+        let mainVC = navigationController.viewControllers.first as! MainViewController
+        
+        if mainVC.drawingVCPresented && stopTime != nil {  // 현재 Drawing 화면
+            let diff = startTime!.timeIntervalSince(stopTime!)
+            
+            if diff > 60.0 {
+                let client = MQTTClient.client
+                client.drawingVC.showAlert(title: "시간 경과", message: "1분 이상 접속하지 않아 메인 화면으로 이동합니다.", selectable: false)
+            }
+            
+        }
     }
 
     func sceneWillResignActive(_ scene: UIScene) {
         print("sceneWillResignActive")
-        // Called when the scene will move from an active state to an inactive state.
-        // This may occur due to temporary interruptions (ex. an incoming phone call).
+        
+        stopTime = formatter!.date(from: formatter!.string(from: Date()))
+
     }
-    
 
     func sceneWillEnterForeground(_ scene: UIScene) {
-        // Called as the scene transitions from the background to the foreground.
-        // Use this method to undo the changes made on entering the background.
         print("sceneWillEnterForeground")
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
-        // Called as the scene transitions from the foreground to the background.
-        // Use this method to save data, release shared resources, and store enough scene-specific state information
-        // to restore the scene back to its current state.
         print("sceneDidEnterBackground")
     }
 

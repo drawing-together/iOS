@@ -383,13 +383,13 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
                         linkBuilder.androidExecutionParams = "topic=\(self.topic!)&password=\(self.password!)"
                     })
                 })
-                feedTemplateBuilder.social = KMTSocialObject(builderBlock: {
-                    (socialBuilder) in
-                    
-                    socialBuilder.likeCount = 286
-                    socialBuilder.commnentCount = 45
-                    socialBuilder.sharedCount = 845
-                })
+//                feedTemplateBuilder.social = KMTSocialObject(builderBlock: {
+//                    (socialBuilder) in
+//
+//                    socialBuilder.likeCount = 286
+//                    socialBuilder.commnentCount = 45
+//                    socialBuilder.sharedCount = 845
+//                })
                 
                 // button
                 feedTemplateBuilder.addButton(
@@ -946,4 +946,5 @@ extension UIView {
     }
     
 }
+
 

@@ -58,9 +58,6 @@ class MQTTClient: NSObject {
     private var aliveThread: AliveThread!
     private var aliveLimitCount: Int!
     
-    // OBSERVE
-    var observeThread: ObserveThread!
-    
     // MONITORING
     var componentCount: ComponentCount?
     var monitoringThread: MonitoringThread?
@@ -102,9 +99,6 @@ class MQTTClient: NSObject {
                 let joinMessage = JoinMessage(name: self.myName)
                 let messageFormat = MqttMessageFormat(joinMessage: joinMessage)
                 self.publish(topic: self.topic_join, message: self.parser.jsonWrite(object: messageFormat)!)
-
-                self.observeThread = ObserveThread()
-                self.observeThread.start()
 
                 self.aliveThread = AliveThread()
                 self.aliveThread.setSecond(second: 10.0)
@@ -217,7 +211,6 @@ class MQTTClient: NSObject {
         userList.removeAll()
         
         aliveThread.cancel()
-        observeThread.cancel()
         if master {
             monitoringThread!.cancel()
         }

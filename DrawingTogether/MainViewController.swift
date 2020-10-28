@@ -20,6 +20,7 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
     
     var masterName: String!
     var specialCharacterAndBlank: Bool!
+    var drawingVCPresented = false
     
     var ip: String!
     var port: String!
@@ -59,6 +60,7 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
         super.viewWillAppear(true)
         print("MainViewController: viewWillAppear")
         navigationController?.isNavigationBarHidden = true // navigation bar 숨기기
+        drawingVCPresented = false
     }
     
     @objc func dismissKeybord(tapGesture: UITapGestureRecognizer) {
@@ -281,6 +283,7 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
         } else {
             drawingViewController.master = false
         }
+        drawingVCPresented = true
     }
     
     override func viewWillDisappear(_ animated: Bool) {
