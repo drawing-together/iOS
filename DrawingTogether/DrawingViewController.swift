@@ -821,14 +821,16 @@ extension DrawingViewController: UIImagePickerControllerDelegate, UINavigationCo
             cameraFlag = false
         }
         
-        let image = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
-//        backgroundImageView.image = image
+        var image = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
+        
+        /* 카메라 이미지의 경우 Orientation을 변경하여 publish */
+        /* 갤러리 : 0(UIImage.Orientation.up), 카메라 : 3(UIImage.Orientation.left) */
+        if (image.imageOrientation.rawValue == 3) {
+            image = UIImage(ciImage: CIImage(image: image)!, scale: image.scale, orientation: .right)
+        }
         
         de.backgroundImage = de.convertUIImage2ByteArray(image: image)
         client.publish(topic: client.topic_image, message: de.backgroundImage!)
-        
-//        let message = MqttMessageFormat(username: name!, mode: .BACKGROUND_IMAGE, bitmapByteArray: de.bitmapByteArray!)
-//        client.publish(topic: client.topic_data, message: parser.jsonWrite(object: message)!)
         
         dismiss(animated: true, completion: nil)
     }
