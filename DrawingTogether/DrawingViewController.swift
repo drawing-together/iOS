@@ -152,6 +152,10 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         super.viewDidDisappear(true)
         print("DrawingViewController : viewDidDisappear")
         
+        if cameraFlag {
+            return
+        }
+        
         client.session?.disconnect()
     }
     
