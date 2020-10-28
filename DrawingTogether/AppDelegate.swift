@@ -28,47 +28,48 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
         
         if KLKTalkLinkCenter.shared().isTalkLinkCallback(url) {
+            let navigationController = window?.rootViewController as! UINavigationController
+            let mainViewController = navigationController.viewControllers.first as! MainViewController
+
             let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
             if let items = urlComponents?.queryItems {
-                
+
                 for item in items {
                     if item.name == "topic" { appTopic = item.value }
                     else if item.name == "password" { appPassword = item.value }
                 }
-                
-                let splashViewController = window?.rootViewController as! SplashViewController
-                if let mainVC = splashViewController.mainVC {  // not nil (in running)
-                    print("runnging ......")
-                    (mainVC as! MainViewController).setKakaoTopic(topic: appTopic!)
-                    (mainVC as! MainViewController).setKakaoPassword(password: appPassword!)
-                }
+
+                mainViewController.setKakaoTopic(topic: appTopic!)
+                mainViewController.setKakaoPassword(password: appPassword!)
             }
             return true
         }
         return false
+        
     }
     
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
        
         if KLKTalkLinkCenter.shared().isTalkLinkCallback(url) {
+
+            let navigationController = window?.rootViewController as! UINavigationController
+            let mainViewController = navigationController.viewControllers.first as! MainViewController
+
             let urlComponents = URLComponents(url: url, resolvingAgainstBaseURL: false)
             if let items = urlComponents?.queryItems {
                 for item in items {
                     if item.name == "topic" { appTopic = item.value }
                     else if item.name == "password" { appPassword = item.value }
                 }
-                
-                let splashViewController = window?.rootViewController as! SplashViewController
-                if let mainVC = splashViewController.mainVC {  // not nil (in running)
-                    print("runnging ......")
-                    (mainVC as! MainViewController).setKakaoTopic(topic: appTopic!)
-                    (mainVC as! MainViewController).setKakaoPassword(password: appPassword!)
-                }
+
+                mainViewController.setKakaoTopic(topic: appTopic!)
+                mainViewController.setKakaoPassword(password: appPassword!)
             }
-            
+
             return true
         }
         return false
+        
     }
     
     func applicationWillResignActive(_ application: UIApplication) {

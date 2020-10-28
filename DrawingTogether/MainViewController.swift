@@ -20,6 +20,7 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
     
     var masterName: String!
     var specialCharacterAndBlank: Bool!
+    var drawingVCPresented = false
     
     var ip: String!
     var port: String!
@@ -36,6 +37,8 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
         
         SendMqttMessage.INSTANCE.startThread()
         
+        print("MainViewController: viewDidLoad")
+        
         // kakao params setting
         let app = UIApplication.shared.delegate as! AppDelegate
         if let kakaoTopic = app.appTopic, let kakaoPassword = app.appPassword {
@@ -43,8 +46,9 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
             setKakaoPassword(password: kakaoPassword)
         }
         
-        let scene =  UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate
-        if let kakaoTopic = scene.sceneTopic, let kakaoPassword = scene.scenePassword {
+        let sceneDelegate =  UIApplication.shared.connectedScenes.first!.delegate as! SceneDelegate
+        sceneDelegate.scene(sceneDelegate.scene!, openURLContexts: sceneDelegate.openURLContexts!)
+        if let kakaoTopic = sceneDelegate.sceneTopic, let kakaoPassword = sceneDelegate.scenePassword {
             setKakaoTopic(topic: kakaoTopic)
             setKakaoPassword(password: kakaoPassword)
         }
@@ -54,8 +58,9 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
-        
+        print("MainViewController: viewWillAppear")
         navigationController?.isNavigationBarHidden = true // navigation bar 숨기기
+        drawingVCPresented = false
     }
     
     @objc func dismissKeybord(tapGesture: UITapGestureRecognizer) {
@@ -278,6 +283,7 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
         } else {
             drawingViewController.master = false
         }
+        drawingVCPresented = true
     }
     
     override func viewWillDisappear(_ animated: Bool) {
