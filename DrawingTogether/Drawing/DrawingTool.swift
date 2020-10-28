@@ -21,4 +21,11 @@ class DrawingTool {
             c.execute(point: selectedPoint)
         }
     }
+    
+    public func getIds() -> [Int]? {
+        if let c = command {
+            return c.getIds()
+        }
+        return nil
+    }
 }

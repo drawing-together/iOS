@@ -11,62 +11,82 @@ import CoreGraphics
 
 class Stroke: DrawingComponent {
     
-    override func draw(drawingView: DrawingView) {
-        UIGraphicsBeginImageContext(drawingView.frame.size)
-        guard let context = UIGraphicsGetCurrentContext() else { return }
-        drawingView.image?.draw(in: drawingView.bounds)
+    override func draw(view: UIImageView, drawingEditor: DrawingEditor) {
         
-        //      context.setBlendMode(.normal)
-        //      context.setBlendMode(.clear)
-        
-        context.setLineCap(.round)
-        context.setLineJoin(.round)
-        context.setLineWidth(self.strokeWidth! / 2)     // TODO: width
-        context.setAlpha(Alpha.getIOSAlpha(alpha: self.strokeAlpha!))
-        //context.setStrokeColor(self.getUIColorFromAndroidColorInt(intColor: self.strokeColor!).cgColor)   // TODO: color
-        context.setStrokeColor(self.hexStringToUIColor(hex: self.strokeColor!).cgColor)
-        
-        let from = (self.preSize == 0) ? self.points[preSize] : self.points[preSize - 1]
-        let to = self.points[preSize]
-        
-        context.move(to: CGPoint(x: CGFloat(from.x) * (xRatio), y: CGFloat(from.y) * (yRatio)))
-        context.addLine(to: CGPoint(x: CGFloat(to.x) * (xRatio), y: CGFloat(to.y) * (yRatio)))
-        //print("\(CGFloat(to.x) * (xRatio)), \(CGFloat(to.y) * (yRatio))")
-        //print("draw xRatio=\(xRatio), yRatio=\(yRatio)")
-        
-        context.strokePath()
-        drawingView.image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
+        if(view == drawingEditor.drawingVC?.myCurrentView) {
+            view.image = nil
+            drawComponent(view: view, drawingEditor: drawingEditor)
+            
+        } else if(view == drawingEditor.drawingVC?.currentView) {
+            view.image = nil
+            drawingEditor.drawOthersCurrentComponent(username: nil)
+            
+        }
     }
     
-    override func drawComponent(drawingView: DrawingView) {
-        UIGraphicsBeginImageContext(drawingView.frame.size)
-        guard let context = UIGraphicsGetCurrentContext() else { return }
-        drawingView.image?.draw(in: drawingView.bounds)
+    override func drawComponent(view: UIImageView, drawingEditor: DrawingEditor) {
         
-        //      context.setBlendMode(.normal)
-        //      context.setBlendMode(.clear)
-        
-        context.setLineCap(.round)
-        context.setLineJoin(.round)
-        context.setLineWidth(self.strokeWidth! / 2)     // **
-        context.setAlpha(Alpha.getIOSAlpha(alpha: self.strokeAlpha!))
-        //context.setStrokeColor(self.getUIColorFromAndroidColorInt(intColor: self.strokeColor!).cgColor)   // **
-        context.setStrokeColor(self.hexStringToUIColor(hex: self.strokeColor!).cgColor)
-        
-        //print("drawComponent xRatio=\(xRatio), yRatio=\(yRatio)")
-        
-        if self.points.count == 0 { return }
-        
-        context.move(to: CGPoint(x: CGFloat(self.points[0].x) * xRatio, y: CGFloat(self.points[0].y) * yRatio))
-        for i in 1..<self.points.count {
-            context.addLine(to: CGPoint(x: CGFloat(self.points[i].x) * (xRatio), y: CGFloat(self.points[i].y) * (yRatio)))
-            //print("(\(self.points[i].x), \(self.points[i].y))")
+        autoreleasepool {
+            //UIGraphicsBeginImageContext(drawingView.frame.size)
+            UIGraphicsBeginImageContextWithOptions(drawingEditor.frameSize!, false, 0)
+            guard let context = UIGraphicsGetCurrentContext() else { return }
+            view.image?.draw(in: view.bounds)
+            
+            //      context.setBlendMode(.normal)
+            //      context.setBlendMode(.clear)
+            
+            if self.points.count == 0 { return }
+            
+            context.setLineCap(.round)
+            context.setLineJoin(.round)
+            
+            if(self.penMode == PenMode.NEON) {
+                context.setLineWidth(self.strokeWidth! / 2)
+                context.setShadow(offset: CGSize.zero, blur: CGFloat((self.strokeWidth! + 10) / 2), color: self.hexStringToUIColor(hex: self.strokeColor!).cgColor)
+                context.setBlendMode(.normal)//.multiply)
+                context.setStrokeColor(UIColor.white.cgColor)
+                
+            } else {
+                if self.penMode == PenMode.HIGHLIGHT {
+                    context.setLineWidth(self.strokeWidth!)
+                    context.setAlpha(Alpha.getIOSAlpha(alpha: drawingEditor.highlightAlpha/*self.strokeAlpha!*/))
+                } else if self.penMode == PenMode.NORMAL {
+                    context.setLineWidth(self.strokeWidth! / 2)
+                    context.setAlpha(Alpha.getIOSAlpha(alpha: drawingEditor.normalAlpha/*self.strokeAlpha!*/))
+                }
+                context.setStrokeColor(self.hexStringToUIColor(hex: self.strokeColor!).cgColor)
+            }
+            
+            //print("drawComponent xRatio=\(xRatio), yRatio=\(yRatio)")
+            
+            
+            var mX, mY, x, y: CGFloat
+            
+            if self.points.count == 1 {
+                context.move(to: CGPoint(x: CGFloat(self.points[0].x) * xRatio, y: CGFloat(self.points[0].y) * yRatio))
+                context.addLine(to: CGPoint(x: CGFloat(self.points[0].x) * xRatio, y: CGFloat(self.points[0].y) * yRatio))
+            } else {
+                mX = CGFloat(self.points[0].x) * xRatio
+                mY = CGFloat(self.points[0].y) * yRatio
+                context.move(to: CGPoint(x: mX, y: mY))
+                
+                for i in 0..<self.points.count-1 {
+                    x = CGFloat(self.points[i+1].x) * xRatio
+                    y = CGFloat(self.points[i+1].y) * yRatio
+                    context.addQuadCurve(to: CGPoint(x: (x + mX)/2, y: (y + mY)/2), control: CGPoint(x: mX, y:mY))
+                    mX = x
+                    mY = y
+                }
+                context.addLine(to: CGPoint(x: mX, y: mY))
+            }
+            
+            context.strokePath()
+            
+            view.image = UIGraphicsGetImageFromCurrentImageContext()
+            UIGraphicsEndImageContext()
+ 
         }
         
-        context.strokePath()
-        drawingView.image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
     }
     
 }

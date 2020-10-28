@@ -76,6 +76,8 @@ class JSONParser {
                 return try? JSONParser.decoder.decode(Stroke.self, from: data)
             case .RECT:
                 return try? JSONParser.decoder.decode(Rect.self, from: data)
+            case .OVAL:
+                return try? JSONParser.decoder.decode(Oval.self, from: data)
             default:
                 print("?")
             }
@@ -124,7 +126,7 @@ class JSONParser {
         for idx in 0..<textAdapters.count {
             
             let text = Text()
-            text.create(textAttribute: textAdapters[idx].textAttribute!, drawingVC: drawingVC)
+            text.create(textAttribute: textAdapters[idx].textAttr!, drawingVC: drawingVC)
             
             texts.append(text)
         }
@@ -137,7 +139,7 @@ class JSONParser {
         
         for idx in 0..<texts.count {
             textAdapters.append(TextAdapter())
-            textAdapters[idx].textAttribute = texts[idx].textAttribute
+            textAdapters[idx].textAttr = texts[idx].textAttribute
         }
         
         return textAdapters

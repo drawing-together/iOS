@@ -26,7 +26,7 @@ class Selector {
             return
         }
 
-        if de.findEnclosingDrawingComponents(point: selectorPoint).count != 1 && !de.isContainsRemovedComponentIds(ids: de.findEnclosingDrawingComponents(point: selectorPoint)) {
+        if de.findEnclosingDrawingComponents(point: selectorPoint).count != 0 && !de.isContainsRemovedComponentIds(ids: de.findEnclosingDrawingComponents(point: selectorPoint)) {
             selectedComponentId = de.findEnclosingDrawingComponents(point: selectorPoint).last!
             print("selected shape ids = \(selectedComponentId)")
         }

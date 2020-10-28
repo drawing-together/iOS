@@ -19,6 +19,7 @@ class EraseCommand: Command {
     
     func execute(point: Point) {
         eraser!.findComponentsToErase(eraserPoint: point)
+        
     }
 
     func getIds() -> [Int] {

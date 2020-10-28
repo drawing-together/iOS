@@ -13,7 +13,6 @@ class AliveThread: Thread {
     var topic: String!
     var myName: String!
     var second: TimeInterval!
-    var observeThread: ObserveThread!
     
     override init() {
         super.init()
@@ -21,7 +20,6 @@ class AliveThread: Thread {
         self.topic = self.mqttClient.getTopic()
         self.myName = self.mqttClient.getMyName()
         self.second = 10.0
-//        self.observeThread = self.mqttClient.observeThread
     }
     
     override func main() {
@@ -34,7 +32,7 @@ class AliveThread: Thread {
                 break
             }
             self.mqttClient.publish(topic: topic + "_alive", message: jsonParser.jsonWrite(object: messageFormat)!)
-//            self.observeThread.isPubed = true
+            print("alive pub")
             Thread.sleep(forTimeInterval: self.second)
         }
     }

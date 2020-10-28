@@ -9,6 +9,7 @@
 import UIKit
 import MQTTClient
 import SVProgressHUD
+import SDWebImageSVGCoder
 
 class MQTTClient: NSObject {
     public static let client = MQTTClient() // singleton
@@ -19,7 +20,7 @@ class MQTTClient: NSObject {
     var mqtt_port: UInt32!
     let qos: MQTTQosLevel = .exactlyOnce // 2
     var transport = MQTTCFSocketTransport()
-    fileprivate var session = MQTTSession()
+    var session = MQTTSession()
     //
     
     // TOPIC
@@ -30,7 +31,9 @@ class MQTTClient: NSObject {
     var topic_data: String!
     var topic_mid: String!
     var topic_audio: String!
+    var topic_image: String!
     var topic_alive: String!
+    var topic_monitoring: String!
     //
     
     var myName: String!
@@ -43,6 +46,10 @@ class MQTTClient: NSObject {
     private var parser: JSONParser = JSONParser.parser
     private var de: DrawingEditor = DrawingEditor.INSTANCE
     var isMid = true
+    let queue = DispatchQueue(label: "drawingQueue")
+    var eraserTask = EraserTask()
+    var totalMoveX = 0
+    var totalMoveY = 0
     
     // AUDIO
     private var audioPlaying: Bool = false
@@ -51,8 +58,9 @@ class MQTTClient: NSObject {
     private var aliveThread: AliveThread!
     private var aliveLimitCount: Int!
     
-    // OBSERVE
-    var observeThread: ObserveThread!
+    // MONITORING
+    var componentCount: ComponentCount?
+    var monitoringThread: MonitoringThread?
     
     // 생성자
     private override init() {
@@ -67,7 +75,9 @@ class MQTTClient: NSObject {
         self.topic_data = topic + "_data"
         self.topic_mid = topic + "_mid"
         self.topic_audio = topic + "_audio"
+        self.topic_image = topic + "_image"
         self.topic_alive = topic + "_alive"
+        self.topic_monitoring = "monitoring"
         
         self.myName = name
         self.master = master
@@ -89,9 +99,6 @@ class MQTTClient: NSObject {
                 let joinMessage = JoinMessage(name: self.myName)
                 let messageFormat = MqttMessageFormat(joinMessage: joinMessage)
                 self.publish(topic: self.topic_join, message: self.parser.jsonWrite(object: messageFormat)!)
-
-//                self.observeThread = ObserveThread()
-//                self.observeThread.start()
 
                 self.aliveThread = AliveThread()
                 self.aliveThread.setSecond(second: 10.0)
@@ -120,6 +127,12 @@ class MQTTClient: NSObject {
         transport.port = UInt32(port)!
         print(UInt32(port)!)
         session?.transport = transport
+        
+        // MARK: SET MQTT CLINET NAME
+        // client일 경우 client id를 지정함으로써 브로커 로그에 사용자가 메인 화면에서 입력한 이름이 출력되도록 설정 (clientInCallback의 경우 해당 X)
+        if let clientName = self.myName, let topic = self.topic {
+            self.session!.clientId = "*\(clientName)_\(topic)_iOS"
+        }
         
         session?.connect() {
             error in
@@ -157,8 +170,12 @@ class MQTTClient: NSObject {
     
     public func publish(topic: String, message: String) {
         session?.publishData(message.data(using: .utf8), onTopic: topic, retain: false, qos: qos)
-        //        print("pub: \(topic) \(message)")
     }
+    
+    public func publish(topic: String, message: [Int8]) {
+        session?.publishData(NSData(bytes: message, length: message.count) as Data, onTopic: topic, retain: false, qos: qos)
+    }
+    
     
     public func subscribeAllTopics() {
         subscribe(topic_join)
@@ -166,6 +183,7 @@ class MQTTClient: NSObject {
         subscribe(topic_close)
         subscribe(topic_data)
         subscribe(topic_mid)
+        subscribe(topic_image)
         subscribe(topic_alive)
     }
     
@@ -175,10 +193,12 @@ class MQTTClient: NSObject {
         unsubscribe(topic_close)
         unsubscribe(topic_data)
         unsubscribe(topic_mid)
+        unsubscribe(topic_image)
         unsubscribe(topic_alive)
     }
     
     public func exitTask() {
+        print("exit task start")
         if master {
             let closeMessage = CloseMessage(name: self.myName)
             let messageFormat = MqttMessageFormat(closeMessage: closeMessage)
@@ -189,17 +209,22 @@ class MQTTClient: NSObject {
             publish(topic: self.topic_exit, message: self.parser.jsonWrite(object: messageFormat)!)
         }
         userList.removeAll()
+        
         aliveThread.cancel()
-//        observeThread.cancel()
+        if master {
+            monitoringThread!.cancel()
+        }
+        
         de.removeAllDrawingData()
         isMid = true
         
         // 오디오 처리 - 수정 필요
-        if drawingVC.speakerFlag {
-            unsubscribe(topic_audio)
-            audioPlaying = false
-        }
+//        if drawingVC.speakerFlag {
+//            unsubscribe(topic_audio)
+//            audioPlaying = false
+//        }
         //
+        print("exit task end")
     }
     
     public func usernameList() -> String {
@@ -266,18 +291,88 @@ class MQTTClient: NSObject {
         return true
     }
     
+    public func isTextInUse() -> Bool {
+        print("text: in isTextInUse func")
+        
+        for text in de.texts {
+            if text.textAttribute.isDragging { // 다른 참가자들이 텍스트를 드래그 중일 때 드래그가 완료될 때 까지 기다림
+                return true
+            }
+        }
+        return false
+    }
+    
+    
+    
     // GETTER
     public func getTopic() -> String { return self.topic }
     
     public func getMyName() -> String { return self.myName }
+    
+    // MONITORING
+    
+    func checkComponentCount(mode: Mode?, type: ComponentType?, textMode: TextMode?) {
+        // print("monitoring: " + "execute check component count func.");
+        
+        if(mode! == Mode.DRAW) {
+            // print("monitoring: " + "check component count func. mode is DRAW");
+            
+            switch (type!) {
+            case .STROKE:
+                    componentCount!.increaseStroke();
+                    break;
+            case .RECT:
+                    componentCount!.increaseRect();
+                    break;
+            case .OVAL:
+                    componentCount!.increaseOval();
+                    break;
+            }
+            return;
+        }
+
+        if(mode! == Mode.TEXT && textMode! == TextMode.CREATE) {
+            // print("monitoring:" + "check component count func. text count increase.");
+
+            componentCount!.increaseText();
+            return;
+        }
+   
+    }
     
 }
 
 extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
     // callback
     func newMessage(_ session: MQTTSession!, data: Data!, onTopic topic: String!, qos: MQTTQosLevel, retained: Bool, mid: UInt32) {
+        
+        if (topic == topic_image) {
+            let imageData = data.map { Int8(bitPattern: $0) }
+            de.backgroundImage = imageData
+            
+            drawingVC.backgroundImageView.image = de.convertByteArray2UIImage(byteArray: de.backgroundImage!)
+            
+            if(master) {
+                componentCount!.increaseImage()
+            }
+            
+            return
+        }
+        
+        if (topic == topic_audio) {
+            return
+            //            if (!audioPlaying && drawingVC.speakerFlag) { // Audio Start
+            //                audioPlaying = true
+            //                // 오디오 처리
+            //            } else if (audioPlaying && !drawingVC.speakerFlag) { // Audio Stop
+            //                // 오디오 처리
+            //                audioPlaying = false
+            //                unsubscribe(topic_audio)
+            //            }
+                    }
+        
         let message = String(data: data, encoding: .utf8)!
-        //        print("Message \(message)")
+//        print(message)
         
         if parser.jsonReader(msg: message) == nil { return }
         let mqttMessageFormat = parser.jsonReader(msg: message)!
@@ -301,9 +396,10 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                         }
                                                
                         de.isMidEntered = true
-                                               
-                        if de.currentMode == Mode.DRAW {
-                            de.isIntercept = true
+                           
+                        de.isIntercept = true
+                        if !drawingVC.drawingView!.isMovable {
+                            drawingVC.drawingView.isIntercept = true
                         }
                                                
                         drawingVC.showToast(message: "[ \(joinName) ] 님이 접속하셨습니다")
@@ -311,24 +407,29 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                         
                     }
                     if master {
-                         if isUsersActionUp(username: joinName) /*&& isTextInUse()*/ { // fixme nayeon
-                            
+                         if isUsersActionUp(username: joinName) && !isTextInUse() {
                             let joinAckMsg = JoinAckMessage(name: myName, target: joinName)
-                            var messageFormat: MqttMessageFormat?
                             
-                            // 배경 이미지가 없는 경우
-                            if de.backgroundImage == nil {
-                                messageFormat = MqttMessageFormat(joinAckMessage: joinAckMsg, drawingComponents: parser.getDrawingComponentAdapters(components: de.drawingComponents), texts: parser.getTextAdapters(texts: de.texts), history: de.history, undoArray: de.undoArray, removedComponentId: de.removedComponentId, maxComponentId: de.maxComponentId, maxTextId: de.maxTextId);
-                                
-                            }
-                            // 배경 이미지가 있는 경우
-                            else {
-                                messageFormat = MqttMessageFormat(joinAckMessage: joinAckMsg, drawingComponents: parser.getDrawingComponentAdapters(components: de.drawingComponents), texts: parser.getTextAdapters(texts: de.texts), history: de.history, undoArray: de.undoArray, removedComponentId: de.removedComponentId, maxComponentId: de.maxComponentId, maxTextId: de.maxTextId, bitmapByteArray: de.bitmapByteArray!);
-                            }
+//                            var messageFormat: MqttMessageFormat?
+//                            // 배경 이미지가 없는 경우
+//                            if de.backgroundImage == nil {
+//                                messageFormat = MqttMessageFormat(joinAckMessage: joinAckMsg, drawingComponents: parser.getDrawingComponentAdapters(components: de.drawingComponents), texts: parser.getTextAdapters(texts: de.texts), history: de.history, undoArray: de.undoArray, removedComponentId: de.removedComponentId, maxComponentId: de.maxComponentId, maxTextId: de.maxTextId);
+//
+//                            }
+//                            // 배경 이미지가 있는 경우
+//                            else {
+//                                messageFormat = MqttMessageFormat(joinAckMessage: joinAckMsg, drawingComponents: parser.getDrawingComponentAdapters(components: de.drawingComponents), texts: parser.getTextAdapters(texts: de.texts), history: de.history, undoArray: de.undoArray, removedComponentId: de.removedComponentId, maxComponentId: de.maxComponentId, maxTextId: de.maxTextId, bitmapByteArray: de.bitmapByteArray!);
+//                            }
                             
-                            let json = parser.jsonWrite(object: messageFormat!);
+                            let messageFormat = MqttMessageFormat(joinAckMessage: joinAckMsg, drawingComponents:parser.getDrawingComponentAdapters(components: de.drawingComponents), texts:parser.getTextAdapters(texts: de.texts), history: de.history, undoArray: de.undoArray,removedComponentId: de.removedComponentId, maxComponentId: de.maxComponentId, maxTextId: de.maxTextId, autoDrawList: de.autoDrawList);
+                            let json = parser.jsonWrite(object: messageFormat);
                             MQTTClient.client2.publish(topic: topic_join, message: json!)
                             print("login data publish complete -> \(joinName)")
+                            
+                            if de.backgroundImage != nil {
+                                let backgroundImage = de.backgroundImage
+                                MQTTClient.client2.publish(topic: topic_image, message: backgroundImage!)
+                            }
                             
                             drawingVC.showToast(message: "[ \(joinName) ] 님에게 데이터 전송을 완료했습니다")
                             print("\(joinName) join 후 : \(userList)");
@@ -357,14 +458,18 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                          
                          // 아이디 세팅
                          de.maxComponentId = mqttMessageFormat.maxComponentId!
+                        
+                        de.autoDrawList = mqttMessageFormat.autoDrawList!
                          
-                         // 배경 이미지 세팅
-                         if mqttMessageFormat.bitmapByteArray != nil {
-                             print("bitmap byte array")
-                             de.bitmapByteArray = mqttMessageFormat.bitmapByteArray!
-                         }
+//                         // 배경 이미지 세팅
+//                         if mqttMessageFormat.bitmapByteArray != nil {
+//                             print("bitmap byte array")
+//                             de.bitmapByteArray = mqttMessageFormat.bitmapByteArray!
+//                         }
                          
-                         MQTTClient.client2.publish(topic: topic_mid, message: parser.jsonWrite(object: MqttMessageFormat(username: myName, mode: Mode.MID))!)                    }
+                         MQTTClient.client2.publish(topic: topic_mid, message: parser.jsonWrite(object: MqttMessageFormat(username: myName, mode: Mode.MID))!)
+                        
+                    }
                     
                     else if !isContainsUserList(name: joinAckName) {
                         
@@ -378,8 +483,6 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         }
         
         if (topic == topic_exit) {
-            print("TOPIC_EXIT : \(message)")
-            
             let exitMessage = mqttMessageFormat.exitMessage
             if let exitName = exitMessage?.name {
                 for i in 0..<userList.count {
@@ -394,8 +497,6 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         }
         
         if (topic == topic_close) {
-            print("TOPIC_CLOSE : \(message)")
-            
             let closeMessage = mqttMessageFormat.closeMessage
             if let closeName = closeMessage?.name, closeName != myName {
                 drawingVC.userVC.dismiss(animated: true, completion: nil)
@@ -404,10 +505,28 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         }
         
         if (topic == topic_data) {
-            //print("TOPIC_DATA : \(message)")
+            
+            if(master) { // 마스터만 컴포넌트 개수 카운트
+            // 컴포넌트 개수 저장
+                if (mqttMessageFormat.action != nil && mqttMessageFormat.action == MotionEvent.ACTION_DOWN.rawValue)
+                    || mqttMessageFormat.mode == Mode.TEXT || mqttMessageFormat.mode == Mode.ERASE
+                {
+                    // print("< monitoring: mode = \(mqttMessageFormat.mode) type = \(mqttMessageFormat.type) text mode = \(mqttMessageFormat.textMode)");
+
+                    checkComponentCount(mode: mqttMessageFormat.mode, type: mqttMessageFormat.type, textMode: mqttMessageFormat.textMode)
+                }
+            }
+            
+            // 중간 참여자가 입장했을 때 처리
+            if de.isMidEntered, let action = mqttMessageFormat.action, action != MotionEvent.ACTION_UP.rawValue {
+                if let usersComponentId = mqttMessageFormat.usersComponentId, (de.isIntercept && action == MotionEvent.ACTION_DOWN.rawValue), de.getCurrentComponent(usersComponentId: usersComponentId) != nil {
+                    return
+                }
+            }
             
             switch mqttMessageFormat.mode {
             case .DRAW:
+                
                 self.draw(message: mqttMessageFormat)
                 break
             case .ERASE:
@@ -416,14 +535,26 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             case .TEXT:
                 self.text(message: mqttMessageFormat)
                 break
-            case .BACKGROUND_IMAGE:
-                background(message: mqttMessageFormat)
-                break
-                /*case .SELECT:
+            case .SELECT:
                  self.select(message: mqttMessageFormat)
-                 break*/
+                 break
             case .WARP:
                 self.warp(message: mqttMessageFormat)
+                break
+            case .AUTODRAW:
+                self.autoDraw(message: mqttMessageFormat)
+                break
+            case .CLEAR:
+                self.clear(message: mqttMessageFormat)
+                break
+            case .CLEAR_BACKGROUND_IMAGE:
+                self.clearBackgroundImage(message: mqttMessageFormat)
+                break
+            case .UNDO:
+                self.undo(message: mqttMessageFormat)
+                break
+            case .REDO:
+                self.redo(message: mqttMessageFormat)
                 break
             case .some(_):
                 break
@@ -434,8 +565,6 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         }
         
         if (topic == topic_mid) {
-            print("TOPIC_MID : \(message)")
-            
             if isMid, mqttMessageFormat.username == de.myUsername! {
                 isMid = false
                 print("mid username=\(String(describing: mqttMessageFormat.username))")
@@ -447,19 +576,6 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             // 모든 사용자가 topic_mid로 메시지 전송 받음
             // 이 시점 중간자에게는 모든 데이터 저장 완료 후
             de.isMidEntered = false
-        }
-        
-        if (topic == topic_audio) {
-            print("TOPIC_AUDIO : \(message)")
-            
-            if (!audioPlaying && drawingVC.speakerFlag) { // Audio Start
-                audioPlaying = true
-                // 오디오 처리
-            } else if (audioPlaying && !drawingVC.speakerFlag) { // Audio Stop
-                // 오디오 처리
-                audioPlaying = false
-                unsubscribe(topic_audio)
-            }
         }
         
         if (topic == topic_alive) {
@@ -479,7 +595,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                         print(user.name! + " " + String(userList[i].count!))
                         
                         if userList[i].count == aliveLimitCount && user.name == masterName {
-                            drawingVC.showAlert(title: "토픽 종료", message: "마스터 접속이 끊겼습니다.\n(마스터가 alive publish를 제대로 못 한 경우 또는 마스터가 지우지 못한 토픽에 접속한 경우)", selectable: false)
+                            drawingVC.showAlert(title: "회의방 종료", message: "마스터 접속이 끊겼습니다.\n(마스터가 alive publish를 제대로 못 한 경우 또는 마스터가 지우지 못한 회의방에 접속한 경우)", selectable: false)
                             break
                         }
                         if userList[i].count == aliveLimitCount {
@@ -503,6 +619,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         }
     }
     
+    
     func draw(message: MqttMessageFormat) {
         var dComponent: DrawingComponent?
         let username = message.username
@@ -511,8 +628,12 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         let myCanvasWidth = self.de.myCanvasWidth
         let myCanvasHeight = self.de.myCanvasHeight
         
-        DispatchQueue.global(qos: .background).async {
+        
+        self.queue.async {
             print("action=\(String(describing: action)) This is run on the background queue")
+            
+            if username == nil { return }
+            
             if let component = message.component?.getComponent() {
                 dComponent = component
                 
@@ -526,12 +647,8 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                 }
             }
             
-            DispatchQueue.main.async {
-                print("This is run on the main queue, after the previous code in outer block")
-                
-                switch action {
+            switch action {
                 case MotionEvent.ACTION_DOWN.rawValue:
-                    
                     dComponent!.clearPoints();
                     dComponent!.id = self.de.componentIdCounter()
                     
@@ -540,7 +657,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                     
                     self.updateUsersAction(username: username!, action: action!)
                     break
-                    
+                
                 case MotionEvent.ACTION_MOVE.rawValue:
                     if self.de.myUsername == username {
                         for point in message.movePoints! {
@@ -551,14 +668,83 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                         
                         //print("points[] = \(message.movePoints!)")
                         for point in message.movePoints! {
-                            self.de.drawingView!.addPointAndDraw(component: dComponent!, point: point)
+                            self.de.drawingView!.addPoint(component: dComponent!, point: point)
+                        }
+                            
+                        
+                    }
+                    break
+                case MotionEvent.ACTION_UP.rawValue:
+                    break
+                
+                case .none: break
+                case .some(_): break
+            }
+            
+            DispatchQueue.main.async {
+                print("This is run on the main queue, after the previous code in outer block")
+                
+                switch action {
+                /*case MotionEvent.ACTION_DOWN.rawValue:
+                    
+                    dComponent!.clearPoints();
+                    dComponent!.id = self.de.componentIdCounter()
+                    
+                    self.de.addCurrentComponents(component: dComponent!)
+                    self.de.printDrawingComponentArray(name: "cc", array: self.de.currentComponents, status: "down")
+                    
+                    self.updateUsersAction(username: username!, action: action!)
+                    break*/
+                    
+                case MotionEvent.ACTION_MOVE.rawValue:
+                    /*if self.de.myUsername == username {
+                        for point in message.movePoints! {
+                            self.de.drawingView!.addPoint(component: dComponent!, point: point)
+                        }
+                    } else {
+                        dComponent!.calculateRatio(myCanvasWidth: myCanvasWidth!, myCanvasHeight: myCanvasHeight!)
+                        
+                        //print("points[] = \(message.movePoints!)")
+                        for point in message.movePoints! {
+                            self.de.drawingView!.addPointAndDraw(component: dComponent!, point: point, view: self.de.drawingVC!.currentView)
                         }
                     }
+                    self.updateUsersAction(username: username!, action: action!)
+                    break*/
+                    
+                    if self.de.myUsername != username {
+                        dComponent!.draw(view: self.de.drawingVC!.currentView, drawingEditor: self.de)
+                    }
+                    //self.de.drawingVC!.currentView.setNeedsDisplay()
                     self.updateUsersAction(username: username!, action: action!)
                     break
                     
                 case MotionEvent.ACTION_UP.rawValue:
+                    /*if self.de.myUsername == username {
+                        self.de.drawingView!.addPoint(component: dComponent!, point: message.point!)
+                        self.de.drawingView?.doInDrawActionUp(component: dComponent!, canvasWidth: myCanvasWidth!, canvasHeight: myCanvasHeight!)
+                        if(self.de.isIntercept) {
+                            self.de.drawingView!.isIntercept = true
+                            print("drawingview intercept true")
+                        }
+                    } else {
+                        print("up \((dComponent!.username)!), \((dComponent!.id)!)")\
+                        self.de.drawingView!.addPointAndDraw(component: dComponent!, point: message.point!, view: self.de.drawingVC!.currentView)
+                        self.de.drawingView!.doInDrawActionUp(component: dComponent!, canvasWidth: myCanvasWidth!, canvasHeight: myCanvasHeight!);
+                        
+                        self.drawingVC.currentView.image = nil
+                        self.de.drawOthersCurrentComponent(username: dComponent?.username)
+                        dComponent!.drawComponent(view: self.de.drawingView!, drawingEditor: self.de)
+                    }
+                    self.updateUsersAction(username: username!, action: action!);
+                    break*/
+                    
+                    if self.de.currentMode == Mode.SELECT {
+                        self.de.addPostSelectedComponent(component: dComponent!)
+                    }
+                    
                     if self.de.myUsername == username {
+                        self.de.drawingView!.addPoint(component: dComponent!, point: message.point!)
                         self.de.drawingView?.doInDrawActionUp(component: dComponent!, canvasWidth: myCanvasWidth!, canvasHeight: myCanvasHeight!)
                         if(self.de.isIntercept) {
                             self.de.drawingView!.isIntercept = true
@@ -566,11 +752,15 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                         }
                     } else {
                         print("up \((dComponent!.username)!), \((dComponent!.id)!)")
-                        // de.drawingView.redrawShape(dComponent);
+                        self.de.drawingView!.addPointAndDraw(component: dComponent!, point: message.point!, view: self.de.drawingVC!.currentView)
                         self.de.drawingView!.doInDrawActionUp(component: dComponent!, canvasWidth: myCanvasWidth!, canvasHeight: myCanvasHeight!);
                         
-                        self.de.lastDrawingImage = self.de.drawingView!.image
+                        self.drawingVC.currentView.image = nil
+                        self.de.drawOthersCurrentComponent(username: dComponent?.username)
+                        dComponent!.drawComponent(view: self.de.drawingView!, drawingEditor: self.de)
                     }
+                    //self.de.drawingVC!.currentView.setNeedsDisplay()
+                    //self.de.drawingView?.setNeedsDisplay()
                     self.updateUsersAction(username: username!, action: action!);
                     break
                     
@@ -579,7 +769,9 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                     
                 }
                 
-                self.de.drawingView!.setNeedsDisplay()
+                
+                
+                //self.de.drawingView!.setNeedsDisplay()
                 
                 //client.updateUsersAction(username, action);
                 
@@ -591,22 +783,24 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
     }
     
     func erase(message: MqttMessageFormat) {
-        DispatchQueue.global(qos: .background).async {
+        self.queue.async {
             if self.de.myUsername == message.username { return }
             
+            print("MESSAGE ARRIVED message: username=\(String(describing: message.username)), mode=\(String(describing: message.mode)), id=\(message.componentIds!)")
+            let erasedComponentIds = message.componentIds!
+            self.eraserTask.execute(erasedComponentIds: erasedComponentIds)
+            
             DispatchQueue.main.async {
-                print("MESSAGE ARRIVED message: username=\(String(describing: message.username)), mode=\(String(describing: message.mode)), id=\(message.componentIds!)")
-                let erasedComponentIds = message.componentIds!
-                EraserTask(erasedComponentIds: erasedComponentIds).execute()
-                
                 self.de.clearUndoArray()
-                
-                //self.de.drawingView!.setNeedsDisplay()
             }
+            
+           
+            
         }
     }
     
-    /*func select(message: MqttMessageFormat) {
+    
+    func select(message: MqttMessageFormat) {
         let myCanvasWidth = self.de.myCanvasWidth
         let myCanvasHeight = self.de.myCanvasHeight
         
@@ -614,43 +808,83 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             if self.de.myUsername == message.username { return }
             
             if message.action == nil {
-                let selectedComponent = self.de.findDrawingComponentByUsersComponentId(usersComponentId: message.usersComponentId!)
-                if selectedComponent != nil {
-                    selectedComponent!.isSelected = message.isSelected!
+                if let selectedComponent = self.de.findDrawingComponentByUsersComponentId(usersComponentId: message.usersComponentId!), let isSelected = message.isSelected {
+                    selectedComponent.isSelected = isSelected
                 }
+            }
+            
+            let selectedComponent = self.de.findDrawingComponentByUsersComponentId(usersComponentId: message.usersComponentId!)
+            if selectedComponent == nil { return }
+            
+            print("MESSAGE ARRIVED message: username=\(String(describing: message.username)), mode=\(String(describing: message.mode)), uid=\(message.usersComponentId!)")
+            
+            switch message.action {
+            case MotionEvent.ACTION_DOWN.rawValue:
+                self.totalMoveX = 0
+                self.totalMoveY = 0
+                print("other selected true")
+                break
+            case MotionEvent.ACTION_MOVE.rawValue:
+                if let moveSelectPoints = message.moveSelectPoints, moveSelectPoints.count > 0 {
+                    for point in moveSelectPoints {
+                        self.totalMoveX += point.x
+                        self.totalMoveY += point.y
+                        self.de.moveSelectedComponent(selectedComponent: selectedComponent!, moveX: point.x, moveY: point.y)
+                    }
+                }
+                break
+            
+            case .none:
+                break
+            case .some(_):
+                break
             }
             
             DispatchQueue.main.async {
                 
-                let selectedComponent = self.de.findDrawingComponentByUsersComponentId(usersComponentId: message.usersComponentId!)
-                if selectedComponent == nil { return }
-                
-                print("MESSAGE ARRIVED message: username=\(String(describing: message.username)), mode=\(String(describing: message.mode)), uid=\(message.usersComponentId!)")
-                
                 if message.action == nil {
-                    if message.isSelected! {
-                        self.de.clearSelectedBitmap()
-                        self.de.drawSelectedComponentBorder(component: selectedComponent!, color: self.de.selectedBorderColor);
+                    /*if message.isSelected! {
+                        self.de.clearMyCurrentImage()
+                        self.de.drawSelectedComponentBorder(component: selectedComponent!, color: self.de.selectedBorderColor.cgColor)
                     } else {
-                        self.de.clearSelectedBitmap()
-                    }
+                        self.de.clearMyCurrentImage()
+                    }*/
                 } else {
                     switch message.action {
-                    case MotionEvent.ACTION_DOWN.rawValue:
-                        print("other selected true")
-                        break
+                    
                     case MotionEvent.ACTION_MOVE.rawValue:
-                        self.de.moveSelectedComponent(selectedComponent: selectedComponent!, moveX: message.moveX!, moveY: message.moveY!)
+                        //self.de.clearMyCurrentImage()
+                        self.de.updateSelectedComponent(newComponent: selectedComponent!)
+                        self.de.clearDrawingImage()
+                        self.de.drawAllDrawingComponents()
+                        
                         break
                     case MotionEvent.ACTION_UP.rawValue:
-                        self.de.clearSelectedBitmap()
-                        self.de.drawSelectedComponentBorder(component: selectedComponent!, color: self.de.selectedBorderColor)
-                        self.de.updateSelectedComponent(component: selectedComponent!, canvasWidth: myCanvasWidth!, canvasHeight: myCanvasHeight!)
-                        self.de.updateDrawingComponents(newComponent: selectedComponent!)
-                        self.de.clearDrawingBitmap()
+                        //self.de.clearMyCurrentImage()
+                        self.de.splitPointsOfSelectedComponent(component: selectedComponent!, canvasWidth: self.de.myCanvasWidth!, canvasHeight: self.de.myCanvasHeight!)
+                        self.de.updateSelectedComponent(newComponent: selectedComponent!)
+                        self.de.clearDrawingImage()
                         self.de.drawAllDrawingComponents()
+                        
+                        if let copyComponent = selectedComponent!.clone() {
+                            self.de.addHistory(item: DrawingItem(mode: Mode.SELECT, component: self.parser.getDrawingComponentAdapter(component: copyComponent), movePoint: Point(x: self.totalMoveX, y: self.totalMoveY)))
+                            print("drawing", "history.size()=\(self.de.history.count), id=\(selectedComponent!.id!)")
+                        }
+                        
+                        self.de.clearUndoArray()
+
+                        /*if self.de.currentMode == Mode.SELECT && self.de.drawingView!.isSelected  {
+                            self.de.setPreAndPostSelectedComponentsImage()
+
+                            self.de.clearMyCurrentImage()
+                            self.de.drawUnselectedComponents()
+                            self.de.selectedComponent!.drawComponent(view: self.de.drawingVC!.myCurrentView, drawingEditor: self.de)
+                            self.de.drawSelectedComponentBorder(component: selectedComponent!, color: self.de.mySelectedBorderColor.cgColor)
+                        }*/
+                        
                         print("other selected finish")
                         break
+                        
                     case .none:
                         break
                     case .some(_):
@@ -659,7 +893,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                 }
             }
         }
-    }*/
+    }
     
     
     
@@ -674,7 +908,6 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         // 텍스트 객체가 처음 생성되는 경우, 텍스트 배열에 저장된 정보 없음
         // 그 이후에 일어나는 텍스트에 대한 모든 행위들은 텏트ㅡ 배열로부터 텍스트 객체를 찾아서 작업 가능
         if !(textMode == .CREATE) {
-            print("*** check create")
             text = de.findTextById(id: textAttr.id!)
             if text == nil { return }
             text!.textAttribute = textAttr
@@ -720,24 +953,39 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             text!.setLabelBorder(color: .clear)
         case .DRAG_ENDED: break
         case .ERASE:
-            de.removeText(text: text!)
+            de.removeTexts(text: text!)
             text!.removeFromSuperview()
             break
             
         }
     }
     
-    func background(message: MqttMessageFormat) {
-        if self.de.myUsername == message.username { return }
-        
-        drawingVC.backgroundImageView.image = drawingVC.convertByteArray2UIImage(byteArray: message.bitmapByteArray!)
-    }
-    
     func warp(message: MqttMessageFormat) {
         if self.de.myUsername == message.username { return }
         
         if let warpingMessage = message.warpingMessage {
-            drawingVC.warp(warpData: warpingMessage.getWarpData())
+            drawingVC.warp(warpData: warpingMessage.getWarpData(), width: warpingMessage.width, height: warpingMessage.height)
+        }
+    }
+    
+    func autoDraw(message: MqttMessageFormat) {
+        if self.de.myUsername == message.username { return }
+        
+        if let autoDrawMessage = message.autoDrawMessage {
+            let SVGCoder = SDImageSVGCoder.shared
+            SDImageCodersManager.shared.addCoder(SVGCoder)
+            let imgView = UIImageView()
+            
+            var width = self.drawingVC.drawingView.bounds.size.width
+            var height = self.drawingVC.drawingView.bounds.size.height
+            var x = Int(autoDrawMessage.x) * Int(width) / Int(autoDrawMessage.width)
+            var y = Int(autoDrawMessage.y) * Int(height) / Int(autoDrawMessage.height)
+            imgView.frame = CGRect(x: x, y: y, width: 100, height: 100)
+            imgView.sd_setImage(with: URL(string: autoDrawMessage.url))
+            drawingVC.drawingContainer.addSubview(imgView)
+            var autoDraw = AutoDraw(width: Float(width), height: Float(height), point: Point(x: x, y: y), url: autoDrawMessage.url)
+            self.de.addAutoDraw(autoDraw: autoDraw)
+            
         }
     }
     
@@ -753,26 +1001,41 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                 //client.getBinding().backgroundView.addView(imageView);
                 
                 
-                // 배경이미지 -> WarpingView
-                if let imageBytes = self.de.bitmapByteArray {
-                    print("mid received image")
-                    self.drawingVC.backgroundImageView.image = self.drawingVC.convertByteArray2UIImage(byteArray: imageBytes)
-                }
+//                // 배경이미지 -> WarpingView
+//                if let imageBytes = self.de.backgroundImage {
+//                    print("mid received image")
+//                    self.drawingVC.backgroundImageView.image = self.de.convertByteArray2UIImage(byteArray: imageBytes)
+//                }
                 
                 if self.de.history.count > 0 {
-                    //drawingCV.undoBtn.setEnabled(true)
+                    self.drawingVC?.setUndoEnabled(isEnabled: true)
                 }
                 if self.de.undoArray.count > 0 {
-                    //drawingCV.redoBtn.setEnabled(true)
+                    self.drawingVC?.setRedoEnabled(isEnabled: true)
                 }
                 
                 self.de.drawAllDrawingComponentsForMid()
                 
-                self.de.lastDrawingImage = self.drawingVC.drawingView.image
+                //self.de.lastDrawingImage = self.drawingVC.drawingView.image
                 
                 self.de.addAllTextLabelToDrawingContainer()
                 
                 self.de.drawingView!.setNeedsDisplay()
+                
+                for i in 0 ... self.de.autoDrawList.count - 1 {
+                    var autoDraw = self.de.autoDrawList[i]
+                    let SVGCoder = SDImageSVGCoder.shared
+                    SDImageCodersManager.shared.addCoder(SVGCoder)
+                    let imgView = UIImageView()
+                    
+                    var width = self.drawingVC.drawingView.bounds.size.width ?? 0
+                    var height = self.drawingVC.drawingView.bounds.size.height ?? 0
+                    var x = autoDraw.point.x * Int(width) / Int(autoDraw.width)
+                    var y = autoDraw.point.y * Int(height) / Int(autoDraw.height)
+                    imgView.frame = CGRect(x: x, y: y, width: 100, height: 100)
+                    imgView.sd_setImage(with: URL(string: autoDraw.url))
+                    self.drawingVC?.drawingContainer?.addSubview(imgView)
+                }
                 
                 print("mid progressdialog dismiss")
                 SVProgressHUD.dismiss()
@@ -781,5 +1044,41 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         }
     }
     
+    func clear(message: MqttMessageFormat) {
+        if self.de.myUsername == message.username { return }
+        print("MESSAGE ARRIVED message: username=\(String(describing: message.username)), mode=\(String(describing: message.mode))")
+        
+        DispatchQueue.main.async {
+            self.de.clearDrawingComponents()
+            if self.de.drawingView!.isSelected { self.de.deselect(updateImage: true) }
+            //self.de.clearTexts()
+            self.drawingVC.setRedoEnabled(isEnabled: false)
+            self.drawingVC.setUndoEnabled(isEnabled: false)
+        }
+    }
     
+    func clearBackgroundImage(message: MqttMessageFormat) {
+        de.backgroundImage = nil
+        de.clearBackgroundImage()
+    }
+    
+    func undo(message: MqttMessageFormat) {
+        if self.de.myUsername == message.username { return }
+        print("MESSAGE ARRIVED message: username=\(String(describing: message.username)), mode=\(String(describing: message.mode))")
+        
+        DispatchQueue.main.async {
+            if self.de.drawingView!.isSelected { self.de.deselect(updateImage: true) }
+            self.de.undo()
+        }
+    }
+    
+    func redo(message: MqttMessageFormat) {
+        if self.de.myUsername == message.username { return }
+        print("MESSAGE ARRIVED message: username=\(String(describing: message.username)), mode=\(String(describing: message.mode))")
+        
+        DispatchQueue.main.async {
+            if self.de.drawingView!.isSelected { self.de.deselect(updateImage: true) }
+            self.de.redo()
+        }
+    }
 }

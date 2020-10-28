@@ -10,7 +10,6 @@ import Foundation
 import CoreGraphics
 import UIKit
 
-
 class DrawingComponent: Codable, DrawingComponentProtocol {
     
     var de: String? //
@@ -25,7 +24,6 @@ class DrawingComponent: Codable, DrawingComponentProtocol {
     var strokeAlpha: Int?
     var fillAlpha: Int?
     var strokeWidth: CGFloat?
-    var preSize: Int = 0
     var drawnCanvasWidth: CGFloat?
     var drawnCanvasHeight: CGFloat?
     var xRatio: CGFloat = 1.0
@@ -37,15 +35,7 @@ class DrawingComponent: Codable, DrawingComponentProtocol {
     var height: Int?
     var isErased: Bool = false
     var isSelected: Bool = false
-    
-    
-    //    init() {
-    //        self.points = []
-    //        self.preSize = 0
-    //        self.xRatio = 1.0
-    //        self.yRatio = 1.0
-    //        self.isErased = false
-    //    }
+    var penMode: PenMode?
     
     func addPoint(_ point: Point) {
         self.points.append(point)
@@ -53,7 +43,6 @@ class DrawingComponent: Codable, DrawingComponentProtocol {
     
     func clearPoints() {
         self.points = []
-        self.preSize = 0
     }
     
     func getPointSize() -> Int { return self.points.count }
@@ -63,11 +52,56 @@ class DrawingComponent: Codable, DrawingComponentProtocol {
         self.yRatio = myCanvasHeight / drawnCanvasHeight!
     }
     
-    func draw(drawingView: DrawingView) {
+    func clone() -> DrawingComponent? {
+        if self.type == nil { return nil }
+        
+        var dComponent: DrawingComponent?
+        
+        switch self.type {
+        case .STROKE:
+            dComponent = Stroke()
+            break
+        case .RECT:
+            dComponent = Rect()
+            break
+        case .OVAL:
+            dComponent = Oval()
+            break
+        case .none:
+            break
+        }
+        
+        dComponent!.points = self.points
+        dComponent!.id = self.id
+        dComponent!.username = self.username
+        dComponent!.usersComponentId = self.usersComponentId
+        dComponent!.type = self.type
+        dComponent!.strokeColor = self.strokeColor
+        dComponent!.fillColor = self.fillColor
+        dComponent!.strokeAlpha = self.strokeAlpha
+        dComponent!.fillAlpha = self.fillAlpha
+        dComponent!.strokeWidth = self.strokeWidth
+        dComponent!.drawnCanvasWidth = self.drawnCanvasWidth
+        dComponent!.drawnCanvasHeight = self.drawnCanvasHeight
+        dComponent!.xRatio = self.xRatio
+        dComponent!.yRatio = self.yRatio
+        dComponent!.beginPoint = self.beginPoint
+        dComponent!.endPoint = self.endPoint
+        dComponent!.datumPoint = self.datumPoint
+        dComponent!.width = self.width
+        dComponent!.height = self.height
+        dComponent!.isErased = self.isErased
+        dComponent!.isSelected = self.isSelected
+        dComponent!.penMode = self.penMode
+        
+        return dComponent!
+    }
+    
+    func draw(view: UIImageView, drawingEditor: DrawingEditor) {
         
     }
     
-    func drawComponent(drawingView: DrawingView) {
+    func drawComponent(view: UIImageView, drawingEditor: DrawingEditor) {
         
     }
     

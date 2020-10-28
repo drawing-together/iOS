@@ -39,6 +39,10 @@ class TextEditingView: UIView {
         
         print("text editing view is drawn")
         
+        if let text = de.currentText {
+            sizeBar.value = (Float)(text.textAttribute.textSize!)
+        }
+        
         textView.becomeFirstResponder()
     }
     
@@ -53,23 +57,51 @@ class TextEditingView: UIView {
     @IBAction func clickDone(_ sender: UIButton) {
         print("done")
         
-        de.currentMode = .TEXT
+        // 현재 편집중인 텍스트가 새로 생성하는 텍스트가 아니라, 생성된 후 편집하는 텍스트인 경우 done 버튼 클릭 가능 (username == null 로 세팅하기 위해)
+        // 텍스트를 새로 생성하는 경우에 아직 다른 참가자들에게 텍스트 정보가 없기 때문에, 중간 참여자 접속을 기다린 후 생성 가능하도록 처리
+        if de.isMidEntered, let text = de.currentText, !text.textAttribute.isTextInited {
+            if let text = de.currentText, !text.textAttribute.isTextInited {
+                drawingVC.showToast(message: "다른 참가자가 접속 중 입니다 잠시만 기다려주세요")
+                return
+            }
+        }
         
-       if let text = de.currentText {
+//        if de.isMidEntered {
+//            if let text = de.currentText, !text.textAttribute.isTextInited {
+//                drawingVC.showToast(message: "다른 참가자가 접속 중 입니다 잠시만 기다려주세요")
+//                return
+//            }
+//        }
+        
+            
+        if let text = de.currentText {
             text.changeTextViewToLabel()
         }
         
-        self.removeFromSuperview()
+
+        drawingVC.preMenuButton = drawingVC.preMenuButton ?? drawingVC.penBtn
+        drawingVC.changeClickedButtonBackground(drawingVC.preMenuButton!)
+        
+        if drawingVC.preMenuButton == drawingVC.penBtn { // 도형은 펜 종류 지원 X, pencil 버튼인 경우만 펜 종류 표시
+            drawingVC.penModeView.isHidden = false
+        }
+
     }
     
     @IBAction func sliderValueChanged(_ slider: UISlider) {
     
-        let value = slider.value / 10 * 10
         
-        if let text = de.currentText {
-            text.textAttribute.textSize = Int(value)
-            text.setTextViewAttribute()
+//        let value: Int = (Int)(slider.value) / 10 * 10
+        
+        // text size only 10, 20, 30
+        if (Int)(slider.value) % 10 == 0 {
+            if let text = de.currentText {
+                text.textAttribute.textSize = Int(slider.value)
+                text.setTextViewAttribute()
+            }
         }
+        
+        
     }
     
     
@@ -98,7 +130,7 @@ extension DrawingViewController: UITextViewDelegate {
     }
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-        let MAX_LENGTH: Int = 40
+        let MAX_LENGTH: Int = 30
         
         if let text = de.currentText {
             textView.textColor = UIColor(hexString: text.textAttribute.textColor!)

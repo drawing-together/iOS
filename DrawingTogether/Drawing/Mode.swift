@@ -11,9 +11,13 @@ import Foundation
 enum Mode: String, Codable {
     case DRAW
     case ERASE
-    case BACKGROUND_IMAGE
     case MID
     case TEXT
     case SELECT
     case WARP
+    case CLEAR
+    case CLEAR_BACKGROUND_IMAGE
+    case AUTODRAW
+    case UNDO
+    case REDO
 }

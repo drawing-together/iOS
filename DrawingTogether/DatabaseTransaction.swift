@@ -13,9 +13,6 @@ class DatabaseTransaction {
     
     var ref: DatabaseReference!
     
-    var topic: String!
-    var password: String!
-    var name: String!
     var masterName: String!
     
     var topicError: Bool!
@@ -26,93 +23,99 @@ class DatabaseTransaction {
         ref = Database.database().reference()
     }
     
-    func runTransactionLogin(topic: String, password: String, name: String, masterMode: Bool, handler: @escaping(String, Bool, Bool, Bool) -> Void) {
+    func runTransactionLogin(topic: String, password: String, name: String, masterMode: Bool, handler: @escaping(String, String, Bool, Bool, Bool) -> Void) {
         SVProgressHUD.show()
         
-        self.topic = topic
-        self.password = password
-        self.name = name
-        
-        ref.child(self.topic).runTransactionBlock( {(currData: MutableData) -> TransactionResult in
+        ref.child(topic).runTransactionBlock( {(currData: MutableData) -> TransactionResult in
             self.topicError = false
             self.passwordError = false
             self.nameError = false
             
             if var post =  currData.value as? [String: AnyObject] {  // not nil
                 self.topicError = true
+                print("[received]")
                 print(post)
                 
                 switch (masterMode) {
                 case true:
-                    print("master mode")
-                    print("exist topic")
+                    print("[master mode]: exist topic")
                     self.masterName = ""
                 case false:
-                    print("join mode")
-                    print("exist topic")
-                    if self.password != post["password"]! as? String {
+                    print("[join mode]: exist topic")
+                    if password != post["password"]! as? String {
                         self.passwordError = true
-                        print("pwderr")
                         break
                     }
-                    if var names = post["username"]! as? [String: AnyObject] {
-                        print("dicccccccccccccccccccc")
-                        if names.keys.contains(self.name) {
-                            self.nameError = true
-                            break
-                        }
-                        names[self.name] = self.name as AnyObject?
-                        post["username"] = names as AnyObject?
-                        self.masterName = post["master"] as? String
-                        print("new name")
-                    }
-                    if var names = post["username"]! as? NSArray {
-                        print("arrrrrrrrrrrrrrrrrrrrr")
+                    if var names = post["username"]! as? [String: String] {
+                        print("[Dictionary]")
                         print(names)
-                        if names.contains(self.name) {
+                        if names.keys.contains(name) {
                             self.nameError = true
                             break
                         }
-
-                        var arrayToDic = [String: AnyObject]()
-                        for (_, value) in names.enumerated() {
-                            arrayToDic[value as! String] = value as AnyObject?
+                        names[name] = name
+                        post["username"] = names as AnyObject
+                        self.masterName = post["master"] as? String
+                        
+                        print("[upload]")
+                        print(post)
+                        break
+                    }
+                    if let names = post["username"]! as? NSArray {
+                        print("Array")
+                        print(names)
+                        if names.contains(name) {
+                            self.nameError = true
+                            break
                         }
-                        arrayToDic[self.name] = self.name as AnyObject?
-                        post["username"] = arrayToDic as AnyObject?
+                        var dic = [String: String]()
+                        for (_, value) in names.enumerated() {
+                            if let val = value as? String {
+                                dic[val] = val
+                            }
+                        }
+                        dic[name] = name
+                        post["username"] = dic as AnyObject
                         self.masterName = post["master"] as? String
                         print("new name")
                     }
                     
                 }
-                
                 currData.value = post
                 return TransactionResult.success(withValue: currData)
             }
             
             switch (masterMode) {
             case true:
-                print("master mode")
-                print("new topic")
+                print("[master mode]: new topic")
                 var post = [String: AnyObject]()
-                post["password"] = self.password as AnyObject
-                post["username"] = [self.name: self.name] as AnyObject
-                post["master"] = self.name as AnyObject
-                self.masterName = self.name
+                post["password"] = password as AnyObject
+                
+                var username = [String: String]()
+                username[name] = name
+                post["username"] = username as AnyObject
+                
+                post["master"] = name as AnyObject
+                self.masterName = name
+
+                print("[upload]")
                 print(post)
                 currData.value = post
             case false:
-                print("join mode")
-                print("not exist topic")
+                print("join mode: not exist topic")
                 self.masterName = ""
             }
             return TransactionResult.success(withValue: currData)
             
         }) { (error, commited, snapshot) in
-            if let error = error { print(error.localizedDescription) }
+            var errorMsg = ""
+            if let error = error {
+                print(error.localizedDescription)
+                errorMsg = error.localizedDescription
+            }
             if commited {
                 print("commited")
-                handler(self.masterName, self.topicError, self.passwordError, self.nameError)
+                handler(errorMsg, self.masterName, self.topicError, self.passwordError, self.nameError)
             }
         }
         
@@ -126,10 +129,34 @@ class DatabaseTransaction {
                 currData.value = nil
             }
             if var post =  currData.value as? [String: AnyObject], !masterMode {
-                if var names = post["username"]! as? [String: AnyObject] {
+                print("[received]")
+                print(post)
+                
+                if var names = post["username"]! as? [String: String] {
+                    print("Dictionary")
                     if names.keys.contains(name) {
                         names[name] = nil
-                        post["username"] = names as AnyObject?
+                        post["username"] = names as AnyObject
+                        
+                        print("[upload]")
+                        print(post)
+                        currData.value = post
+                    }
+                }
+                else if let names = post["username"]! as? NSArray {
+                    print("Array")
+                    if names.contains(name) {
+                        var dic = [String: String]()
+                        for (_, value) in names.enumerated() {
+                            if let val = value as? String {
+                                dic[val] = val
+                            }
+                        }
+                        dic[name] = nil
+                        post["username"] = dic as AnyObject
+
+                        print("[upload]")
+                        print(post)
                         currData.value = post
                     }
                 }
@@ -137,10 +164,14 @@ class DatabaseTransaction {
             return TransactionResult.success(withValue: currData)
             
         }) { (error, commited, snapshot) in
-            if let error = error { print(error.localizedDescription) }
+            var errorMsg = ""
+            if let error = error {
+                print(error.localizedDescription)
+                errorMsg = error.localizedDescription
+            }
             if commited {
                 print("commited")
-                handler("commited")
+                handler(errorMsg)
             }
         }
         

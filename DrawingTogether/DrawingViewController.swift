@@ -19,17 +19,31 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     
     @IBOutlet weak var backgroundImageView: UIImageView!
     @IBOutlet weak var drawingView: DrawingView!
+    @IBOutlet weak var currentView: UIImageView!
+    @IBOutlet weak var myCurrentView: UIImageView!
     
     @IBOutlet weak var drawingContainer: UIView!
     @IBOutlet weak var currentColorBtn: UIButton!
-    
+    @IBOutlet weak var penModeView: UIStackView!
+    @IBOutlet weak var drawingTools: UIStackView!
     @IBOutlet weak var textColorChangeBtn: UIButton!
     @IBOutlet weak var colorChangeBtnView: UIView!
     
+    @IBOutlet weak var pencilBtn: UIButton!
+    @IBOutlet weak var highlightBtn: UIButton!
+    @IBOutlet weak var neonBtn: UIButton!
+    
+    @IBOutlet weak var undoBtn: UIButton!
+    @IBOutlet weak var redoBtn: UIButton!
+    
+    @IBOutlet weak var penBtn: UIButton!
+    @IBOutlet weak var shapeBtn: UIButton!
+    
+    
     var textEditingView: TextEditingView!
     
-    var ip: String = "54.180.154.63"
-    var port: String = "1883"
+    var ip: String!
+    var port: String!
     var topic: String!
     var password: String!
     var name: String!
@@ -39,6 +53,8 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     var userListStr: String!
     var userVC: UserViewController!
     
+    var closeFlag: Bool = false
+    
     // AUDIO
     var micFlag = false
     var speakerFlag = false
@@ -47,7 +63,12 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
       
     // IMAGE
     var imagePicker = UIImagePickerController()
+    var cameraFlag = false
     //
+    
+    var shapeVC: ShapeViewController!
+    var eraserVC: EraserViewController!
+    var penVC: PenViewController!
     
     let src_triangle = UnsafeMutablePointer<Int32>.allocate(capacity: 2)
     let dst_triangle = UnsafeMutablePointer<Int32>.allocate(capacity: 2)
@@ -55,24 +76,37 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     var src2: [Int32] = [], dst2: [Int32] = []
     var warpImg: UIImage?
     
+    var preMenuButton: UIButton? // 드로잉 메뉴 버튼 (펜, 도형) 저장, 텍스트에서 기본 드로잉모드로 돌아가기 위해 -
+    
     // MARK: LIFE CYCLE
     override func viewDidLoad() {
         super.viewDidLoad()
         print("DrawingViewController : viewDidLoad")
         
+        UIApplication.shared.isIdleTimerDisabled = true // 화면 안꺼지게
+        
         parser.drawingVC = self
         
         userVC = storyboard?.instantiateViewController(withIdentifier: "UserViewController") as? UserViewController
+        shapeVC = storyboard?.instantiateViewController(withIdentifier: "ShapeViewController") as? ShapeViewController
+        eraserVC = storyboard?.instantiateViewController(withIdentifier: "EraserViewController") as? EraserViewController
+        penVC = storyboard?.instantiateViewController(withIdentifier: "PenViewController") as? PenViewController
         
         client.initialize(ip, port, topic, name, master, masterName, self)
+        closeFlag = false
         print("DrawingViewController : [topic = \(topic!), my name = \(name!), master = \(master!)]")
         
         imagePicker.delegate = self
         
         navigationController?.isNavigationBarHidden = false
         
+        //let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(drawingTapped))
+        //drawingView.addGestureRecognizer(tapGestureRecognizer)
         drawingView.isUserInteractionEnabled = true
         de.initialize(drawingVC: self, master: master)
+        
+        if de.history.count == 0 { self.setUndoEnabled(isEnabled: false) }
+        if de.undoArray.count == 0 { self.setRedoEnabled(isEnabled: false) }
         
         // Text Editing View Setup
         print("drawing container size = \(drawingContainer.frame.width), \(drawingContainer.frame.height)")
@@ -80,6 +114,11 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         textEditingView.textView.delegate = self
         textEditingView.drawingVC = self
         
+        if master  { // TODO: 메인화면 갔다가 돌아올 때 처리 필요
+            client.componentCount = ComponentCount(topic: client.topic)
+            client.monitoringThread = MonitoringThread()
+            client.monitoringThread!.start()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -96,49 +135,114 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         super.viewWillAppear(true)
         print("DrawingViewController : viewWillDisappear")
         
+        if cameraFlag {
+            return
+        }
+        
         setUserNum(userNum: 0)
         userListStr = ""
-        client.exitTask()
-        client.unsubscribeAllTopics()
+        
+        if (!closeFlag) {
+            client.exitTask()
+            client.unsubscribeAllTopics()
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(true)
         print("DrawingViewController : viewDidDisappear")
+        
+        client.session?.disconnect()
     }
     
     // MARK: FUNCTION
     func showAlert(title: String, message: String, selectable: Bool) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let yesAction = UIAlertAction(title: "YES", style: .destructive) {
+        
+        let yesAction = UIAlertAction(title: "확인", style: .destructive) {
             (action) in
-            // exit task
-            self.client.exitTask()
-            self.client.unsubscribeAllTopics()
             
             let offset = UIOffset(horizontal: self.view.frame.width/2, vertical: self.view.frame.height/2)
             SVProgressHUD.setOffsetFromCenter(offset)
             SVProgressHUD.show()
             
+            // network checking ...
+            
             // database delete
             let dt = DatabaseTransaction()
             dt.connect()
-            dt.runTranscationExit(topic: self.topic!, name: self.name!, masterMode: self.master!, handler: {(result) in
-                if result == "commited" {
-                    SVProgressHUD.dismiss()
-                    
-                    // move to home
-                    if let topViewController = self.navigationController?.viewControllers.first {
-                        self.navigationController?.popToViewController(topViewController, animated: true)
-                    }
+            dt.runTranscationExit(topic: self.topic!, name: self.name!, masterMode: self.master!) {
+                (errorMsg) in
+                SVProgressHUD.dismiss()
+                if !errorMsg.isEmpty {
+                    self.showDatabaseErrorAlert(title: "데이터베이스 오류 발생", message: errorMsg)
+                    return
                 }
-            })
+                // mqtt connection check ...
+                
+                // exit task
+                self.client.exitTask()
+                self.client.unsubscribeAllTopics()
+                self.closeFlag = true
+                
+                // move to home
+                if let topViewController = self.navigationController?.viewControllers.first {
+                    self.navigationController?.popToViewController(topViewController, animated: true)
+                }
+            }
         }
         alertController.addAction(yesAction)
-        if selectable {
-            alertController.addAction(UIAlertAction(title: "NO", style: .cancel))
+        
+        
+        let saveAction = UIAlertAction(title: "저장 후 종료", style: .default) {
+            (action) in
+            
+            let offset = UIOffset(horizontal: self.view.frame.width/2, vertical: self.view.frame.height/2)
+            SVProgressHUD.setOffsetFromCenter(offset)
+            SVProgressHUD.show()
+
+            
+            UIImageWriteToSavedPhotosAlbum(self.drawingContainer.capture().image!, self, #selector(self.image(_:didFinishSavingWithError:contextInfo:)), nil)
+            
+            // database delete
+            let dt = DatabaseTransaction()
+            dt.connect()
+            dt.runTranscationExit(topic: self.topic!, name: self.name!, masterMode: self.master!) {
+                (errorMsg) in
+                SVProgressHUD.dismiss()
+                if !errorMsg.isEmpty {
+                    self.showDatabaseErrorAlert(title: "데이터베이스 오류 발생", message: errorMsg)
+                    return
+                }
+                // mqtt connection check ...
+                
+                // exit task
+                self.client.exitTask()
+                self.client.unsubscribeAllTopics()
+                self.closeFlag = true
+                
+                // move to home
+                if let topViewController = self.navigationController?.viewControllers.first {
+                    self.navigationController?.popToViewController(topViewController, animated: true)
+                }
+            }
+            
+            
 
         }
+        alertController.addAction(saveAction)
+        
+        
+        if selectable {
+            alertController.addAction(UIAlertAction(title: "취소", style: .cancel))
+
+        }
+        present(alertController, animated: true)
+    }
+    
+    func showDatabaseErrorAlert(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "확인", style: .destructive))
         present(alertController, animated: true)
     }
     
@@ -148,7 +252,7 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     }
     
     func setUserNum(userNum: Int) {
-        userNumBtn.setTitle("현재인원 : \(userNum)명", for: .normal)
+        userNumBtn.setTitle("현재 인원 : \(userNum)명", for: .normal)
     }
     
     // UIBarButtonItem -> iPad 위치 지정 필요
@@ -169,40 +273,22 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         }
     }
     
-    func convertUIImage2ByteArray(image: UIImage) -> [Int8] { // UIImage -> Byte Array
-        // UIImage -> NSData
-        let imageData = image.jpegData(compressionQuality: 0.1)!
+    func changeClickedButtonBackground(_ button: UIButton) {
         
-//        // NSData의 길이 구하기
-//        let count = imageData.count / MemoryLayout<UInt8>.size
-//        print("IMAGE : byte array size = \(count)")
-//        // Byte Array 생성
-//        var imageByteArray = [UInt8](repeating: 0, count: count)
-//        // NSData -> Byte Array
-//        imageData.copyBytes(to: &imageByteArray, count: count)
-
-        return imageData.map { Int8(bitPattern: $0) }
-    }
-    
-    func convertByteArray2UIImage(byteArray: [Int8]) -> UIImage { // Byte Array -> UIImage
-        // Byte Array의 길이 구하기
-        let count = byteArray.count
-        // NSData 생성, Byte Array -> NSData
-        let imageData: NSData = NSData(bytes: byteArray, length: count)
-        // NSData -> UIImage
-        let image: UIImage = UIImage(data: imageData as Data)!
-        
-        return image
+        for view in drawingTools.arrangedSubviews {
+            view.backgroundColor = UIColor.clear
+        }
+        button.backgroundColor = UIColor(red: 233/255, green: 233/255, blue: 233/255, alpha: 1.0)
     }
     
     // MARK: IBACTION FUNCION
     @IBAction func backPressed(sender: UIBarButtonItem) {
         print("back pressed")
-        var title = "토픽 종료"
-        var message = "토픽을 종료하시겠습니까?"
+        var title = "회의방 종료"
+        var message = "회의방을 종료하시겠습니까?"
         if !master {
-            title = "토픽방 나가기"
-            message = "토픽방을 나가시겠습니까?"
+            title = "회의방 나가기"
+            message = "회의방을 나가시겠습니까?"
         }
         showAlert(title: title, message: message, selectable: true)
     }
@@ -244,6 +330,7 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         let cameraAction = UIAlertAction(title: "카메라", style: .default) {
             action in
             if UIImagePickerController.isSourceTypeAvailable(.camera) {
+                self.cameraFlag = true
                 self.imagePicker.sourceType = .camera
                 self.present(self.imagePicker, animated: false, completion: nil)
             } else {
@@ -266,29 +353,74 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         let saveImageAction = UIAlertAction(title: "저장하기", style: .default) {
             action in
             print("저장하기")
+            
+            UIImageWriteToSavedPhotosAlbum(self.drawingContainer.capture().image!, self, #selector(self.image(_:didFinishSavingWithError:contextInfo:)), nil)
         }
+        
         // Plus Person
+        // Send KakaoLink
         let plusPersonAction = UIAlertAction(title: "친구 초대", style: .default) {
             action in
             print("친구 초대")
             
-            // 카카오톡 링크 보내기
-            let template = KMTTextTemplate { (textTemplateBuilder) in
+            /* 카카오링크에 회의명, 비밀번호 전달 - 피드 메시지 보내기 */
+            let feedTemplate = KMTFeedTemplate {
+                (feedTemplateBuilder) in
                 
-                // text
-                textTemplateBuilder.text = "시시콜콜! 들어와!"
-                // link
-                textTemplateBuilder.link = KMTLinkObject(builderBlock: { (linkBuilder) in
+                // content
+                feedTemplateBuilder.content = KMTContentObject(builderBlock: {
+                    (contentBuilder) in
                     
-                    linkBuilder.iosExecutionParams = "topic=\(self.topic!)&password=\(self.password!)"
-                    linkBuilder.androidExecutionParams = "topic=\(self.topic!)&password=\(self.password!)"
+                    contentBuilder.title = "♥︎드로잉투게더♥︎ - 회의명 [\(self.topic!)]"
+                    contentBuilder.imageURL = URL(string: "http://k.kakaocdn.net/dn/bftFB6/bl2J1T0qwdk/RxMA99bZEhHkQIUxQDBkgk/kakaolink40_original.png")!
+                    contentBuilder.desc = "#공유 #드로잉 #실시간 #회의"
                     
+                    // link
+                    contentBuilder.link = KMTLinkObject(builderBlock: {
+                        (linkBuilder) in
+                        
+                        linkBuilder.iosExecutionParams = "topic=\(self.topic!)&password=\(self.password!)"
+                        linkBuilder.androidExecutionParams = "topic=\(self.topic!)&password=\(self.password!)"
+                    })
                 })
+//                feedTemplateBuilder.social = KMTSocialObject(builderBlock: {
+//                    (socialBuilder) in
+//
+//                    socialBuilder.likeCount = 286
+//                    socialBuilder.commnentCount = 45
+//                    socialBuilder.sharedCount = 845
+//                })
+                
                 // button
-                textTemplateBuilder.buttonTitle = "앱으로 이동!"
+                feedTemplateBuilder.addButton(
+                    KMTButtonObject(title: "앱으로 이동",
+                                    link: KMTLinkObject(builderBlock: { (linkBuilder) in
+                                        linkBuilder.iosExecutionParams = "topic=\(self.topic!)&password=\(self.password!)"
+                                        linkBuilder.androidExecutionParams = "topic=\(self.topic!)&password=\(self.password!)"
+                                        })))
             }
             
-            KLKTalkLinkCenter.shared().sendDefault(with: template, success: { (warningMsg, argumentMsg) in
+            
+            
+            /* 카카오링크에 회의명, 비밀번호 전달 - 텍스트 메시지 보내기 */
+//            let textTemplate = KMTTextTemplate { (textTemplateBuilder) in
+//
+//                // text
+//                textTemplateBuilder.text = "시시콜콜! 들어와!"
+//                // link
+//                textTemplateBuilder.link = KMTLinkObject(builderBlock: { (linkBuilder) in
+//
+//                    linkBuilder.iosExecutionParams = "topic=\(self.topic!)&password=\(self.password!)"
+//                    linkBuilder.androidExecutionParams = "topic=\(self.topic!)&password=\(self.password!)"
+//
+//                })
+//                // button
+//                textTemplateBuilder.buttonTitle = "앱으로 이동!"
+//            }
+            
+            
+            /* 카카오톡 API로 메시지 보내기 */
+            KLKTalkLinkCenter.shared().sendDefault(with: feedTemplate, success: { (warningMsg, argumentMsg) in
                             
                 // success
                 print("warning message: \(String(describing: warningMsg))")
@@ -308,70 +440,190 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         //        present(alert, animated: true, completion: nil)
             
     }
+    
+    //MARK: - Add image to Library
+    @objc func image(_ image: UIImage, didFinishSavingWithError error: Error?, contextInfo: UnsafeRawPointer) {
+        if error != nil {
+            // we got back an error!
+//            let ac = UIAlertController(title: "Save error", message: error.localizedDescription, preferredStyle: .alert)
+//            ac.addAction(UIAlertAction(title: "OK", style: .default))
+//            present(ac, animated: true)
+            showToast(message: "이미지 저장 오류")
+        } else {
+//            let ac = UIAlertController(title: "Saved!", message: "Your altered image has been saved to your photos.", preferredStyle: .alert)
+//            ac.addAction(UIAlertAction(title: "OK", style: .default))
+//            present(ac, animated: true)
+            showToast(message: "갤러리에 대화 이미지를 저장 완료했습니다")
+        }
+    }
 
     @IBAction func clickUndo(_ sender: UIButton) {
         print("undo")
+        drawingView!.undo()
     }
     
     @IBAction func clickRedo(_ sender: UIButton) {
         print("redo")
+        drawingView!.redo()
     }
     
     @IBAction func clickPen(_ sender: UIButton) {
         print("pen")
-        print(sender.accessibilityIdentifier!) // 각 버튼의 Accessibility의 identifier 속성을 10, 20, 30으로 설정
-        de.strokeWidth = CGFloat(NSString(string: sender.accessibilityIdentifier!).floatValue)
+        penModeView.isHidden = false
+        changeClickedButtonBackground(sender)
+        
+        if de.currentMode == Mode.DRAW && de.currentType == ComponentType.STROKE {
+            penVC.modalPresentationStyle = .popover
+            penVC.preferredContentSize = CGSize(width: 110, height: 120)
+            if let popoverController = penVC.popoverPresentationController {
+                popoverController.sourceView = sender
+                popoverController.sourceRect = CGRect(x: -23, y: -5, width: 100, height: 35)
+                popoverController.permittedArrowDirections = .any
+                popoverController.delegate = self
+                penVC.popoverPresentationController?.delegate = self
+            }
+            
+            present(penVC, animated: true, completion: nil)
+        }
         
         de.currentMode = Mode.DRAW
         de.currentType = ComponentType.STROKE
+        //de.penMode = PenMode.NORMAL
+        
+        preMenuButton = sender // 텍스트 편집 후 기본 모드인 드로잉 메뉴 배경색 변경을 위해
+    }
+    
+    @IBAction func clickPencil(_ sender: UIButton) {
+        pencilBtn.setImage(UIImage(named:"pencil_1.png"), for: .normal)
+        highlightBtn.setImage(UIImage(named:"highlight_0.png"), for: .normal)
+        neonBtn.setImage(UIImage(named:"neon_0.png"), for: .normal)
+        
+        de.penMode = PenMode.NORMAL
+    }
+    
+    @IBAction func clickHighlight(_ sender: UIButton) {
+        pencilBtn.setImage(UIImage(named:"pencil_0.png"), for: .normal)
+        highlightBtn.setImage(UIImage(named:"highlight_1.png"), for: .normal)
+        neonBtn.setImage(UIImage(named:"neon_0.png"), for: .normal)
+        
+        de.penMode = PenMode.HIGHLIGHT
+    }
+    
+    @IBAction func clickNeon(_ sender: UIButton) {
+        pencilBtn.setImage(UIImage(named:"pencil_0.png"), for: .normal)
+        highlightBtn.setImage(UIImage(named:"highlight_0.png"), for: .normal)
+        neonBtn.setImage(UIImage(named:"neon_1.png"), for: .normal)
+        
+        de.penMode = PenMode.NEON
     }
     
     @IBAction func clickShape(_ sender: UIButton) {
         print("shape")
-        de.currentMode = Mode.DRAW
-        de.currentType = ComponentType.RECT
+        penModeView.isHidden = true
+        changeClickedButtonBackground(sender)
+
+        shapeVC.modalPresentationStyle = .popover
+        shapeVC.preferredContentSize = CGSize(width: 110, height: 120)
+        if let popoverController = shapeVC.popoverPresentationController {
+            popoverController.sourceView = sender
+            popoverController.sourceRect = CGRect(x: -32, y: -5, width: 100, height: 35)
+            popoverController.permittedArrowDirections = .any
+            popoverController.delegate = self
+            shapeVC.popoverPresentationController?.delegate = self
+        }
+        
+        present(shapeVC, animated: true, completion: nil)
+        
+        preMenuButton = sender // 텍스트 편집 후 기본 모드인 드로잉으로 돌아가기 위해 (텍스트 편집 전에 선택했던 드로잉 모드로)
+
     }
     
     @IBAction func clickText(_ sender: UIButton) {
         print("text")
+        penModeView.isHidden = true
+        changeClickedButtonBackground(sender)
+        
+        /* 사용자가 처음 텍스트 편집창에서 텍스트 생성중인 경우 */
+        /* 텍스트 정보들을 모든 사용자가 갖고 있지 않음 ( 편집중인 사람만 갖고 있음 ) */
+        /* 따라서 중간자가 들어오고 난 후에 텍스트 생성을 할 수 있도록 막아두기 */
+        
+        if de.isMidEntered {
+            showToast(message: "다른 사용자가 접속 중 입니다 잠시만 기다려주세요")
+            return
+        }
         
         de.currentMode = .TEXT
         
         let text = Text()
-        let textAttr = TextAttribute(id: de.setTextStringId(), username: de.myUsername!, text: "", textSize: 15, textColor: "#000000", textBackgroundColor: nil, textGravity: nil, style: nil, generatedLayoutWidth: Int(drawingContainer.frame.width), generatedLayoutHeight: Int(drawingContainer.frame.height))
+        let textAttr = TextAttribute(id: de.setTextStringId(), username: de.myUsername!, textSize: de.textSize, textColor: de.textColor, generatedLayoutWidth: Int(drawingContainer.frame.width), generatedLayoutHeight: Int(drawingContainer.frame.height))
         
         text.create(textAttribute: textAttr, drawingVC: self)
-        
         text.changeLabelToTextView()
         
-        self.view.addSubview(textEditingView)
         
-        print("\(textEditingView.center.x), \(textEditingView.center.y), \(textEditingView.frame.width), \(textEditingView.frame.height)")
-
+//        let text: UILabel = UILabel()
+//        text.frame.size.width = drawingContainer.frame.width/3
+//
+//        text.text = "aaaaaaaaaabbbbbbbbbbccccccccccddddddddddeeeeeeeeee"
+//        text.backgroundColor = UIColor.clear
+//        text.textColor = UIColor(hexString: "#000000")
+//        text.font = UIFont.boldSystemFont(ofSize: (CGFloat)(20))
+//        text.textAlignment = .center
+//
+//        text.lineBreakMode = .byWordWrapping
+//        text.numberOfLines = 0
+//
+//        text.sizeToFit()
+//
+//        text.frame = CGRect(x: 100, y: 100, width: text.frame.width, height: text.frame.height)
+//
+//        drawingContainer.addSubview(text)
     }
     
     @IBAction func clickEraser(_ sender: UIButton) {
         print("eraser")
+        penModeView.isHidden = true
+        changeClickedButtonBackground(sender)
+        
+        if de.currentMode == Mode.ERASE {
+            eraserVC.modalPresentationStyle = .popover
+            eraserVC.preferredContentSize = CGSize(width: 110, height: 120)
+            if let popoverController = eraserVC.popoverPresentationController {
+                popoverController.sourceView = sender
+                popoverController.sourceRect = CGRect(x: -32, y: -5, width: 100, height: 35)
+                popoverController.permittedArrowDirections = .any
+                popoverController.delegate = self
+                eraserVC.popoverPresentationController?.delegate = self
+            }
+            
+            present(eraserVC, animated: true, completion: nil)
+        }
+        
         de.currentMode = .ERASE
     }
     
     @IBAction func clickSelector(_ sender: UIButton) {
         print("selector")
+        penModeView.isHidden = true
+        changeClickedButtonBackground(sender)
+        
         de.currentMode = Mode.SELECT
     }
     
     @IBAction func clickWarping(_ sender: UIButton) {
         print("warping")
+        penModeView.isHidden = true
+        changeClickedButtonBackground(sender)
+        
         de.currentMode = Mode.WARP
     }
     
     @IBAction func clickUserBtn(_ sender: UIButton) {
-        
         userVC.modalPresentationStyle = .popover
         userVC.preferredContentSize = CGSize(width: 100, height: 150)
         if let popoverController = userVC.popoverPresentationController {
             popoverController.sourceView = sender
-            popoverController.sourceRect =  CGRect(x: 0, y: 0, width: 100, height: 35)
+            popoverController.sourceRect = CGRect(x: 5, y: 0, width: 100, height: 35)
             popoverController.permittedArrowDirections = .any
             popoverController.delegate = self
             userVC.popoverPresentationController?.delegate = self
@@ -410,16 +662,7 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     
     @IBAction func clickTextColorChange(_ btn: UIButton) {
         if let text = de.currentText {
-            text.textAttribute.username = nil
-            text.textAttribute.isTextChangedColor = false
-            
-            text.sendMqttMessage(textMode: .FINISH_COLOR_CHANGE)
-            
-            text.setLabelBorder(color: .clear)
-            
-            colorChangeBtnView.isHidden = true
-            
-            de.currentMode = .DRAW
+            text.finishTextColorChange()
         }
     }
     
@@ -428,10 +671,14 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         var yList: [Int] = []
         src = []
         dst = []
+        let size = CGSize(width:  self.backgroundImageView.frame.width  , height: self.backgroundImageView.frame.height )
         for touch in touches {
             let startPoint = touch.location(in: self.backgroundImageView)
             let x = Int32(startPoint.x)
             let y = Int32(startPoint.y)
+            if x > Int(size.width) || y > Int(size.height) {
+                return
+            }
             xList.append(Int(x))
             yList.append(Int(y))
             src.append(x)
@@ -443,7 +690,8 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         }
         src_triangle.initialize(from: &src, count: 4)
         print(src_triangle)
-        let message = MqttMessageFormat(username: de.myUsername!, mode: .WARP, type: de.currentType!, action: 0, warpingMessage: WarpingMessage(action: 0, pointerCount: touches.count/2, x: xList, y: yList))
+        
+        let message = MqttMessageFormat(username: de.myUsername!, mode: .WARP, type: de.currentType!, action: 0, warpingMessage: WarpingMessage(action: 0, pointerCount: touches.count/2, x: xList, y: yList, width: Int(size.width), height: Int(size.height)))
         client.publish(topic: client.topic_data, message: parser.jsonWrite(object: message)!)
         
 //        if let theTouch = touches.first {
@@ -466,10 +714,14 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         var xList: [Int] = []
         var yList: [Int] = []
         dst = []
+        let size = CGSize(width:  self.backgroundImageView.frame.width  , height: self.backgroundImageView.frame.height )
         for touch in touches {
             let movePoint = touch.location(in: self.backgroundImageView)
             let x = Int32(movePoint.x)
             let y = Int32(movePoint.y)
+            if x > Int(size.width) || y > Int(size.height) {
+                return
+            }
             xList.append(Int(x))
             yList.append(Int(y))
             dst.append(x)
@@ -477,7 +729,8 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
             print(dst)
         }
         dst_triangle.initialize(from: &dst, count: 4)
-        let message = MqttMessageFormat(username: de.myUsername!, mode: .WARP, type: de.currentType!, action: 0, warpingMessage: WarpingMessage(action: 2, pointerCount: xList.count, x: xList, y: yList))
+        
+        let message = MqttMessageFormat(username: de.myUsername!, mode: .WARP, type: de.currentType!, action: 0, warpingMessage: WarpingMessage(action: 2, pointerCount: xList.count, x: xList, y: yList, width: Int(size.width), height: Int(size.height)))
        client.publish(topic: client.topic_data, message: parser.jsonWrite(object: message)!)
         
 //        if let theTouch = touches.first {
@@ -492,7 +745,6 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
 //            let message = MqttMessageFormat(username: de.myUsername!, mode: .WARP, type: de.currentType!, action: 0, warpingMessage: WarpingMessage(action: 2, pointerCount: 1, x: [Int(x)], y: [Int(y)]))
 //            client.publish(topic: client.topic_data, message: parser.jsonWrite(object: message)!)
 //        }
-        let size = CGSize(width:  self.backgroundImageView.frame.width  , height: self.backgroundImageView.frame.height )
         let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
         if let image = warpImg {
             self.backgroundImageView.image = OpenCVWrapper.cvWarp(image, w:  Int32(rect.width)  , h: Int32(rect.height), src: self.src_triangle, dst: self.dst_triangle)
@@ -501,29 +753,32 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         
     }
     
-    func warp(warpData: WarpData) {
+    func warp(warpData: WarpData, width: Int, height: Int) {
         DispatchQueue.main.async {
             if warpData.action == 0 {
                 self.src = []
                 self.dst = []
+                let size = CGSize(width:  self.backgroundImageView.frame.width  , height: self.backgroundImageView.frame.height )
                 for point in warpData.points {
-                    self.src.append(Int32(point.x))
-                    self.src.append(Int32(point.y))
+                    self.src.append(Int32(point.x * Int(size.width) / width))
+                    self.src.append(Int32(point.y * Int(size.height) / height))
                 }
                 if let image = self.backgroundImageView.image {
                     self.warpImg = image
                 }
-                self.src_triangle.initialize(from: &self.src, count: 2)
+                self.src_triangle.initialize(from: &self.src, count: 4)
+                
             }
             else if warpData.action == 2 {
                 self.dst = []
-                for point in warpData.points {
-                    self.dst.append(Int32(point.x))
-                    self.dst.append(Int32(point.y))
-                }
-                self.dst_triangle.initialize(from: &self.dst, count: 2)
                 let size = CGSize(width:  self.backgroundImageView.frame.width  , height: self.backgroundImageView.frame.height )
                 let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+                for point in warpData.points {
+                    self.dst.append(Int32(point.x * Int(size.width) / width))
+                    self.dst.append(Int32(point.y * Int(size.height) / height))
+                }
+                print(self.dst)
+                self.dst_triangle.initialize(from: &self.dst, count: 4)
                 if let image = self.warpImg {
                     self.backgroundImageView.image = OpenCVWrapper.cvWarp(image, w:  Int32(rect.width)  , h: Int32(rect.height), src: self.src_triangle, dst: self.dst_triangle)
                 }
@@ -531,20 +786,45 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
             }
         }
     }
+    
+    func setRedoEnabled(isEnabled: Bool) {
+        //set image
+        redoBtn.isEnabled = isEnabled
+    }
+    
+    func setUndoEnabled(isEnabled: Bool) {
+        //set image
+        undoBtn.isEnabled = isEnabled
+    }
+    
+    /*@objc func drawingTapped(_ tapGesture: UITapGestureRecognizer) {
+        if de.currentMode != Mode.SELECT { return }
+        
+        if tapGesture.state == .ended {
+            let touchLocation: CGPoint = tapGesture.location(in: tapGesture.view)
+            drawingView.selectTapped(point: Point(x: Int(touchLocation.x), y: Int(touchLocation.y)))
+            //print(touchLocation)
+        }
+        //print(tapGesture.location(in: tapGesture.view))
+    }*/
+
 }
 
 extension DrawingViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    func imagePickerController(_ picker: UIImagePickerController,          didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if cameraFlag {
+            cameraFlag = false
+        }
+        
         let image = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
-        backgroundImageView.image = image
+//        backgroundImageView.image = image
         
-        de.bitmapByteArray = convertUIImage2ByteArray(image: image)
+        de.backgroundImage = de.convertUIImage2ByteArray(image: image)
+        client.publish(topic: client.topic_image, message: de.backgroundImage!)
         
-        //        let imageByte = convertUIImage2ByteArray(image: image
-        //        let message = "{\"action\":0,\"bitmapByteArray\":\(imageByte),\"mode\":\"BACKGROUND_IMAGE\",\"myTextArrayIndex\":0,\"username\":\"jiyeon\"}"
-        let message = MqttMessageFormat(username: name!, mode: .BACKGROUND_IMAGE, bitmapByteArray: de.bitmapByteArray!)
-        client.publish(topic: client.topic_data, message: parser.jsonWrite(object: message)!)
+//        let message = MqttMessageFormat(username: name!, mode: .BACKGROUND_IMAGE, bitmapByteArray: de.bitmapByteArray!)
+//        client.publish(topic: client.topic_data, message: parser.jsonWrite(object: message)!)
         
         dismiss(animated: true, completion: nil)
     }
@@ -554,17 +834,17 @@ extension UIViewController {
     
     func showToast(message : String/*, font: UIFont*/) {
         
-        let toastLabel = UILabel(frame: CGRect(x: self.view.frame.size.width/2 - 75, y: self.view.frame.size.height-150, width: 150, height: 35))
-        toastLabel.backgroundColor = UIColor.black.withAlphaComponent(0.6)
+        let toastLabel = UILabel(frame: CGRect(x: self.view.frame.size.width/2 - 125, y: self.view.frame.size.height-150, width: 250, height: 35))
+        toastLabel.backgroundColor = UIColor.black.withAlphaComponent(0.5)
         toastLabel.textColor = UIColor.white
-        //toastLabel.font = font
+        toastLabel.font = UIFont.systemFont(ofSize: 12)
         toastLabel.textAlignment = .center;
         toastLabel.text = message
         toastLabel.alpha = 1.0
         toastLabel.layer.cornerRadius = 10;
         toastLabel.clipsToBounds  =  true
         self.view.addSubview(toastLabel)
-        UIView.animate(withDuration: 4.0, delay: 0.1, options: .curveEaseOut, animations: {
+        UIView.animate(withDuration: 2.0, delay: 1.0, options: .curveEaseOut, animations: {
             toastLabel.alpha = 0.0
         }, completion: {(isCompleted) in
             toastLabel.removeFromSuperview()
@@ -609,3 +889,62 @@ extension UIColor {
         return String(format:"#%06x", rgb)
     }
 }
+
+
+@IBDesignable extension UIButton {
+    
+    @IBInspectable var cornerRadius: CGFloat {
+        set {
+            layer.cornerRadius = newValue
+        }
+        get {
+            return layer.cornerRadius
+        }
+    }
+
+    @IBInspectable var borderWidth: CGFloat {
+        set {
+            layer.borderWidth = newValue
+        }
+        get {
+            return layer.borderWidth
+        }
+    }
+
+    @IBInspectable var borderColor: UIColor? {
+        set {
+            guard let uiColor = newValue else { return }
+            layer.borderColor = uiColor.cgColor
+        }
+        get {
+            guard let color = layer.borderColor else { return nil }
+            return UIColor(cgColor: color)
+        }
+    }
+}
+
+extension UIView {
+    
+    func capture(_ shadow: Bool = false) -> UIImageView {
+        
+        UIGraphicsBeginImageContextWithOptions(self.bounds.size, false, 0)
+        self.layer.render(in: UIGraphicsGetCurrentContext()!)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        let snapshotImageView = UIImageView(image: image)
+        if shadow {
+            snapshotImageView.layer.masksToBounds = false
+            snapshotImageView.layer.cornerRadius = 0.0
+            snapshotImageView.layer.shadowOffset = CGSize(width: -0.5, height: 0.0)
+            snapshotImageView.layer.shadowRadius = 5.0
+            snapshotImageView.layer.shadowOpacity = 0.4
+        }
+        
+        return snapshotImageView
+        
+    }
+    
+}
+
+

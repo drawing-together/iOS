@@ -11,6 +11,7 @@ target 'DrawingTogether' do
   pod 'Firebase/Analytics'
   pod 'Firebase/Database'
   pod 'OpenCV', '~> 3.4'
+  pod 'SDWebImageSVGCoder'
   # Pods for DrawingTogether
 
 end

@@ -86,6 +86,9 @@ PODS:
   - nanopb/encode (1.30905.0)
   - OpenCV (3.4.6)
   - PromisesObjC (1.2.8)
+  - SDWebImage/Core (5.9.0)
+  - SDWebImageSVGCoder (1.5.2):
+    - SDWebImage/Core (~> 5.6)
   - SVProgressHUD (2.2.5)
 
 DEPENDENCIES:
@@ -94,6 +97,7 @@ DEPENDENCIES:
   - lottie-ios
   - MQTTClient
   - OpenCV (~> 3.4)
+  - SDWebImageSVGCoder
   - SVProgressHUD
 
 SPEC REPOS:
@@ -116,6 +120,8 @@ SPEC REPOS:
     - nanopb
     - OpenCV
     - PromisesObjC
+    - SDWebImage
+    - SDWebImageSVGCoder
     - SVProgressHUD
 
 SPEC CHECKSUMS:
@@ -137,8 +143,10 @@ SPEC CHECKSUMS:
   nanopb: c43f40fadfe79e8b8db116583945847910cbabc9
   OpenCV: 1df7b8ab75900ef4365905b989bf60f5ca4101aa
   PromisesObjC: c119f3cd559f50b7ae681fa59dc1acd19173b7e6
+  SDWebImage: 62ae4a18473520c67b79e9724c31a63599cc9423
+  SDWebImageSVGCoder: b0258f66521c222aba5c13ab29bdf35520d5d536
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
 
-PODFILE CHECKSUM: 0393b23d202463aa218b844a26a3f7ca665f1cd4
+PODFILE CHECKSUM: 22fc3a12ed0fc376ad1c35c204f6a7ed6381d294
 
 COCOAPODS: 1.9.3
