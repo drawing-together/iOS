@@ -334,7 +334,7 @@ class DrawingView: UIImageView {
             
             points.append(point)
             if points.count == msgChunkSize {
-                print("send move chunk")
+                //print("send move chunk")
                 let messageFormat = MqttMessageFormat(username: de.myUsername!, usersComponentId: dComponent!.usersComponentId!, mode: de.currentMode!, type: de.currentType!, movePoints: points, action: MotionEvent.ACTION_MOVE.rawValue)
                 //client.publish(topic: topicData!, message: parser.jsonWrite(object: messageFormat)!)
                 sendMqttMessage.putMqttMessage(messageFormat: messageFormat)
@@ -500,7 +500,7 @@ class DrawingView: UIImageView {
                 return
             }
             
-            print("selected move")
+            //print("selected move")
             
             if let component = de.selectedComponent, let usersComponentId = component.usersComponentId {
                 

@@ -16,13 +16,14 @@ class SendMqttMessage: Thread {
     var messageQueue: CircularQueue!
     
     let semaphore = DispatchSemaphore(value: 0)
-    let queue = DispatchQueue(label: "sendThreadQueue")
+    let queue = DispatchQueue(label: "sendThreadQueue") //, qos: .background)
     
     var putCnt = 0
     var takeCnt = 0
     
     override private init() {
         messageQueue = CircularQueue(capacity: 10000)
+        
     }
     
     func putMqttMessage(messageFormat: MqttMessageFormat) {
@@ -31,7 +32,7 @@ class SendMqttMessage: Thread {
             
             if self.messageQueue.offer(value: messageFormat) {
                 self.putCnt += 1
-                print("msgQueue offer success \(self.putCnt), queue size=\(self.messageQueue.capacity)")
+                //print("msgQueue offer success \(self.putCnt), queue size=\(self.messageQueue.capacity)")
                 self.semaphore.signal()
             } else {
                 print("msgQueue is FULL!")
@@ -62,7 +63,7 @@ class SendMqttMessage: Thread {
                         self.client.publish(topic: self.client.topic_data, message: self.parser.jsonWrite(object: messageFormat)!)
                         
                         self.takeCnt += 1
-                        print("msgQueue poll success \(self.takeCnt), queue size=\(self.messageQueue.capacity)")
+                        //print("msgQueue poll success \(self.takeCnt), queue size=\(self.messageQueue.capacity)")
                     } /*else {
                      print("msgQueue poll failed, queue size=\(self.messageQueue.capacity)")
                      }*/

@@ -377,7 +377,7 @@ class DrawingEditor {
         for point in calcPoints {
             str += "\(point.toString()) "
         }
-        print(str)
+        //print(str)
         
         var newPoints = [Point]()     //사이 점 채워진 Point 배열
         var slope: Int?       //기울기
@@ -839,7 +839,7 @@ class DrawingEditor {
         
         let rect = CGRect(x: rX, y: rY , width: rW, height: rH)
         
-        print("shape drawComponent datum=\(String(describing: datum.toString())), width=\(String(describing: width)), height=\(String(describing: height))")
+        //print("shape drawComponent datum=\(String(describing: datum.toString())), width=\(String(describing: width)), height=\(String(describing: height))")
         
         let  dashes: [ CGFloat ] = [ 7.0, 5.0 ]
         context.setLineDash(phase: 4.0, lengths: dashes)

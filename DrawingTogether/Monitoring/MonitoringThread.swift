@@ -36,10 +36,10 @@ class MonitoringThread: Thread {
             
             if let componentCount = client.componentCount {
                 let mmf = MqttMessageFormat(componentCount: componentCount)
-                print("monitoring mqtt message format = " + jsonParser.jsonWrite(object: mmf)!)
+                //print("monitoring mqtt message format = " + jsonParser.jsonWrite(object: mmf)!)
                 
                 self.client.publish(topic: topic, message: jsonParser.jsonWrite(object: mmf)!)
-                print("publish monitoring message")
+                //print("publish monitoring message")
                 
                 Thread.sleep(forTimeInterval: self.second)
             }

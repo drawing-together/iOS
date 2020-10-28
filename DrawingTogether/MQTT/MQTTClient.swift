@@ -379,7 +379,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                     }
         
         let message = String(data: data, encoding: .utf8)!
-//        print(message)
+        //print(message)
         
         if parser.jsonReader(msg: message) == nil { return }
         let mqttMessageFormat = parser.jsonReader(msg: message)!
@@ -637,7 +637,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         
         
         self.queue.async {
-            print("action=\(String(describing: action)) This is run on the background queue")
+            //print("action=\(String(describing: action)) This is run on the background queue")
             
             if username == nil { return }
             
@@ -647,7 +647,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             } else {
                 if let component = self.de.getCurrentComponent(usersComponentId: message.usersComponentId!) {
                     dComponent = component
-                    print("component move, up")
+                    //print("component move, up")
                 } else {
                     print("component nil")
                     return
@@ -689,7 +689,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             }
             
             DispatchQueue.main.async {
-                print("This is run on the main queue, after the previous code in outer block")
+                //print("This is run on the main queue, after the previous code in outer block")
                 
                 switch action {
                 /*case MotionEvent.ACTION_DOWN.rawValue:
@@ -800,9 +800,6 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             DispatchQueue.main.async {
                 self.de.clearUndoArray()
             }
-            
-           
-            
         }
     }
     
@@ -1029,19 +1026,21 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                 
                 self.de.drawingView!.setNeedsDisplay()
                 
-                for i in 0 ... self.de.autoDrawList.count - 1 {
-                    var autoDraw = self.de.autoDrawList[i]
-                    let SVGCoder = SDImageSVGCoder.shared
-                    SDImageCodersManager.shared.addCoder(SVGCoder)
-                    let imgView = UIImageView()
-                    
-                    var width = self.drawingVC.drawingView.bounds.size.width ?? 0
-                    var height = self.drawingVC.drawingView.bounds.size.height ?? 0
-                    var x = autoDraw.point.x * Int(width) / Int(autoDraw.width)
-                    var y = autoDraw.point.y * Int(height) / Int(autoDraw.height)
-                    imgView.frame = CGRect(x: x, y: y, width: 100, height: 100)
-                    imgView.sd_setImage(with: URL(string: autoDraw.url))
-                    self.drawingVC?.drawingContainer?.addSubview(imgView)
+                if self.de.autoDrawList.count > 0 {
+                    for i in 0 ... self.de.autoDrawList.count - 1 {
+                        var autoDraw = self.de.autoDrawList[i]
+                        let SVGCoder = SDImageSVGCoder.shared
+                        SDImageCodersManager.shared.addCoder(SVGCoder)
+                        let imgView = UIImageView()
+                        
+                        var width = self.drawingVC.drawingView.bounds.size.width ?? 0
+                        var height = self.drawingVC.drawingView.bounds.size.height ?? 0
+                        var x = autoDraw.point.x * Int(width) / Int(autoDraw.width)
+                        var y = autoDraw.point.y * Int(height) / Int(autoDraw.height)
+                        imgView.frame = CGRect(x: x, y: y, width: 100, height: 100)
+                        imgView.sd_setImage(with: URL(string: autoDraw.url))
+                        self.drawingVC?.drawingContainer?.addSubview(imgView)
+                    }
                 }
                 
                 print("mid progressdialog dismiss")
