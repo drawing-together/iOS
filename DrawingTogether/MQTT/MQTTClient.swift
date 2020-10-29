@@ -459,7 +459,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                          // 아이디 세팅
                          de.maxComponentId = mqttMessageFormat.maxComponentId!
                         
-                        de.autoDrawList = mqttMessageFormat.autoDrawList!
+                         de.autoDrawList = mqttMessageFormat.autoDrawList!
                          
 //                         // 배경 이미지 세팅
 //                         if mqttMessageFormat.bitmapByteArray != nil {
