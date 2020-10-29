@@ -667,6 +667,9 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        print(#function)
+        if de.currentMode != Mode.WARP { return }
+        
         var xList: [Int] = []
         var yList: [Int] = []
         src = []
@@ -711,6 +714,8 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if de.currentMode != Mode.WARP { return }
+        
         var xList: [Int] = []
         var yList: [Int] = []
         dst = []

@@ -801,7 +801,8 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         let myCanvasWidth = self.de.myCanvasWidth
         let myCanvasHeight = self.de.myCanvasHeight
         
-        DispatchQueue.global(qos: .background).async {
+        //*DispatchQueue.global(qos: .background)*/
+        self.queue.async {
             if self.de.myUsername == message.username { return }
             
             if message.action == nil {
@@ -858,6 +859,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                         break
                     case MotionEvent.ACTION_UP.rawValue:
                         //self.de.clearMyCurrentImage()
+                        
                         self.de.splitPointsOfSelectedComponent(component: selectedComponent!, canvasWidth: self.de.myCanvasWidth!, canvasHeight: self.de.myCanvasHeight!)
                         self.de.updateSelectedComponent(newComponent: selectedComponent!)
                         self.de.clearDrawingImage()

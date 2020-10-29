@@ -601,7 +601,7 @@ class DrawingView: UIImageView {
             
             self.sendModeMqttMessage(mode: Mode.CLEAR)
             self.de.clearDrawingComponents()
-            //self.de.clearTexts()
+            self.de.clearTexts()
             
             self.setNeedsDisplay()
             
