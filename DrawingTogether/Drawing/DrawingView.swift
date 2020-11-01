@@ -601,7 +601,10 @@ class DrawingView: UIImageView {
             
             self.sendModeMqttMessage(mode: Mode.CLEAR)
             self.de.clearDrawingComponents()
-            //self.de.clearTexts()
+            
+            // MARK: 화면 초기화 시 텍스트 모두 제거 [나연 1029]
+            self.de.removeAllTextLabelToDrawingContainer() // 화면에서 텍스트 제거
+            self.de.texts.removeAll() // 텍스트 배열 제거
             
             self.setNeedsDisplay()
             
@@ -646,12 +649,16 @@ class DrawingView: UIImageView {
             
             self.sendModeMqttMessage(mode: Mode.CLEAR)
             self.de.clearDrawingComponents()
-            //self.de.clearTexts()
+            
+            // MARK: 화면 초기화 시 텍스트 모두 제거 [나연 1029]
+            self.de.removeAllTextLabelToDrawingContainer() // 화면에서 텍스트 제거
+            self.de.texts.removeAll() // 텍스트 배열 제거
             
             self.setNeedsDisplay()
             
             self.de.drawingVC?.setRedoEnabled(isEnabled: false)
             self.de.drawingVC?.setUndoEnabled(isEnabled: false)
+            
         }
         alertController.addAction(yesAction)
         alertController.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
