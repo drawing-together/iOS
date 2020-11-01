@@ -601,10 +601,7 @@ class DrawingView: UIImageView {
             
             self.sendModeMqttMessage(mode: Mode.CLEAR)
             self.de.clearDrawingComponents()
-            
-            // MARK: 화면 초기화 시 텍스트 모두 제거 [나연 1029]
-            self.de.removeAllTextLabelToDrawingContainer() // 화면에서 텍스트 제거
-            self.de.texts.removeAll() // 텍스트 배열 제거
+            self.de.clearTexts()
             
             self.setNeedsDisplay()
             

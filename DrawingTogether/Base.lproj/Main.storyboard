@@ -556,18 +556,18 @@
                                 </subviews>
                                 <edgeInsets key="layoutMargins" top="5" left="10" bottom="0.0" right="10"/>
                             </stackView>
-                            <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" distribution="fillEqually" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="Guu-of-epf" userLabel="Drawing Tool">
+                            <stackView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" distribution="fillEqually" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="Guu-of-epf" userLabel="Drawing Tool">
                                 <rect key="frame" x="0.0" y="802" width="414" height="60"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OC7-aU-7M6">
-                                        <rect key="frame" x="15" y="15" width="37.5" height="30"/>
+                                        <rect key="frame" x="15" y="15" width="43" height="30"/>
                                         <state key="normal" title="펜" image="pen.png"/>
                                         <connections>
                                             <action selector="clickPen:" destination="pJa-tK-STr" eventType="touchUpInside" id="gwW-cj-Tyb"/>
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eFp-pD-8RW">
-                                        <rect key="frame" x="72.5" y="15" width="38" height="30"/>
+                                        <rect key="frame" x="83" y="15" width="43.5" height="30"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <state key="normal" title="SHAPE" image="shape.png"/>
                                         <connections>
@@ -575,7 +575,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fen-zR-MHf">
-                                        <rect key="frame" x="130.5" y="15" width="37.5" height="30"/>
+                                        <rect key="frame" x="151.5" y="15" width="43" height="30"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <state key="normal" title="TEXT" image="text.png"/>
                                         <connections>
@@ -583,7 +583,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LJa-qV-GuT">
-                                        <rect key="frame" x="188" y="15" width="38" height="30"/>
+                                        <rect key="frame" x="219.5" y="15" width="43" height="30"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <state key="normal" title="지우개" image="eraser.png"/>
                                         <connections>
@@ -591,7 +591,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PCy-V0-l9g">
-                                        <rect key="frame" x="246" y="15" width="37.5" height="30"/>
+                                        <rect key="frame" x="287.5" y="15" width="43.5" height="30"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <state key="normal" title="셀렉터" image="selector.png"/>
                                         <connections>
@@ -599,16 +599,12 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ctb-vQ-zGz">
-                                        <rect key="frame" x="303.5" y="15" width="38" height="30"/>
+                                        <rect key="frame" x="356" y="15" width="43" height="30"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <state key="normal" title="와핑" image="warping.png"/>
                                         <connections>
                                             <action selector="clickWarping:" destination="pJa-tK-STr" eventType="touchUpInside" id="JZp-jN-aUF"/>
                                         </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W2h-v3-mqy">
-                                        <rect key="frame" x="361.5" y="15" width="37.5" height="30"/>
-                                        <state key="normal" title="오토 드로잉" image="auto_drawing.png"/>
                                     </button>
                                 </subviews>
                                 <constraints>
@@ -1059,7 +1055,6 @@
         <segue reference="h7Q-Rl-sqc"/>
     </inferredMetricsTieBreakers>
     <resources>
-        <image name="auto_drawing.png" width="100" height="100"/>
         <image name="back.png" width="13" height="20"/>
         <image name="drawingtogether_logo.png" width="908" height="240"/>
         <image name="ellipsis" catalog="system" width="128" height="37"/>

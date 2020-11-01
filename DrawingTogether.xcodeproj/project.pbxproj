@@ -848,7 +848,7 @@
 					"\"opencv2\"",
 					"-all_load",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = emperor.drawingtogether;
+				PRODUCT_BUNDLE_IDENTIFIER = hansung.drawingtogether;
 				PRODUCT_NAME = "드로잉투게더";
 				SWIFT_OBJC_BRIDGING_HEADER = "DrawingTogether/Drawing/DrawingTogether-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -944,7 +944,7 @@
 					"\"opencv2\"",
 					"-all_load",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = hansung.drawingtogether7;
+				PRODUCT_BUNDLE_IDENTIFIER = hansung.drawingtogether;
 				PRODUCT_NAME = "드로잉투게더";
 				SWIFT_OBJC_BRIDGING_HEADER = "DrawingTogether/Drawing/DrawingTogether-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
