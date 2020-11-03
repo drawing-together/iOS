@@ -11,7 +11,7 @@ import CoreGraphics
 import UIKit
 
 class DrawingComponent: Codable, DrawingComponentProtocol {
-    
+  
     var de: String? //
     
     var points = [Point]()
@@ -93,6 +93,8 @@ class DrawingComponent: Codable, DrawingComponentProtocol {
         dComponent!.isErased = self.isErased
         dComponent!.isSelected = self.isSelected
         dComponent!.penMode = self.penMode
+        
+        print("begin clone (\(beginPoint!.x),\(beginPoint!.y))")
         
         return dComponent!
     }

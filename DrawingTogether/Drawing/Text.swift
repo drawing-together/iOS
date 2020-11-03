@@ -42,9 +42,8 @@ class Text: UILabel {
         self.textEditingView = drawingVC.textEditingView
         self.textAttribute = textAttribute
         
-        
         setLabelAttribute()
-        setLabelInitialLocation(textAttr: self.textAttribute)
+        setLabelInitialLocation()
         
                 
         // MARK: set gesture recognizers
@@ -99,14 +98,14 @@ class Text: UILabel {
     
     
     // Label이 초기에 놓일 자리
-    func setLabelInitialLocation(textAttr: TextAttribute) {
+    func setLabelInitialLocation() { // text create in MQTTClient
         
-        if textAttr.isTextInited && textAttr.isTextMoved {
+        if self.textAttribute.isTextInited && self.textAttribute.isTextMoved {
             print("set label initial place moved")
             setMovedLabelLocation()
         }
             
-        else if textAttr.isTextInited && !textAttr.isTextMoved {
+        else if self.textAttribute.isTextInited && !self.textAttribute.isTextMoved {
             print("set label initial place not moved")
             setNotMovedLabelLocation()
         }
@@ -145,7 +144,7 @@ class Text: UILabel {
         
         self.sizeToFit()
         
-        let w = drawingContainer.frame.width/3
+        let w = self.frame.width
         let h = self.frame.height
 
         calculateRatio(myViewWidth: drawingContainer.frame.width, myViewHeight: drawingContainer.frame.height)
@@ -348,17 +347,10 @@ class Text: UILabel {
         de.currentText = nil
         
         // sizeToFit()
-        if textAttribute.x == nil || textAttribute.y == nil {
-            setNotMovedLabelLocation()
-        }
-        else {
-            setMovedLabelLocation()
-        }
+        setLabelInitialLocation() // MARK: 텍스트 위치 확인 필요
         
         deactivateTextEditing()
-        
-        // History
-        
+
         sendMqttMessage(textMode: .DONE) // 사용 종료를 알리기 위해 보내야함 ( 사용자이름 : nil )
         
         de.currentMode = .DRAW // 텍스트 편집이 완료 되면 현재 모드는 기본 드로잉 모드로
@@ -494,17 +486,17 @@ class Text: UILabel {
         print("transition = \(transition.x), \(transition.y)")
         
         if leftX < 0 { // 좌측으로 넘어가는 경우
-            changedX = Int(self.frame.width/2 + transition.x)
+            changedX = Int(self.frame.width/2/* + transition.x*/)
         }
         else if rightX > drawingContainer.frame.width { // 우측으로 넘어가는 경우
-            changedX = Int(drawingContainer.frame.width - self.frame.width/2 + transition.x)
+            changedX = Int(drawingContainer.frame.width - self.frame.width/2 /*+ transition.x*/)
         }
 
         if leftY < 0 { // 상단으로 넘어가는 경우
-            changedY = Int(self.frame.height/2 + transition.y)
+            changedY = Int(self.frame.height/2/* + transition.y*/)
         }
         else if rightY > drawingContainer.frame.height { // 하단으로 넘어가는 경우
-            changedY = Int(drawingContainer.frame.height - self.frame.height/2 + transition.y)
+            changedY = Int(drawingContainer.frame.height - self.frame.height/2/* + transition.y*/)
         }
         
         print("drawing container size = \(drawingContainer.frame.width), \(drawingContainer.frame.height)")

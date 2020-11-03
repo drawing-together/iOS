@@ -372,7 +372,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                     }
         
         let message = String(data: data, encoding: .utf8)!
-        //print(message)
+        print(message)
         
         if parser.jsonReader(msg: message) == nil { return }
         let mqttMessageFormat = parser.jsonReader(msg: message)!
@@ -801,7 +801,8 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         let myCanvasWidth = self.de.myCanvasWidth
         let myCanvasHeight = self.de.myCanvasHeight
         
-        DispatchQueue.global(qos: .background).async {
+        //*DispatchQueue.global(qos: .background)*/
+        self.queue.async {
             if self.de.myUsername == message.username { return }
             
             if message.action == nil {
@@ -858,6 +859,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                         break
                     case MotionEvent.ACTION_UP.rawValue:
                         //self.de.clearMyCurrentImage()
+                        
                         self.de.splitPointsOfSelectedComponent(component: selectedComponent!, canvasWidth: self.de.myCanvasWidth!, canvasHeight: self.de.myCanvasHeight!)
                         self.de.updateSelectedComponent(newComponent: selectedComponent!)
                         self.de.clearDrawingImage()
@@ -903,7 +905,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         var text: Text? = nil
         
         // 텍스트 객체가 처음 생성되는 경우, 텍스트 배열에 저장된 정보 없음
-        // 그 이후에 일어나는 텍스트에 대한 모든 행위들은 텏트ㅡ 배열로부터 텍스트 객체를 찾아서 작업 가능
+        // 그 이후에 일어나는 텍스트에 대한 모든 행위들은 텍스트 배열로부터 텍스트 객체를 찾아서 작업 가능
         if !(textMode == .CREATE) {
             text = de.findTextById(id: textAttr.id!)
             if text == nil { return }
@@ -946,7 +948,8 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             break
         case .DONE:
             text!.setLabelAttribute()
-            text!.setMovedLabelLocation()
+            //text!.setLabelInitialLocation() // 텍스트의 내용이 변경될 때 마다 size to fit 해야 레이블에 표시된다. 텍스트를 움직임 여부 파악 필요
+            text!.sizeToFit() // "DONE" 수행 시 텍스트 위치는 이미 지정되있고 내용만 변경. 따라서 sizeToFit 만 해주기
             text!.setLabelBorder(color: .clear)
         case .DRAG_ENDED: break
         case .ERASE:
@@ -1050,7 +1053,11 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         DispatchQueue.main.async {
             self.de.clearDrawingComponents()
             if self.de.drawingView!.isSelected { self.de.deselect(updateImage: true) }
-            //self.de.clearTexts()
+            
+            // MARK: 화면 초기화 시 텍스트 모두 제거 [나연 1029]
+            self.de.removeAllTextLabelToDrawingContainer() // 화면에서 텍스트 제거
+            self.de.texts.removeAll() // 텍스트 배열 제거
+            
             self.drawingVC.setRedoEnabled(isEnabled: false)
             self.drawingVC.setUndoEnabled(isEnabled: false)
         }

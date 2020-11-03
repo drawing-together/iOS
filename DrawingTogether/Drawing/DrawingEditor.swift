@@ -172,9 +172,11 @@ class DrawingEditor {
     
     func drawAllDrawingComponentsForMid() {   //drawingComponents draw
         //print("drawn width=\((drawingComponents[0].drawnCanvasWidth)!), height=\((drawingComponents[0].drawnCanvasHeight)!)")
+               
         for component in drawingComponents {
             
             component.calculateRatio(myCanvasWidth: myCanvasWidth!, myCanvasHeight: myCanvasHeight!)
+                
             component.drawComponent(view: drawingView!, drawingEditor: self)
             
             splitPoints(component: component, canvasWidth: CGFloat(drawingBoardArray![0].count), canvasHeight: CGFloat(drawingBoardArray!.count));
@@ -247,6 +249,10 @@ class DrawingEditor {
      }
      print(str)
      }*/
+    
+    func sortDrawingComponents() {
+        drawingComponents = drawingComponents.sorted(by: {$0.id! < $1.id!})
+    }
     
     func addDrawingComponents(component: DrawingComponent) {
         self.drawingComponents.append(component)
@@ -377,7 +383,7 @@ class DrawingEditor {
         for point in calcPoints {
             str += "\(point.toString()) "
         }
-        //print(str)
+        print(str)
         
         var newPoints = [Point]()     //사이 점 채워진 Point 배열
         var slope: Int?       //기울기
@@ -495,6 +501,7 @@ class DrawingEditor {
                 }
                 removeRemovedComponentIds(ids: itemIds)
                 addAllDrawingComponents(components: lastItem.getComponents())
+                sortDrawingComponents()
                 clearDrawingImage()
                 drawAllDrawingComponents()
             }
@@ -511,7 +518,7 @@ class DrawingEditor {
                     print("undo history (\(comp.beginPoint!.x),\(comp.beginPoint!.y))")
                 } else {
                     print("redo history (\(comp.beginPoint!.x),\(comp.beginPoint!.y)), (\(lastItem.movePoint!.x),\(lastItem.movePoint!.y))")
-                    moveSelectedComponent(selectedComponent: comp, moveX: (lastItem.movePoint!.x), moveY: (lastItem.movePoint!.y))
+                    moveSelectedComponent(selectedComponent: comp, moveX: 0, moveY: 0)
                      print("redo history (\(comp.beginPoint!.x),\(comp.beginPoint!.y))")
                     
                 }
@@ -645,11 +652,11 @@ class DrawingEditor {
     }
     
     func removeRemovedComponentIds(ids: [Int]) {
+        print(ids)
         for i in 0..<ids.count {
-            autoreleasepool {
             if removedComponentId.contains(ids[i]) {
-                removedComponentId.remove(at: i)
-            }
+                let index = removedComponentId.index(of: ids[i])
+                removedComponentId.remove(at: index!)
             }
         }
     }
@@ -1007,6 +1014,12 @@ class DrawingEditor {
         for text in texts {
             text.removeFromSuperview()
         }
+    }
+    
+    func clearTexts() {
+        removeAllTextLabelToDrawingContainer() // 텍스트 제거
+        texts.removeAll() // 텍스트 자료구조 삭제
+        currentText = nil
     }
     
     // MARK: 배경 이미지

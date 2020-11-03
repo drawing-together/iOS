@@ -30,7 +30,8 @@ class MainViewController: UIViewController, UIPopoverPresentationControllerDeleg
         super.viewDidLoad()
         
         ip = "54.180.154.63" // 주농
-//        ip = "54.180.55.246" // 나연
+        //ip = "54.180.55.246"
+
         port = "1883"
         
         let tapGseture = UITapGestureRecognizer(target: self, action: #selector(dismissKeybord))
