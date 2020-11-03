@@ -595,7 +595,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                         print(user.name! + " " + String(userList[i].count!))
                         
                         if userList[i].count == aliveLimitCount && user.name == masterName {
-                            drawingVC.showAlert(title: "회의방 종료", message: "마스터 접속이 끊겼습니다.\n(마스터가 alive publish를 제대로 못 한 경우 또는 마스터가 지우지 못한 회의방에 접속한 경우)", selectable: false)
+                            drawingVC.showAlert(title: "회의방 종료", message: "마스터가 회의방을 종료하였습니다.)", selectable: false)
                             break
                         }
                         if userList[i].count == aliveLimitCount {

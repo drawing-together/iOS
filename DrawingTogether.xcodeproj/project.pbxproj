@@ -55,6 +55,7 @@
 		8450CC58248E1A55003286A4 /* JSONParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8450CC55248E1A55003286A4 /* JSONParser.swift */; };
 		8450CC5A248E1BA8003286A4 /* ExitMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8450CC59248E1BA8003286A4 /* ExitMessage.swift */; };
 		8450CC5C248E1C55003286A4 /* CloseMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8450CC5B248E1C55003286A4 /* CloseMessage.swift */; };
+		9385BD2CCD1D614CCCB97AFC /* Pods_DrawingTogether.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 582CA26941A49374B6C35E0E /* Pods_DrawingTogether.framework */; };
 		952F4EB224910C4E00B665F4 /* DrawingItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 952F4EB124910C4E00B665F4 /* DrawingItem.swift */; };
 		953A67B62490E8A7008AC2BA /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67B52490E8A7008AC2BA /* User.swift */; };
 		953A67C52490EDB9008AC2BA /* Text.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67B72490EDB8008AC2BA /* Text.swift */; };
@@ -152,6 +153,7 @@
 		11720CF42546B5EA00272CC5 /* start_meeting.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = start_meeting.png; sourceTree = "<group>"; };
 		119D68702542DFA70086005B /* start_meeting.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = start_meeting.png; sourceTree = "<group>"; };
 		11C5BCA424965BFB0066517B /* SplashViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashViewController.swift; sourceTree = "<group>"; };
+		582CA26941A49374B6C35E0E /* Pods_DrawingTogether.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DrawingTogether.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5CDA820F9A9AC4878DE03B07 /* Pods-DrawingTogether.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DrawingTogether.release.xcconfig"; path = "Target Support Files/Pods-DrawingTogether/Pods-DrawingTogether.release.xcconfig"; sourceTree = "<group>"; };
 		844049AC24BD64E9004B8290 /* AliveThread.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AliveThread.swift; sourceTree = "<group>"; };
 		844049AE24BD64F7004B8290 /* AliveMessage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AliveMessage.swift; sourceTree = "<group>"; };
@@ -228,6 +230,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				84404A0D24E66D52004B8290 /* KakaoLink.framework in Frameworks */,
+				9385BD2CCD1D614CCCB97AFC /* Pods_DrawingTogether.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -342,6 +345,7 @@
 			children = (
 				84404A0A24E66D2A004B8290 /* KakaoOpenSDK-1.23.3 */,
 				84404A0C24E66D52004B8290 /* KakaoLink.framework */,
+				582CA26941A49374B6C35E0E /* Pods_DrawingTogether.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

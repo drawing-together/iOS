@@ -593,7 +593,7 @@ class DrawingView: UIImageView {
     func clear() {
         de.drawingVC!.eraserVC.dismiss(animated: true, completion: nil)
         
-        let alertController = UIAlertController(title: "배경 초기화", message: "배경 이미지가 삭제됩니다.\n그래도 지우시겠습니까?", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "전체 초기화", message: "배경 이미지와 모든 그리기 내용이 삭제됩니다.\n그래도 지우시겠습니까?", preferredStyle: .alert)
         let yesAction = UIAlertAction(title: "확인", style: .destructive) {
             (action) in
             
