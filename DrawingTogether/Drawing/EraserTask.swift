@@ -47,13 +47,6 @@ class EraserTask  {
                     let id = erasedComponentIds[i]
                     self.de.removeDrawingComponents(id: id)
                     
-                    // MARK: monitoring
-                    
-                    // fixme nayeon
-                    if(MQTTClient.client.master) {
-                        MQTTClient.client.componentCount!.increaseErase()
-                    }
-                    
                 }
             }
             

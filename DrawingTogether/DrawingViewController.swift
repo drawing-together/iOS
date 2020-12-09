@@ -114,11 +114,6 @@ class DrawingViewController: UIViewController, UIPopoverPresentationControllerDe
         textEditingView.textView.delegate = self
         textEditingView.drawingVC = self
         
-        if master  { // TODO: 메인화면 갔다가 돌아올 때 처리 필요
-            client.componentCount = ComponentCount(topic: client.topic)
-            client.monitoringThread = MonitoringThread()
-            client.monitoringThread!.start()
-        }
     }
     
     override func viewWillAppear(_ animated: Bool) {

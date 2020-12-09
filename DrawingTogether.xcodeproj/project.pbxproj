@@ -71,8 +71,6 @@
 		953A67D02490EDB9008AC2BA /* ComponentType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67C22490EDB9008AC2BA /* ComponentType.swift */; };
 		953A67D12490EDB9008AC2BA /* Mode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67C32490EDB9008AC2BA /* Mode.swift */; };
 		953A67D22490EDB9008AC2BA /* DrawingComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 953A67C42490EDB9008AC2BA /* DrawingComponent.swift */; };
-		957FCB25254820EE005475D2 /* MonitoringThread.swift in Sources */ = {isa = PBXBuildFile; fileRef = 957FCB24254820EE005475D2 /* MonitoringThread.swift */; };
-		957FCB27254820FF005475D2 /* ComponentCount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 957FCB26254820FF005475D2 /* ComponentCount.swift */; };
 		BD5ABFCE24FD1E6C004503E2 /* PenMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5ABFCD24FD1E6C004503E2 /* PenMode.swift */; };
 		BD5ABFCF24FD1F5C004503E2 /* WarpData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD5ABFCB24FD1E58004503E2 /* WarpData.swift */; };
 		BD5ABFD124FD7E63004503E2 /* redo_circle_black.png in Resources */ = {isa = PBXBuildFile; fileRef = BD5ABFD024FD7E63004503E2 /* redo_circle_black.png */; };
@@ -186,8 +184,6 @@
 		953A67C22490EDB9008AC2BA /* ComponentType.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComponentType.swift; sourceTree = "<group>"; };
 		953A67C32490EDB9008AC2BA /* Mode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Mode.swift; sourceTree = "<group>"; };
 		953A67C42490EDB9008AC2BA /* DrawingComponent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DrawingComponent.swift; sourceTree = "<group>"; };
-		957FCB24254820EE005475D2 /* MonitoringThread.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitoringThread.swift; sourceTree = "<group>"; };
-		957FCB26254820FF005475D2 /* ComponentCount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentCount.swift; sourceTree = "<group>"; };
 		BD5ABFBF24FCE890004503E2 /* PenMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenMode.swift; sourceTree = "<group>"; };
 		BD5ABFCB24FD1E58004503E2 /* WarpData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WarpData.swift; sourceTree = "<group>"; };
 		BD5ABFCD24FD1E6C004503E2 /* PenMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PenMode.swift; sourceTree = "<group>"; };
@@ -350,15 +346,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		957FCB23254820C3005475D2 /* Monitoring */ = {
-			isa = PBXGroup;
-			children = (
-				957FCB24254820EE005475D2 /* MonitoringThread.swift */,
-				957FCB26254820FF005475D2 /* ComponentCount.swift */,
-			);
-			path = Monitoring;
-			sourceTree = "<group>";
-		};
 		B588619159CC547280219286 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -393,7 +380,6 @@
 				116988E22494AB21003C3E34 /* image */,
 				116988FC2494B2BF003C3E34 /* Drawing */,
 				116988FB2494B2B7003C3E34 /* MQTT */,
-				957FCB23254820C3005475D2 /* Monitoring */,
 				844049AE24BD64F7004B8290 /* AliveMessage.swift */,
 				844049AC24BD64E9004B8290 /* AliveThread.swift */,
 				CEDE686F24765A780057E9D2 /* AppDelegate.swift */,
@@ -606,7 +592,6 @@
 				953A67CD2490EDB9008AC2BA /* Rect.swift in Sources */,
 				84404A0724E667A5004B8290 /* ObserveThread.swift in Sources */,
 				BD5D2AC824969A7900B6D811 /* Command.swift in Sources */,
-				957FCB27254820FF005475D2 /* ComponentCount.swift in Sources */,
 				953A67C82490EDB9008AC2BA /* Stroke.swift in Sources */,
 				CEDE687024765A780057E9D2 /* AppDelegate.swift in Sources */,
 				953A67C52490EDB9008AC2BA /* Text.swift in Sources */,
@@ -623,7 +608,6 @@
 				BD5D2ACA24969A8F00B6D811 /* Eraser.swift in Sources */,
 				953A67D22490EDB9008AC2BA /* DrawingComponent.swift in Sources */,
 				CEDE687224765A780057E9D2 /* SceneDelegate.swift in Sources */,
-				957FCB25254820EE005475D2 /* MonitoringThread.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -33,7 +33,6 @@ class MQTTClient: NSObject {
     var topic_audio: String!
     var topic_image: String!
     var topic_alive: String!
-    var topic_monitoring: String!
     //
     
     var myName: String!
@@ -58,9 +57,6 @@ class MQTTClient: NSObject {
     private var aliveThread: AliveThread!
     private var aliveLimitCount: Int!
     
-    // MONITORING
-    var componentCount: ComponentCount?
-    var monitoringThread: MonitoringThread?
     
     // 생성자
     private override init() {
@@ -77,7 +73,6 @@ class MQTTClient: NSObject {
         self.topic_audio = topic + "_audio"
         self.topic_image = topic + "_image"
         self.topic_alive = topic + "_alive"
-        self.topic_monitoring = "monitoring"
         
         self.myName = name
         self.master = master
@@ -211,9 +206,6 @@ class MQTTClient: NSObject {
         userList.removeAll()
         
         aliveThread.cancel()
-        if master {
-            monitoringThread!.cancel()
-        }
         
         de.removeAllDrawingData()
         isMid = true
@@ -309,37 +301,6 @@ class MQTTClient: NSObject {
     
     public func getMyName() -> String { return self.myName }
     
-    // MONITORING
-    
-    func checkComponentCount(mode: Mode?, type: ComponentType?, textMode: TextMode?) {
-        // print("monitoring: " + "execute check component count func.");
-        
-        if(mode! == Mode.DRAW) {
-            // print("monitoring: " + "check component count func. mode is DRAW");
-            
-            switch (type!) {
-            case .STROKE:
-                    componentCount!.increaseStroke();
-                    break;
-            case .RECT:
-                    componentCount!.increaseRect();
-                    break;
-            case .OVAL:
-                    componentCount!.increaseOval();
-                    break;
-            }
-            return;
-        }
-
-        if(mode! == Mode.TEXT && textMode! == TextMode.CREATE) {
-            // print("monitoring:" + "check component count func. text count increase.");
-
-            componentCount!.increaseText();
-            return;
-        }
-   
-    }
-    
 }
 
 extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
@@ -351,10 +312,6 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             de.backgroundImage = imageData
             
             drawingVC.backgroundImageView.image = de.convertByteArray2UIImage(byteArray: de.backgroundImage!)
-            
-            if(master) {
-                componentCount!.increaseImage()
-            }
             
             return
         }
@@ -505,17 +462,6 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         }
         
         if (topic == topic_data) {
-            
-            if(master) { // 마스터만 컴포넌트 개수 카운트
-            // 컴포넌트 개수 저장
-                if (mqttMessageFormat.action != nil && mqttMessageFormat.action == MotionEvent.ACTION_DOWN.rawValue)
-                    || mqttMessageFormat.mode == Mode.TEXT || mqttMessageFormat.mode == Mode.ERASE
-                {
-                    // print("< monitoring: mode = \(mqttMessageFormat.mode) type = \(mqttMessageFormat.type) text mode = \(mqttMessageFormat.textMode)");
-
-                    checkComponentCount(mode: mqttMessageFormat.mode, type: mqttMessageFormat.type, textMode: mqttMessageFormat.textMode)
-                }
-            }
             
             // 중간 참여자가 입장했을 때 처리
             if de.isMidEntered, let action = mqttMessageFormat.action, action != MotionEvent.ACTION_UP.rawValue {
