@@ -1052,7 +1052,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         DispatchQueue.main.async {
             self.de.clearDrawingComponents()
             if self.de.drawingView!.isSelected { self.de.deselect(updateImage: true) }
-            //self.de.clearTexts()
+            self.de.clearTexts()
             self.drawingVC.setRedoEnabled(isEnabled: false)
             self.drawingVC.setUndoEnabled(isEnabled: false)
         }
