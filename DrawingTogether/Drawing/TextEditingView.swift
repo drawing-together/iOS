@@ -135,19 +135,18 @@ extension DrawingViewController: UITextViewDelegate {
         if let text = de.currentText {
             textView.textColor = UIColor(hexString: text.textAttribute.textColor!)
         }
-        
+
         if textView.text == textEditingView.placeholder {
             textView.text = ""
         }
-        
+
         if text == "\n" {
             textEditingView.clickDone(textEditingView.doneButton)
         }
-        
+
         de.currentText?.textAttribute.text = textView.text
-                
+
         return textView.text.count + (text.count - range.length) <= MAX_LENGTH
-        
     }
     
 }

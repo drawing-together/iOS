@@ -33,7 +33,6 @@ class MQTTClient: NSObject {
     var topic_audio: String!
     var topic_image: String!
     var topic_alive: String!
-    var topic_monitoring: String!
     //
     
     var myName: String!
@@ -58,9 +57,6 @@ class MQTTClient: NSObject {
     private var aliveThread: AliveThread!
     private var aliveLimitCount: Int!
     
-    // MONITORING
-    var componentCount: ComponentCount?
-    var monitoringThread: MonitoringThread?
     
     // 생성자
     private override init() {
@@ -77,7 +73,6 @@ class MQTTClient: NSObject {
         self.topic_audio = topic + "_audio"
         self.topic_image = topic + "_image"
         self.topic_alive = topic + "_alive"
-        self.topic_monitoring = "monitoring"
         
         self.myName = name
         self.master = master
@@ -211,9 +206,6 @@ class MQTTClient: NSObject {
         userList.removeAll()
         
         aliveThread.cancel()
-        if master {
-            monitoringThread!.cancel()
-        }
         
         de.removeAllDrawingData()
         isMid = true
@@ -309,37 +301,6 @@ class MQTTClient: NSObject {
     
     public func getMyName() -> String { return self.myName }
     
-    // MONITORING
-    
-    func checkComponentCount(mode: Mode?, type: ComponentType?, textMode: TextMode?) {
-        // print("monitoring: " + "execute check component count func.");
-        
-        if(mode! == Mode.DRAW) {
-            // print("monitoring: " + "check component count func. mode is DRAW");
-            
-            switch (type!) {
-            case .STROKE:
-                    componentCount!.increaseStroke();
-                    break;
-            case .RECT:
-                    componentCount!.increaseRect();
-                    break;
-            case .OVAL:
-                    componentCount!.increaseOval();
-                    break;
-            }
-            return;
-        }
-
-        if(mode! == Mode.TEXT && textMode! == TextMode.CREATE) {
-            // print("monitoring:" + "check component count func. text count increase.");
-
-            componentCount!.increaseText();
-            return;
-        }
-   
-    }
-    
 }
 
 extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
@@ -351,10 +312,6 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             de.backgroundImage = imageData
             
             drawingVC.backgroundImageView.image = de.convertByteArray2UIImage(byteArray: de.backgroundImage!)
-            
-            if(master) {
-                componentCount!.increaseImage()
-            }
             
             return
         }
@@ -506,17 +463,6 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         
         if (topic == topic_data) {
             
-            if(master) { // 마스터만 컴포넌트 개수 카운트
-            // 컴포넌트 개수 저장
-                if (mqttMessageFormat.action != nil && mqttMessageFormat.action == MotionEvent.ACTION_DOWN.rawValue)
-                    || mqttMessageFormat.mode == Mode.TEXT || mqttMessageFormat.mode == Mode.ERASE
-                {
-                    // print("< monitoring: mode = \(mqttMessageFormat.mode) type = \(mqttMessageFormat.type) text mode = \(mqttMessageFormat.textMode)");
-
-                    checkComponentCount(mode: mqttMessageFormat.mode, type: mqttMessageFormat.type, textMode: mqttMessageFormat.textMode)
-                }
-            }
-            
             // 중간 참여자가 입장했을 때 처리
             if de.isMidEntered, let action = mqttMessageFormat.action, action != MotionEvent.ACTION_UP.rawValue {
                 if let usersComponentId = mqttMessageFormat.usersComponentId, (de.isIntercept && action == MotionEvent.ACTION_DOWN.rawValue), de.getCurrentComponent(usersComponentId: usersComponentId) != nil {
@@ -595,7 +541,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
                         print(user.name! + " " + String(userList[i].count!))
                         
                         if userList[i].count == aliveLimitCount && user.name == masterName {
-                            drawingVC.showAlert(title: "회의방 종료", message: "마스터 접속이 끊겼습니다.\n(마스터가 alive publish를 제대로 못 한 경우 또는 마스터가 지우지 못한 회의방에 접속한 경우)", selectable: false)
+                            drawingVC.showAlert(title: "회의방 종료", message: "마스터가 회의방을 종료하였습니다.)", selectable: false)
                             break
                         }
                         if userList[i].count == aliveLimitCount {
@@ -905,7 +851,7 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         var text: Text? = nil
         
         // 텍스트 객체가 처음 생성되는 경우, 텍스트 배열에 저장된 정보 없음
-        // 그 이후에 일어나는 텍스트에 대한 모든 행위들은 텏트ㅡ 배열로부터 텍스트 객체를 찾아서 작업 가능
+        // 그 이후에 일어나는 텍스트에 대한 모든 행위들은 텍스트 배열로부터 텍스트 객체를 찾아서 작업 가능
         if !(textMode == .CREATE) {
             text = de.findTextById(id: textAttr.id!)
             if text == nil { return }
@@ -948,7 +894,8 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
             break
         case .DONE:
             text!.setLabelAttribute()
-            text!.setMovedLabelLocation()
+            //text!.setLabelInitialLocation() // 텍스트의 내용이 변경될 때 마다 size to fit 해야 레이블에 표시된다. 텍스트를 움직임 여부 파악 필요
+            text!.sizeToFit() // "DONE" 수행 시 텍스트 위치는 이미 지정되있고 내용만 변경. 따라서 sizeToFit 만 해주기
             text!.setLabelBorder(color: .clear)
         case .DRAG_ENDED: break
         case .ERASE:
@@ -1052,7 +999,10 @@ extension MQTTClient: MQTTSessionManagerDelegate, MQTTSessionDelegate {
         DispatchQueue.main.async {
             self.de.clearDrawingComponents()
             if self.de.drawingView!.isSelected { self.de.deselect(updateImage: true) }
+
+            // MARK: 화면 초기화 시 텍스트 모두 제거
             self.de.clearTexts()
+
             self.drawingVC.setRedoEnabled(isEnabled: false)
             self.drawingVC.setUndoEnabled(isEnabled: false)
         }

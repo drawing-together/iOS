@@ -10,7 +10,8 @@ import Foundation
 
 class DrawingItem: Codable {
     var mode: Mode?
-    var components = [DrawingComponentAdapter]()
+//    var components = [DrawingComponentAdapter]()
+    var components: [DrawingComponentAdapter]?
     var textMode: TextMode?
     var textAttribute: TextAttribute?
     var component: DrawingComponentAdapter?
@@ -18,12 +19,16 @@ class DrawingItem: Codable {
     
     init(mode: Mode, component: DrawingComponentAdapter) {
         self.mode = mode
-        self.components.append(component)
+//        self.components.append(component)
+        self.components = [DrawingComponentAdapter]()
+        self.components!.append(component)
     }
 
     init(mode: Mode, components: [DrawingComponentAdapter]) {
         self.mode = mode
-        self.components.append(contentsOf: components)
+//        self.components.append(contentsOf: components)
+        self.components = [DrawingComponentAdapter]()
+        self.components?.append(contentsOf: components)
     }
     
     init(mode: Mode, component: DrawingComponentAdapter, movePoint: Point) {
@@ -40,14 +45,14 @@ class DrawingItem: Codable {
     
     func getComponents() -> [DrawingComponent] {
         var dcs: [DrawingComponent] = []
-        
-        for comp in components {
+
+        for comp in components! {
             comp.getComponent()!.isSelected = false
             dcs.append(comp.getComponent()!)
         }
         return dcs
     }
-    
+
     func getComponent() -> DrawingComponent {
         let dc = component!.getComponent()!
         dc.isSelected = false

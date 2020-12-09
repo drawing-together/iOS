@@ -53,8 +53,6 @@ class MqttMessageFormat: Codable {
     var maxTextId: Int?
     
     var autoDrawList: [AutoDraw]?
-
-    var componentCount: ComponentCount?
     
     
     // MARK: DRAWING MESSAGE
@@ -220,11 +218,6 @@ class MqttMessageFormat: Codable {
     
     init(aliveMessage: AliveMessage) {
         self.aliveMessage = aliveMessage
-    }
-    
-    // MARK: MONITORING MESSAGE
-    init(componentCount: ComponentCount) {
-        self.componentCount = componentCount
     }
     
 }

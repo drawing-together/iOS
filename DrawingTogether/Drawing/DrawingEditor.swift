@@ -379,11 +379,11 @@ class DrawingEditor {
             }
         }
         
-        var str = "stroke calcPoints(\(calcPoints.count)) = "
+        /*var str = "stroke calcPoints(\(calcPoints.count)) = "
         for point in calcPoints {
             str += "\(point.toString()) "
         }
-        print(str)
+        print(str)*/
         
         var newPoints = [Point]()     //사이 점 채워진 Point 배열
         var slope: Int?       //기울기

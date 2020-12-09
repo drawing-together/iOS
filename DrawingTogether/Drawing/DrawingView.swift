@@ -593,7 +593,7 @@ class DrawingView: UIImageView {
     func clear() {
         de.drawingVC!.eraserVC.dismiss(animated: true, completion: nil)
         
-        let alertController = UIAlertController(title: "배경 초기화", message: "배경 이미지가 삭제됩니다.\n그래도 지우시겠습니까?", preferredStyle: .alert)
+        let alertController = UIAlertController(title: "전체 초기화", message: "배경 이미지와 모든 그리기 내용이 삭제됩니다.\n그래도 지우시겠습니까?", preferredStyle: .alert)
         let yesAction = UIAlertAction(title: "확인", style: .destructive) {
             (action) in
             
@@ -646,12 +646,16 @@ class DrawingView: UIImageView {
             
             self.sendModeMqttMessage(mode: Mode.CLEAR)
             self.de.clearDrawingComponents()
-            //self.de.clearTexts()
+            
+            // MARK: 화면 초기화 시 텍스트 모두 제거 [나연 1029]
+            self.de.removeAllTextLabelToDrawingContainer() // 화면에서 텍스트 제거
+            self.de.texts.removeAll() // 텍스트 배열 제거
             
             self.setNeedsDisplay()
             
             self.de.drawingVC?.setRedoEnabled(isEnabled: false)
             self.de.drawingVC?.setUndoEnabled(isEnabled: false)
+            
         }
         alertController.addAction(yesAction)
         alertController.addAction(UIAlertAction(title: "취소", style: .cancel, handler: nil))
